@@ -401,15 +401,25 @@ Cuando el usuario pida recomendaciones o "qué sigue", el agente debe evaluar el
 
 #### Prioridad P3 (Normal — mejoras continuas):
 
-| ID | Tarea | Workstream | Esfuerzo | Valor |
-|----|-------|------------|----------|-------|
-| `P0-netbenefit` | Crear lib/netbenefit.ts (Motor BN 8 escalas) | P0_SPECS | 3 | 95 |
-| `P0-cds_jurados` | Crear lib/cds_jurados.ts (Jury summon, weights) | P0_SPECS | 3 | 90 |
-| `P0-copiosis` | Crear lib/copiosis.ts (NetBenefitFlow, GoodType) | P0_SPECS | 2 | 88 |
-| `P0-valueflows` | Extender ValueFlows types | P0_SPECS | 1 | 85 |
-| `DEPLOY-link` | Vercel link + env vars + deploy prod | DEPLOY | 2 | 95 |
-| `DEPLOY-verify` | Verificar rutas 200 + CoachFAB visible | DEPLOY | 1 | 90 |
-| `DEPLOY-auto` | Configurar auto-deploy on push | DEPLOY | 1 | 85 |
+|| ID | Tarea | Workstream | Esfuerzo | Valor ||
+||----|-------|------------|----------|-------||
+|| `P0-netbenefit` | Crear lib/netbenefit.ts (Motor BN 8 escalas) | P0_SPECS | 3 | 95 ||
+|| `P0-cds_jurados` | Crear lib/cds_jurados.ts (Jury summon, weights) | P0_SPECS | 3 | 90 ||
+|| `P0-copiosis` | Crear lib/copiosis.ts (NetBenefitFlow, GoodType) | P0_SPECS | 2 | 88 ||
+|| `P0-valueflows` | Extender ValueFlows types | P0_SPECS | 1 | 85 ||
+|| `DEPLOY-link` | Vercel link + env vars + deploy prod | DEPLOY | 2 | 95 ||
+|| `DEPLOY-verify` | Verificar rutas 200 + CoachFAB visible | DEPLOY | 1 | 90 ||
+|| `DEPLOY-auto` | Configurar auto-deploy on push | DEPLOY | 1 | 85 ||
+
+#### Prioridad P4 (Asimilación Polymarket bots + Jev Ultrafast en Zeitnus — pendientes de integración completa):
+
+|| ID | Tarea | Workstream | Esfuerzo | Valor ||
+||----|-------|------------|----------|-------||
+|| `ZT-store-wire` | Wire 7 módulos Polymarket + Jev en store.ts (imports, state, actions, partialize) | ZEITNUS | 3 | 95 ||
+|| `ZT-routes-nav` | Añadir 8 rutas en App.tsx + 8 nav items en Aside.tsx + 8 i18n keys | ZEITNUS | 2 | 90 ||
+|| `ZT-typecheck-build` | Ejecutar npx tsc --noEmit + npm run build + fix errores | ZEITNUS | 2 | 95 ||
+|| `ZT-verify-routes` | Servir preview + curl 200 en 8 nuevas rutas | ZEITNUS | 1 | 90 ||
+|| `ZT-docs-update` | Actualizar README.md + CHANGELOG.md con nuevos módulos | ZEITNUS | 1 | 85 ||
 
 #### Cómo proponer tareas al usuario:
 
