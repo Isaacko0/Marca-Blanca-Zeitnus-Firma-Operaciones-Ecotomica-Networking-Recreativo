@@ -1,0 +1,39 @@
+{
+  "name": "HSCSG_v15_OS",
+  "version": "0.2.0",
+  "description": "Holosociocibersimbiogenesis v15 OS - Spec-Driven Development con OpenSpec",
+  "specsDir": "openspec/specs",
+  "changesDir": "openspec/changes",
+  "storesDir": "openspec/stores",
+  "skillsDir": "skills/hscsg",
+  "profile": "default",
+  "tools": ["cursor", "copilot", "codex", "cline", "windsurf"],
+  "validation": {
+    "strict": true,
+    "requireSpecs": true,
+    "requireDesign": true,
+    "requireTasks": true,
+    "traceability": true
+  },
+  "schemas": {
+    "spec-driven": "schemas/spec-driven"
+  },
+  "integrations": {
+    "github": {
+      "enabled": true,
+      "stores": ["ridf-store", "gaia-store", "alraico-store", "nexus-store"]
+    },
+    "nostr": {
+      "enabled": true,
+      "relay": "wss://nostr.hscsg.org"
+    }
+  },
+  "hscsg": {
+    "kernelVersion": "v214",
+    "btCorpus": "BT1-214",
+    "viaProtocols": "VIA00-31",
+    "alraico": true,
+    "legalSafe": true,
+    "dualContext": true
+  }
+}

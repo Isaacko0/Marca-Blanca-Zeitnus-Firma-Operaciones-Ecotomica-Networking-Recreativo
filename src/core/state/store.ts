@@ -106,6 +106,13 @@ import { makeUsdgloState, setMode as uSetMode, mint as uMint, denylist as uDenyl
 import type { ProofOfResponseState } from '@core/state/proofOfResponse'
 import { makeProofOfResponseState, issueRequest as porIssue, respond as porRespond, proveFailure as porProve, isSatisfied as porSatisfied } from '@core/lib/proofOfResponse'
 import { dispatchMatch, autoAdvisory, applyDecisionTo, znuDecayOnBalance } from '@core/lib/pipeline'
+import { createStoryProject, createStoryOutline, createStoryChapter, updateChapterContent } from '@core/lib/story'
+import { createVisualPiece, createVisualPages } from '@core/lib/visual'
+import { setExpression, toggleStreaming, grantConsent, revokeConsent } from '@core/lib/avatar'
+import { addCanvasAgent, toggleAgentStatus, addAutomation, logCanvasAction } from '@core/lib/agentCanvas'
+import { createComposition, addClip, togglePlayback, seekFrame } from '@core/lib/video'
+import { createHighlightProject, addHighlight, exportHighlight } from '@core/lib/highlight'
+
 import type { BrandDNAKey, ICPProfile } from '@core/lib/agencia'
 import * as seed from '@core/state/seed'
 import type { BoundariesState } from '@core/state/boundaries'
@@ -1449,6 +1456,72 @@ export const useAppStore = create<AppState>()(
           ),
         },
       })),
+
+      // ===== Story (MuMuAINovel) =====
+      addStoryProject: (title, genre, synopsis) => set((st) => ({
+        story: { ...st.story, projects: [...st.story.projects, createStoryProject(title, genre, synopsis)] },
+      })),
+      addStoryOutline: (projectId) => set((st) => ({
+        story: { ...st.story, outlines: [...st.story.outlines, createStoryOutline(projectId)] },
+      })),
+      addStoryChapter: (projectId, order, title) => set((st) => ({
+        story: { ...st.story, chapters: [...st.story.chapters, createStoryChapter(projectId, order, title)] },
+      })),
+      updateStoryChapter: (chapterId, newContent) => set((st) => ({
+        story: { ...st.story, chapters: st.story.chapters.map(c => c.id === chapterId ? updateChapterContent(c, newContent) : c) },
+      })),
+      setActiveStory: (projectId) => set((st) => ({ story: { ...st.story, activeProject: projectId } })),
+
+      // ===== Visual (RedInk) =====
+      addVisualPiece: (title, description) => set((st) => ({
+        visual: { ...st.visual, pieces: [...st.visual.pieces, createVisualPiece(title, description)] },
+      })),
+      addVisualPages: (pieceId, count = 5) => set((st) => ({
+        visual: { ...st.visual, pieces: st.visual.pieces.map(p => p.id === pieceId ? { ...p, pages: createVisualPages(pieceId, count) } : p) },
+      })),
+      setActiveVisual: (pieceId) => set((st) => ({ visual: { ...st.visual, activePiece: pieceId } })),
+
+      // ===== Avatar (PersonaLive) =====
+      setAvatarExpression: (expr) => set((st) => ({ avatar: setExpression(st.avatar, expr) })),
+      toggleAvatarStreaming: () => set((st) => ({ avatar: toggleStreaming(st.avatar) })),
+      grantAvatarConsent: () => set((st) => ({ avatar: grantConsent(st.avatar) })),
+      revokeAvatarConsent: () => set((st) => ({ avatar: revokeConsent(st.avatar) })),
+
+      // ===== AgentCanvas (OpenHands) =====
+      addCanvasAgent: (name, backend, capabilities) => set((st) => ({
+        canvas: addCanvasAgent(st.canvas, name, backend, capabilities),
+      })),
+      toggleCanvasAgentStatus: (agentId) => set((st) => ({
+        canvas: toggleAgentStatus(st.canvas, agentId),
+      })),
+      addCanvasAutomation: (name, schedule, agentId, task) => set((st) => ({
+        canvas: addAutomation(st.canvas, name, schedule, agentId, task),
+      })),
+      logCanvasAction: (agentId, action, status) => set((st) => ({
+        canvas: logCanvasAction(st.canvas, agentId, action, status),
+      })),
+
+      // ===== Video (Remotion) =====
+      addVideoComposition: (title, duration = 30, fps = 30) => set((st) => ({
+        video: { ...st.video, compositions: [...st.video.compositions, createComposition(title, duration, fps)] },
+      })),
+      addVideoClip: (compositionId, src, startFrame, duration, layer = 0) => set((st) => ({
+        video: { ...st.video, compositions: st.video.compositions.map(c => c.id === compositionId ? addClip(c, src, startFrame, duration, layer) : c) },
+      })),
+      toggleVideoPlayback: () => set((st) => ({ video: togglePlayback(st.video) })),
+      seekVideo: (frame) => set((st) => ({ video: seekFrame(st.video, frame) })),
+
+      // ===== Highlight (AutoClip) =====
+      addHighlightProject: (title, sourceVideo, duration) => set((st) => ({
+        highlight: { ...st.highlight, projects: [...st.highlight.projects, createHighlightProject(title, sourceVideo, duration)] },
+      })),
+      addHighlight: (projectId, startSec, endSec, score, reason) => set((st) => ({
+        highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? addHighlight(p, startSec, endSec, score, reason) : p) },
+      })),
+      exportHighlight: (projectId, highlightId) => set((st) => ({
+        highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? exportHighlight(p, highlightId) : p) },
+      })),
+
       resetAll: () =>
         set({
           nodeName: 'Nodo Cosateca v0.1',
@@ -1464,6 +1537,18 @@ export const useAppStore = create<AppState>()(
           pvsos: [],
           znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
           agents: [], goals: [], tasks: [], audit: [],
+      // Story (MuMuAINovel)
+      story: { projects: [], chapters: [], outlines: [], activeProject: null },
+      // Visual (RedInk)
+      visual: { pieces: [], activePiece: null, history: [] },
+      // Avatar (PersonaLive)
+      avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
+      // AgentCanvas (OpenHands)
+      canvas: { agents: [], automations: [], logs: [] },
+      // Video (Remotion)
+      video: { compositions: [], activeComposition: null, playbackFrame: 0, playing: false },
+      // Highlight (AutoClip)
+      highlight: { projects: [], activeProject: null },
       // CaaS (Comunidad como Servicio reconciliado con MJ)
       caasTier: 'visitante' as CaaSTierKey,
       caasMembers: [],

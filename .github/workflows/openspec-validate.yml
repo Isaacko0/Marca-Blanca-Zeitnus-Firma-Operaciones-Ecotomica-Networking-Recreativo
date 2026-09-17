@@ -1,0 +1,103 @@
+name: OpenSpec Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Specs + Code + Legal-Safe
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install OpenSpec CLI
+        run: npm install -g @fission-ai/openspec@latest
+
+      - name: Validate OpenSpec specs
+        run: openspec validate --strict
+
+      - name: TypeScript compilation check
+        run: pnpm exec tsc --noEmit
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Legal-safe pre-commit check
+        run: |
+          chmod +x scripts/legal-safe-check.sh
+          ./scripts/legal-safe-check.sh
+
+      - name: Check for backup files in repo
+        run: |
+          if find . -name "*_backup*" -o -name "*.backup" | grep -v node_modules | grep -v ".git" | read; then
+            echo "❌ Backup files found in repo"
+            find . -name "*_backup*" -o -name "*.backup" | grep -v node_modules | grep -v ".git"
+            exit 1
+          else
+            echo "✅ No backup files in repo"
+          fi
+
+      - name: Check for _licencia_incompatible folder
+        run: |
+          if [ -d "_licencia_incompatible" ]; then
+            echo "❌ _licencia_incompatible folder found in repo"
+            exit 1
+          else
+            echo "✅ No _licencia_incompatible folder"
+          fi
+
+      - name: Verify ATTRIBUTIONS.md exists
+        run: |
+          if [ -f "docs/ATTRIBUTIONS.md" ]; then
+            echo "✅ ATTRIBUTIONS.md exists"
+          else
+            echo "❌ ATTRIBUTIONS.md missing"
+            exit 1
+          fi
+
+  # Optional: Run OpenSpec archive to keep changes organized
+  archive:
+    name: Archive Completed Changes
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+
+      - name: Install OpenSpec CLI
+        run: npm install -g @fission-ai/openspec@latest
+
+      - name: Archive ready changes
+        run: |
+          openspec archive --ready --yes || true
+        env:
+          OPENSPEC_NO_TELEMETRY: 1

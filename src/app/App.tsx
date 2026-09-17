@@ -48,6 +48,13 @@ import { Boundaries } from '@app/screens/Boundaries'
 import { Coworkers } from '@app/screens/Coworkers'
 import { MetaCrisis } from '@app/screens/MetaCrisis'
 import { Nextcloud } from '@app/screens/Nextcloud'
+import { Story } from '@app/screens/Story'
+import { Visual } from '@app/screens/Visual'
+import { Avatar } from '@app/screens/Avatar'
+import { AgentCanvas } from '@app/screens/AgentCanvas'
+import { Video } from '@app/screens/Video'
+import { Highlight } from '@app/screens/Highlight'
+
 
 export function App() {
   return (
@@ -103,7 +110,13 @@ export function App() {
         <Route path="verificacion" element={<Verificacion />} />
         <Route path="simulador" element={<Simulador />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="story" element={<Story />} />
+        <Route path="visual" element={<Visual />} />
+        <Route path="avatar" element={<Avatar />} />
+        <Route path="canvas" element={<AgentCanvas />} />
+        <Route path="video" element={<Video />} />
+        <Route path="highlight" element={<Highlight />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

@@ -1,4 +1,67 @@
 # CHANGELOG — HSCSG v15 OS
+## v15.25 — 2026-09-17 · Absorción HSCSG_v15_OS + 6 Módulos Multimedia/Agente
+
+### Absorción de HSCSG_v15_OS (33 archivos únicos)
+- `openspec/` — Specs OpenSpec SDD (vital-time-currency, nexo-architecture, kernel-protocol, triaxial-verification) + change add-vital-time-mode
+- `src/core/lib/vitalTime*.ts` — Sistema VitalTime completo (vitalTime, vitalTimeTransduction, vitalTimeTriaxial)
+- `src/core/lib/bt213KernelLimits.ts`, `humanArtificer.ts`, `kernelProtocol.ts`, `mk1Ontology.ts`, `viaProtocols.ts`, `hogueraAFPEnlace.ts` — Kernel v214 + VIAs
+- `src/governance/vitalTimeInvariants.ts` — 100+ invariantes blindados
+- `scripts/legal-safe-check.sh` — Workflow legal-safe
+- `docs/ATTRIBUTIONS.md`, `BIO_THESIS_NEXO_ARCHITECTURE.md`, `INVESTIGACION_OBLINGER_CLG_HSCSG.md`, `LEGAL_SAFE_GUIDE.md`, `NEXO_ARCHITECTURE_SPEC.md`, `VITAL_TIME_CURRENCY_SPEC.md` — Documentación núcleo
+- `.github/workflows/openspec-validate.yml` — CI para specs
+- `.hermes/skills/hscsg-fractal-commit-fusion/SKILL.md` — Skill de fusión fractal
+- `skills/hscsg/` — 6 skills HSCSG (asimilacion-ecosistemica, autotrofia-disenador, comunicacion-veraz, dual-context-engine, ingenieria-inversa-patrones-vivos, viabilidad-territorial)
+
+### 6 Módulos Multimedia/Agente (asimilados)
+
+#### 1. Story Engine · MuMuAINovel (novel creation assistant)
+- `src/core/state/story.ts` + `src/core/lib/story.ts` — Proyectos narrativos, outlines 5 actos, capítulos
+- `src/app/screens/Story.tsx` — UI narrativa
+- Anfibio: sin ChromaDB, sin Docker, sin APIs externas → estado puro Zustand
+- Isomorfismo: Proyecto Story ≈ Proyecto Tekitl (mismo ciclo de vida)
+- Docs: `docs/mumuainovel_backup.md` + `docs/mumuainovel_integration.md`
+
+#### 2. Visual Generator · RedInk (content generation)
+- `src/core/state/visual.ts` + `src/core/lib/visual.ts` — Piezas visuales, páginas, copy
+- `src/app/screens/Visual.tsx` — UI generación visual
+- Anfibio: sin Flask, sin Vue, sin Docker → React + Zustand
+- Isomorfismo: Piece visual = Proyecto Tekitl (entregable con timeline)
+- Docs: `docs/redink_backup.md` + `docs/redink_integration.md`
+
+#### 3. Avatar Live · PersonaLive (portrait animation)
+- `src/core/state/avatar.ts` + `src/core/lib/avatar.ts` — Expresiones, streaming, consentimiento Ley III
+- `src/app/screens/Avatar.tsx` — UI avatar animado
+- Anfibio: sin CUDA, sin PyTorch, sin TensorRT → solo estado lógico
+- Isomorfismo: Avatar estado = SoulState (deriva/anclada)
+- Docs: `docs/personalive_backup.md` + `docs/personalive_integration.md`
+
+#### 4. Agent Canvas · OpenHands (multi-agent control center)
+- `src/core/state/agentCanvas.ts` + `src/core/lib/agentCanvas.ts` — Agentes, automations, audit trail
+- `src/app/screens/AgentCanvas.tsx` — UI centro de control
+- Anfibio: sin Electron, sin Docker, sin ACP → React puro
+- Isomorfismo: Agent Canvas = extensión de Agentes.tsx + Automata.tsx
+- Docs: `docs/openhands_backup.md` + `docs/openhands_integration.md`
+
+#### 5. Video Studio · Remotion (programmatic video)
+- `src/core/state/video.ts` + `src/core/lib/video.ts` — Composiciones, clips, playback
+- `src/app/screens/Video.tsx` — UI timeline de video
+- Anfibio: sin Lambda, sin Mediabunny, sin Three.js → estado lógico
+- Isomorfismo: Composition = Proyecto Tekitl (entregable con timeline)
+- Docs: `docs/remotion_backup.md` + `docs/remotion_integration.md`
+
+#### 6. Highlight Engine · AutoClip (AI video clipping)
+- `src/core/state/highlight.ts` + `src/core/lib/highlight.ts` — Proyectos de video, highlights, export
+- `src/app/screens/Highlight.tsx` — UI extracción de highlights
+- Anfibio: sin APIs externas, sin GPU → estado puro
+- Isomorfismo: Highlight project = Proyecto Tekitl
+- Docs: `docs/autoclip_backup.md` (ya existía como autoclip_mvp en contexto)
+
+### Integración
+- `src/core/state/store.ts` — +6 state slices, +24 acciones, +6 lib imports
+- `src/app/App.tsx` — +6 rutas (/story, /visual, /avatar, /canvas, /video, /highlight)
+- `src/app/layout/Aside.tsx` — +6 nav items (BookOpen, Palette, User, Bot, Film, Scissors)
+- `src/core/lib/i18n.ts` — +6 nav keys (ES/EN/PT)
+
 
 Todas las entradas siguen el formato: versión, fecha, repos asimilados en ese paso, y estado de verificación.
 

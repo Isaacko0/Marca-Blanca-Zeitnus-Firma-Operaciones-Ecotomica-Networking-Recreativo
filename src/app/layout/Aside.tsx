@@ -2,7 +2,7 @@ import {
   Mountain, Database, Eye, Users, Cpu, Coins, LayoutDashboard, Network, Radio, Gauge, SlidersHorizontal, Users2, Bot, Leaf, MessagesSquare, ListChecks, Unlock, Link2, Briefcase, ShieldHalf, RefreshCw, Globe, LifeBuoy, Compass, Scale, Award, Landmark, GraduationCap, HelpCircle, Workflow, Dna, Waypoints, Boxes, PenLine,
   ChevronsLeft, ChevronsRight,
   GitBranch, ShieldCheck, Library, Brain, Cloud,
-} from 'lucide-react'
+  BookOpen, Palette, Film, Scissors, User} from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAppStore } from '@core/state/store'
 import { clsx } from 'clsx'
@@ -58,6 +58,12 @@ const NAV_ITEMS = [
   { key: 'coworkers', navKey: 'nav.coworkers', icon: Users, color: 'text-sky-400', path: '/coworkers' },
   { key: 'meta-crisis', navKey: 'nav.metaCrisis', icon: Brain, color: 'text-emerald-400', path: '/meta-crisis' },
   { key: 'nextcloud', navKey: 'nav.nextcloud', icon: Cloud, color: 'text-blue-400', path: '/nextcloud' },
+  { key: 'story', navKey: 'nav.story', icon: BookOpen, color: 'text-amber-400', path: '/story' },
+  { key: 'visual', navKey: 'nav.visual', icon: Palette, color: 'text-emerald-400', path: '/visual' },
+  { key: 'avatar', navKey: 'nav.avatar', icon: User, color: 'text-cyan-400', path: '/avatar' },
+  { key: 'canvas', navKey: 'nav.canvas', icon: Bot, color: 'text-fuchsia-400', path: '/canvas' },
+  { key: 'video', navKey: 'nav.video', icon: Film, color: 'text-rose-400', path: '/video' },
+  { key: 'highlight', navKey: 'nav.highlight', icon: Scissors, color: 'text-orange-400', path: '/highlight' },
 ] as const
 
 interface AsideProps {
