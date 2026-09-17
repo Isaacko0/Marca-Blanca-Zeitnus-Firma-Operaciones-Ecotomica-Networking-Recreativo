@@ -94,6 +94,7 @@ node scripts/orchestrator-next-steps.js next
 | Necesidad | Documento | Qué Encuentras |
 |-----------|-----------|----------------|
 | **Visión completa + arquitectura + métricas + hoja ruta** | [`BRIEF_EXHAUSTIVO_HSCSG_COSATECA_OS.md`](docs/BRIEF_EXHAUSTIVO_HSCSG_COSATECA_OS.md) | Fundacional: 3 Leyes MJ, 21 módulos, 12 CAC, 7 métricas, 4 bucles, economía híbrida |
+| **PSG v2.0 Aufhebung — Fondo Soberano Global** | [`PSG_v2_AUFHEBUNG_CONCLUSIONES.md`](docs/PSG_v2_AUFHEBUNG_CONCLUSIONES.md) | Arquitectura económica (CIS-ZEITNUS, DFA, SIB), stack tecnológico, fases 0-4, gobernanza, ZK, Fundación Procomún Algorítmico |
 | **Índice navegable de TODOS los briefs (125)** | [`BRIEFS_INDEX.md`](docs/BRIEFS_INDEX.md) | 39 proyectos, 78 backups/integrations, 4 skills, 44 operativos, 4 auto-generados |
 | **Cómo contribuir paso a paso (4 fases)** | [`BRIEF_ONBOARDING_CONSTRUCTOR.md`](docs/BRIEF_ONBOARDING_CONSTRUCTOR.md) | Desempaquetado → Limpieza → GitHub → Evolución + templates obligatorios |
 | **Integración Gaia-Mycelium + OpenHaven + Weave** | [`gaia_mycelium_integration.md`](docs/gaia_mycelium_integration.md) | 20 mapeos, 6 vasos, 8 workstreams, plan 4 semanas |
