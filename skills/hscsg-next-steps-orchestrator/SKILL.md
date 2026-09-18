@@ -413,13 +413,30 @@ Cuando el usuario pida recomendaciones o "qué sigue", el agente debe evaluar el
 
 #### Prioridad P4 (Asimilación Polymarket bots + Jev Ultrafast en Zeitnus — pendientes de integración completa):
 
-|| ID | Tarea | Workstream | Esfuerzo | Valor ||
-||----|-------|------------|----------|-------||
-|| `ZT-store-wire` | Wire 7 módulos Polymarket + Jev en store.ts (imports, state, actions, partialize) | ZEITNUS | 3 | 95 ||
-|| `ZT-routes-nav` | Añadir 8 rutas en App.tsx + 8 nav items en Aside.tsx + 8 i18n keys | ZEITNUS | 2 | 90 ||
-|| `ZT-typecheck-build` | Ejecutar npx tsc --noEmit + npm run build + fix errores | ZEITNUS | 2 | 95 ||
-|| `ZT-verify-routes` | Servir preview + curl 200 en 8 nuevas rutas | ZEITNUS | 1 | 90 ||
-|| `ZT-docs-update` | Actualizar README.md + CHANGELOG.md con nuevos módulos | ZEITNUS | 1 | 85 ||
+||| ID | Tarea | Workstream | Esfuerzo | Valor ||
+|||----|-------|------------|----------|-------||
+||| `ZT-store-wire` | Wire 7 módulos Polymarket + Jev en store.ts (imports, state, actions, partialize) | ZEITNUS | 3 | 95 ||
+||| `ZT-routes-nav` | Añadir 8 rutas en App.tsx + 8 nav items en Aside.tsx + 8 i18n keys | ZEITNUS | 2 | 90 ||
+||| `ZT-typecheck-build` | Ejecutar npx tsc --noEmit + npm run build + fix errores | ZEITNUS | 2 | 95 ||
+||| `ZT-verify-routes` | Servir preview + curl 200 en 8 nuevas rutas | ZEITNUS | 1 | 90 ||
+||| `ZT-docs-update` | Actualizar README.md + CHANGELOG.md con nuevos módulos | ZEITNUS | 1 | 85 ||
+
+#### Prioridad P5 (Integración Libro Ecoaldeas Federadas v1.0 — specs funcionales completas):
+
+||| ID | Tarea | Workstream | Esfuerzo | Valor ||
+|||----|-------|------------|----------|-------||
+||| `LEF-energy-catalog` | Catálogo Energético ICE/Ecoinvent/Agribalyse + pricing engine (1 TQ = 1 kWh) | LEF_SPECS | 3 | 95 ||
+||| `LEF-symmetric-limits` | Límite Simétrico ±500 TQ + Confianza Progresiva (500→1000→5000→∞) | LEF_SPECS | 2 | 95 ||
+||| `LEF-exchange-guard` | Prohibición Cambiaria TQ≠Fiat/Cripto + auditoría expulsión | LEF_SPECS | 2 | 95 ||
+||| `LEF-conversion-factor` | Factor Conversión FC = canasta_TQ(500) / canasta_Fiat + DEX import/export | LEF_SPECS | 3 | 95 ||
+||| `LEF-product-federation` | Federación Productos + Filtro Soberano (compuestos: ALL ingredients approved) | LEF_SPECS | 2 | 90 ||
+||| `LEF-cross-node-pools` | Piscinas Separadas: Global multilateral + Bilaterales + aislamiento riesgo | LEF_SPECS | 2 | 90 ||
+||| `LEF-governance-3levels` | Gobernanza 3 Niveles (General/Org/Dept) + Voto Ed25519 + umbrales configurables | LEF_SPECS | 3 | 90 ||
+||| `LEF-land-tenure` | Tenencia Tierra: CLT / Usufructo / Coop + propiedad frutos trabajo | LEF_SPECS | 2 | 85 ||
+||| `LEF-tax-fund` | Impuestos Automáticos (progresivos) + Fondo Comunitario (solo Orgs/Depts) | LEF_SPECS | 2 | 85 ||
+||| `LEF-node-architecture` | Arquitectura Nodo: mTLS + Gossip + YugabyteDB + 3 modos (Internet/Intranet/Híbrido) | LEF_SPECS | 3 | 85 ||
+||| `LEF-digital-sovereignty` | Soberanía Digital: Mesh/VoIP/Self-hosted + Forward Secrecy (ECDH+AES-256-GCM) | LEF_SPECS | 2 | 85 ||
+||| `LEF-progressive-autonomy` | Autonomía Progresiva: cerrar escotilla DEX al internalizar capacidades | LEF_SPECS | 2 | 85 ||
 
 #### Cómo proponer tareas al usuario:
 

@@ -190,6 +190,31 @@ gaps = []
 - 0-1 BF (frontend/UX si aplica)
 - **Total: 4-7 briefs por repo**
 
+#### Extrapolation Report (`brief-extrapolation.md`)
+
+```markdown
+# Extrapolación de Patrones de Asimilación
+
+## Patrones Detectados (basado en 10 asimilaciones previas)
+
+### Frecuencia
+- **1 repo / 2 semanas** (git history: 10 repos en 20 semanas)
+- **Ciclo completo**: 2-3 semanas (backup + integration + specs + skill + PR)
+
+### Distribución de Tipos de Repo
+1. **Identidad/Gobernanza** (30%): OpenBot, Conway, OneManCompany, Integral
+2. **Economía** (20%): Copiosis, DisCO, FABSHIP
+3. **Infra/Comms** (20%): neko, **Discovery Layer**, Project Weave
+4. **IA/Inteligencia** (15%): Autómata, CoachFAB, Weave
+4. **Social/Ecosistema** (15%): Hylo, navteka, DisCO, FABSHIP
+
+### Briefs por Repo (Promedio)
+- 2 BI (backup + integration)
+- 1-3 SM (specs técnicos)
+- 0-1 SK (skill si capability crítica)
+- 0-1 BF (frontend/UX si aplica)
+- **Total: 4-7 briefs por repo**
+
 ### Predicción Próximos 3 Repos (Probabilidad)
 1. **Copiosis v7.1** (95%) — Gap P0 crítico, financiado por Gaia
 2. **Conway Automaton** (90%) — Isomorfismo MJ, Autómata pendiente
@@ -202,10 +227,20 @@ gaps = []
 - 3 SK (1 por capability crítica)
 - **Total estimado: 23 briefs nuevos**
 
-### Recomendación Estratégica
+### **NUEVA PREDICCIÓN: Libro Ecoaldeas Federadas v1.0 (LEF)**
+**Probabilidad: 100%** — Ya asimilado como spec funcional, genera 13 specs P0/P1:
+- LEF-energy-catalog, LEF-symmetric-limits, LEF-exchange-guard, LEF-conversion-factor
+- LEF-product-federation, LEF-cross-node-pools, LEF-governance-3levels
+- LEF-land-tenure, LEF-tax-fund, LEF-node-architecture, LEF-digital-sovereignty, LEF-progressive-autonomy
+
+**Impacto**: +13 specs P0/P1, workstream LEF_SPECS nuevo, desbloquea autonomía completa
+
+### Recomendación Estratégica Actualizada
 - Priorizar Copiosis + Conway (desbloquean Autómata + GAIA_INTEGRATION)
-- Crear skill `copiosis-assimilation` antes de empezar
-- Parallelizar: backup/integration (secuencial) + specs (paralelo)
+- **Ejecutar LEF_SPECS workstream en paralelo** (13 specs, 26 días esfuerzo, valor 90+)
+- Crear skill `lef-assimilation` antes de empezar specs
+- Parallelizar: energy-catalog + symmetric-limits + exchange-guard (P0 paralelo)
+- Parallelizar: conversion-factor + product-federation + cross-node-pools (P1 paralelo)
 ```
 
 ---
