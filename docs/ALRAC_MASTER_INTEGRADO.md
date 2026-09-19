@@ -1,5 +1,5 @@
 # ALRAC — Documento Maestro Integrado
-## Sistema Alraico + Zeitnus + HSCSG + Gran Alianza por la Vida
+## Sistema Alraico + Zeitnus + HSCSG + TQ + Gran Alianza por la Vida
 ### Versión 1.0 — Consolidación completa de fuentes, arquitectura y colaboraciones
 
 ---
@@ -33,7 +33,7 @@ Este documento sintetiza **seis fuentes independientes** en un solo modelo de ne
 | **Proyecto Zeitnus** | Cooperativa (Isaac, Lautaro, etc.) | ZNU indexada a canasta básica, crédito 2-3%, 1 asociado 1 voto, ciudad cooperativa 25-50k | Propia |
 | **HSCSG / Cosateca OS** | Isaac Ko | CaaS, AUT, RAO, autómata soberano, Postulado 4 (ZNU caduca si no circula) | Propia / OpenSpec |
 | **Libro Ecoaldeas Federadas** | Cergio Monasterio | TQ = 1 kWh, prohibición cambiaria estricta, límite ±500 TQ, catálogo ICE/Ecoinvent, NFC offline | Propia |
-| **Investigación Javier** | Duck.ai / GPT-5.6 Luna | 7 principios + 5 anti-reglas, 𝕮-Atlas, 7 modelos comparados | Propia |
+| **Investigación Javier** | Zeitnus| 7 principios + 5 anti-reglas, 𝕮-Atlas, 7 modelos comparados | Propia |
 | **E→V / NEXO** | Yoka (firmado 19/09/2026) | Fricción como señal, presencia, 6 campos, convergencia sin autoridad, consentimiento total | Propia |
 
 **Gran Alianza por la Vida** — marco superior que integra: Gaia, Mycelium, SynchroLabs, Project Weave, HSCSG, PHI, Data Trust, BioHabitats, con E→V/NEXO como marco conceptual superior.
@@ -70,9 +70,8 @@ La salida no es negociar, es **transducir**: un funtor que traslada estructuras 
 
 > **Hallazgo crítico (§3.5)**: **ALRAC y NEXO son el mismo patrón, descubierto dos veces independientemente**.
 > - Amid (topológico) → Yoka (experiencial/somático)
-> - Misma arquitectura: no absorción, verificación triaxial/convergencia, γ-CARMIS/consentimiento total, separación legítima sin pelea
-> - **Riesgo**: construir ALRAC sin coordinar con Yoka = 2 federaciones redundantes compitiendo por Cergio, Isaac, Amid
-> - **Acción inmediata**: Paso 0 — conversación con Yoka: ¿ALRAC = vehículo comercial NEXO o capas coordinadas?
+> - Misma arquitectura: no absorción, verificación triaxial/convergencia, γ-CARMIS/consentimiento total, decidir si ALRAC es el vehículo comercial de NEXO, o si son dos capas complementarias que deben coordinarse explícitamente desde el día uno. Ver §9, Paso 0.
+
 
 ---
 
@@ -123,14 +122,14 @@ La salida no es negociar, es **transducir**: un funtor que traslada estructuras 
 
 ## 7. QUÉ VENDE EL CONSORCIO
 
-Las "12 formas de ganar dinero con IA" (Pau Forner) = **motor de caja corta** que financia 4 líneas de fondo.
+
 
 ### A. Diagnóstico de Encaje y Paz Operativa — *producto ancla*
 
 **"Paz" = αʰ > κ sostenido entre 𝕮 que no comparten creencias** (Amid) **o** ausencia de fricción sostenida (Yoka).
 
 Dos entregables:
-- **Encaje**: 𝕮-Atlas (Javier) diagnostica combinación de modelos para la comunidad — *incluso si la respuesta honesta es "no necesitan nada de esto"*.
+- **Encaje**: 𝕮-Atlas (Javier) diagnostica combinación de modelos para la comunidad.
 - **Desatasco**: AEI + 20 Límites + Protocolo Escalonado + γ-CARMIS para cooperativas fracturadas, conflictos de tierra, asambleas trabadas.
 
 → Financia: estrategias 3, 10, 12 Forner (marketplaces, bots, automatizaciones).
@@ -147,11 +146,10 @@ Cooperativas, ejidos, municipios, ONG obligados a reportar impacto. ALRAC vende 
 
 Clientes: cooperativas sector social México, gobiernos municipales, fondos de impacto, cooperación internacional Venezuela/Centroamérica.
 
-### D. Editorial y Escuela Alraica
+### D. Editorial 
 
-Libros: *El Dojo* (Amid), *Ecoaldeas Federadas* (Cergio), presentación Zeitnus, Documento Maestro E→V. Falta: edición, distribución, traducción, curso estructurado. Conecta con escuela de Pepe Sevilla (Happy/DeseOS).
+Libros: *El Dojo* (Amid), *Ecoaldeas Federadas* (Cergio), presentación Zeitnus, Documento Maestro E→V.
 
-→ Financia: estrategias 1, 5, 6, 7, 8, 11 Forner.
 
 ### E. Estudio Zeitnus
 
@@ -171,7 +169,7 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 - **PPE (γ_ind ≈ ½θ_generado)** = cláusula auditoría automática contra explotación
 - **β_crit** = techo anti-acaparamiento interno
 
-> **Ventaja**: ética en la fórmula, no en la promesa. Si ALRAC y NEXO coordinan/fusionan, Yoka (y eventualmente Lautaro) entran en la misma tabla con mismo trato.
+> **Ventaja**: ética en la fórmula, no en la promesa. Si ALRAC y NEXO coordinan/fusionan, Yoka (y eventualmente Lautaro, etc) entran en la misma tabla con mismo trato.
 
 ---
 
@@ -181,7 +179,7 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 - **Verificación Triaxial como árbitro**: disputas técnicas se contrastan, no se votan
 - **γ-CARMIS / Consentimiento Total**: cuando tensión > κ → reconfiguración obligatoria antes de ruptura (mismo principio que NEXO para cambios de núcleo)
 - **Escalera de decisión** (Gran Alianza): Construir → Integrar → Asociarse → Adoptar → Co-crear → Fusionar. No se empieza preguntando "¿qué plataforma gana?" sino "¿qué capacidad necesita el ecosistema?"
-- **Auditoría licencias = primer entregable**: vacío HSCSG (~84 backups, ~25 licencia declarada, conflicto CC BY-NC-ND 4.0 Yoka & Fabio Balbi) se cierra **antes** de invitar formalmente a nadie.
+- **Auditoría licencias = primer entregable**: vacío HSCSG (~84 backups, ~25 licencia declarada, conflicto CC BY-NC-ND 4.0 Yoka & Fabio Balbi)
 
 ---
 
@@ -191,7 +189,7 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 |------|--------|--------|
 | **Paso 0** | **Inmediato** | Conversación con Yoka (§3.5): ¿ALRAC = vehículo comercial NEXO o capas coordinadas? |
 | **Semanas 1-3** | Cerrar `LICENSE_AUDIT_ASIMILACIONES.md` (incluye conflicto Yoka/Fabio CC BY-NC-ND) |
-| **Semanas 2-4** | 4 cartas individuales (no genérica): Amid, Cergio, Javier, Pepe Sevilla. La de Yoka ya ocurrió en Paso 0. |
+| **Semanas 2-4** | 3 cartas individuales (no genérica): Amid, Cergio, Javier. La de Yoka ya ocurrió en Paso 0. |
 | **Semanas 4-8** | Piloto real: **Experimento 2 — Trusted Credential** (Gran Alianza) + caso Línea A real |
 | **Semanas 8-12** | Constitución legal **cooperativa de trabajo asociado** que factura A–E + primer nodo TQ instalado |
 
@@ -205,7 +203,7 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 | **Capa 3 no nace captando ahorro** | Regulado en México/Venezuela; abrir ahorro/crédito tras 2-3 años balance auditado |
 | **TQ = 1 kWh no validado empíricamente** | Elegante conceptualmente, cero evidencia a escala real |
 | **HSCSG + Gran Alianza = hipótesis** | No relación confirmada; Experimento 2 validará |
-| **Acumular arquitectura sin nodo funcionando** | Si a 90 días no hay cliente pagando Línea A → modelo falló |
+| **Acumular arquitectura sin nodo funcionando** | Si a x días no hay cliente pagando Línea A → modelo falló |
 
 ---
 
@@ -231,7 +229,7 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 | **Carta formal** | Capa 0.5 explícita; remuneración igual LDFV; 5 anti-reglas = sesgos alraicos | `docs/carta_javier.md` |
 | **𝕮-Atlas operable** | 7 modelos → 𝕮 con armonía típica, modo fractura, β_crit cada uno | `src/core/lib/atlas.ts` |
 
-### 12.4 Con Yoka (E→V / NEXO) — **BLOQUEANTE**
+### 12.4 Con Yoka (E→V / NEXO) 
 | Qué | Cómo | Entregable |
 |-----|------|------------|
 | **Paso 0: Conversación** | Esta semana: ¿ALRAC = vehículo comercial NEXO o capas coordinadas explícitas? | Decisión documentada |
@@ -239,13 +237,8 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 | **Si coordinación** | Protocolo coordinación explícito día 1: sync semanal, decisiones compartidas | `docs/coord_protocol.md` |
 | **Licencias** | Auditar material Yoka/Fabio (CC BY-NC-ND) en repo HSCSG antes de fusionar | `LICENSE_AUDIT_ASIMILACIONES.md` |
 
-### 12.5 Con Pepe Sevilla (Happy / DeseOS)
-| Qué | Cómo | Entregable |
-|-----|------|------------|
-| **Carta formal** | Línea D (Editorial/Escuela) como punto entrada natural desde DeseOS | `docs/carta_pepe.md` |
-| **Curso Alraico** | Co-diseño: *El Dojo* + *Ecoaldeas* + E→V + Zeitnus → curso estructurado | `docs/curso_alraico_syllabus.md` |
 
-### 12.6 Con Gran Alianza por la Vida
+### 12.5 Con Gran Alianza por la Vida
 | Qué | Cómo | Entregable |
 |-----|------|------------|
 | **Experimento 2 — Trusted Credential** | Piloto Semanas 4-8: certificación real → RAO verification demo (identidad+emisor+procedencia+permisos+estado) | Demo funcional RAO |
@@ -306,7 +299,7 @@ donde φʰ⁽ᵏ⁾ = (0.95)ᵏ · (1 + αʰ⁽ᵏ⁾ / 10)
 ### CORTO PLAZO (Semanas 1-3)
 ```
 ☐ Crear LICENSE_AUDIT_ASIMILACIONES.md (con conflicto Yoka/Fabio)
-☐ Escribir 4 cartas: Amid, Cergio, Javier, Pepe
+☐ Escribir 3 cartas: Amid, Cergio, Javier, 
 ☐ Crear 4 specs OpenSpec ALRAC:
     - openspec/specs/alrac-architecture.md
     - openspec/specs/alrac-governance.md
