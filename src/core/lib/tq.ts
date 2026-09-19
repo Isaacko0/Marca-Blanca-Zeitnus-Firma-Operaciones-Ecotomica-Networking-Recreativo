@@ -1,3 +1,6 @@
+import type { CaaSRevenueStream } from '@core/state/caas';
+import type { CredoRelation } from '@core/state/alrac';
+
 // ALRAC TQ (Transducción Quántica) Ledger - Capa 1 Contable-Física
 // 1 TQ = 1 kWh, límite ±500, catálogo ICE/Ecoinvent, NFC offline
 // Prohibición cambiaria: TQ ≠ fiat/cripto NUNCA (arquitectura)
@@ -815,62 +818,54 @@ export interface EnterpriseStakingStack {
     ambassadorRate: number;           // % → embajadores
   };
   
-  // Métricas Compuestas (Video → KPIs)
-  computeStackMetrics(): StackMetrics {
-    const opexAvoided = 
-      this.marketGarden.biowasteToCompost + 
-      this.pasturedPoultry.manureKwhPerMonth + 
-      this.agroforestry.shadeValue;
-    
-    const totalArea = this.totalArea || 1;
-    
-    return {
-      // Rentabilidad por Omisión (Video: kWh ahorrados = TQ ganados)
-      opexAvoided,
-      opexAvoidedRatio: opexAvoided / (this.monthlyOpex || 1),
-      
-      // Enterprise Staking (Apilamiento TQ/ZNU/CaaS/Turismo)
-      stackedValuePerM2: (
-        this.marketGarden.tqProductionPerM2 * 12 +
-        this.pasturedPoultry.tqEggsPerWeek * 52 / totalArea +
-        this.agroforestry.biomassKwhPerYear / totalArea
-      ),
-      
-      // Tres Horizontes Balance
-      liquidityRatio: (this.marketGarden.znuRevenue + this.pasturedPoultry.znuRevenue) / (this.monthlyOpex || 1),
-      stabilityRatio: (this.csaSubscription.znuMonthlyPerMember * this.csaSubscription.members) / (this.yearlyFixedCosts || 1),
-      patrimonyGrowth: this.agroforestry.timberZnuFuture / (this.totalInvestment || 1),
-      
-      // Enterprise Staking Score
-      stakingScore: this.computeStakingScore()
-    };
-  }
-  
-  // OPEX mensual estimado
+  // Configuración
   monthlyOpex: number;
   yearlyFixedCosts: number;
   totalInvestment: number;
   
-  computeStakingScore(): number {
-    const weights = {
-      liquidity: 0.25,
-      stability: 0.25,
-      patrimony: 0.25,
-      regeneration: 0.25
-    };
-    
-    const liquidityScore = Math.min(this.liquidityRatio || 0, 2) / 2;
-    const stabilityScore = Math.min(this.stabilityRatio || 0, 2) / 2;
-    const patrimonyScore = Math.min(this.patrimonyGrowth || 0, 1);
-    const regenerationScore = (this.agroforestry.carbonSequestration + this.agroforestry.shadeValue) / (this.monthlyOpex || 1);
-    
-    return (
-      weights.liquidity * liquidityScore +
-      weights.stability * stabilityScore +
-      weights.patrimony * patrimonyScore +
-      weights.regeneration * Math.min(regenerationScore, 1)
-    );
-  }
+  // Métricas Compuestas (Video → KPIs) - Firma solamente
+  computeStackMetrics: () => StackMetrics;
+  computeStakingScore: () => number;
+}
+
+// Funciones standalone para EnterpriseStakingStack (no pueden ser métodos de interface)
+export function computeStackMetrics(stack: EnterpriseStakingStack): StackMetrics {
+  const opexAvoided = 
+    stack.marketGarden.biowasteToCompost + 
+    stack.pasturedPoultry.manureKwhPerMonth + 
+    stack.agroforestry.shadeValue;
+  
+  const totalArea = stack.totalArea || 1;
+  
+  return {
+    opexAvoided,
+    opexAvoidedRatio: opexAvoided / (stack.monthlyOpex || 1),
+    stackedValuePerM2: (
+      stack.marketGarden.tqProductionPerM2 * 12 +
+      stack.pasturedPoultry.tqEggsPerWeek * 52 / (stack.totalArea || 1) +
+      stack.agroforestry.biomassKwhPerYear / totalArea
+    ),
+    liquidityRatio: (stack.marketGarden.znuRevenue + stack.pasturedPoultry.znuRevenue) / (stack.monthlyOpex || 1),
+    stabilityRatio: (stack.csaSubscription.znuMonthlyPerMember * stack.csaSubscription.members) / (stack.yearlyFixedCosts || 1),
+    patrimonyGrowth: stack.agroforestry.timberZnuFuture / (stack.totalInvestment || 1),
+    stakingScore: computeStakingScore(stack)
+  };
+}
+
+export function computeStakingScore(stack: EnterpriseStakingStack): number {
+  const liquidityRatio = (stack.marketGarden.znuRevenue + stack.pasturedPoultry.znuRevenue) / (stack.monthlyOpex || 1);
+  
+  const liquidityScore = Math.min(liquidityRatio || 0, 2) / 2;
+  const stabilityScore = Math.min((stack.csaSubscription.znuMonthlyPerMember * stack.csaSubscription.members) / (stack.yearlyFixedCosts || 1) || 0, 2) / 2;
+  const patrimonyScore = Math.min(stack.agroforestry.timberZnuFuture / (stack.totalInvestment || 1) || 0, 1);
+  const regenerationScoreNorm = (stack.agroforestry.carbonSequestration + stack.agroforestry.shadeValue) / (stack.monthlyOpex || 1);
+  
+  return (
+    0.25 * (liquidityScore / 2) +
+    0.25 * (stabilityScore / 2) +
+    0.25 * patrimonyScore +
+    0.25 * Math.min(regenerationScoreNorm, 1)
+  );
 }
 
 export interface StackMetrics {
@@ -947,12 +942,8 @@ export interface RegenerativeTourismDesign {
   };
   
   // Validación (Video: "no destrozar el lugar al nombre del turismo")
-  validateCoherence(): boolean {
-    return this.metrics.ecologicalImpactScore > 0 && 
-           this.metrics.visitorSatisfaction > 8 &&
-           this.carryingCapacity.maxVisitorsPerDay < this.carryingCapacity.ecologicalCarryingCapacity;
+    validateCoherence: () => boolean;
   }
-}
 
 // ============================================================================
 // CSA SUBSCRIPTION STREAM (Video: riesgo compartido, embajadores, transparencia)
@@ -961,6 +952,10 @@ export interface RegenerativeTourismDesign {
 export interface CSASubscriptionStream extends CaaSRevenueStream {
   key: 'csa_subscription';
   name: 'Suscripción CSA (Comunidad que Sostiene la Agricultura)';
+  enabled: boolean;
+  usdcIn: number;
+  znuOut: number;
+  touchesBaseMaterial: boolean;
   
   riskSharing: {
     abundanceMultiplier: number;      // 1.5x en abundancia

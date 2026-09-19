@@ -48,6 +48,7 @@ import type { EducationState } from '@core/state/education'
 import type { EducaasState } from '@core/state/educaas'
 import type { EVState } from '@core/state/ev'
 import type { ALRACState } from '@core/state/alrac'
+import { makeALRACState } from '@core/state/alrac'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -97,12 +98,6 @@ import { makeRegenState, addEcoTech as rgAdd, catalogByCategory as rgCat, avgSav
 import { makeVecinalState, raisePropuesta as vRaise, castCommit as vCast, openReveal as vOpen, revealVote as vReveal, tally as vTally } from '@core/lib/vecinal'
 import type { NostrRelayState } from '@core/state/nostrRelay'
 import { makeNostrRelayState, publishLocal as nrPublish, setRelayConfig as nrSetCfg, connect as nrConnect, disconnect as nrDisconnect } from '@core/lib/nostrRelay'
-import type { EVState } from '@core/state/ev'
-import type { ALRACState } from '@core/state/alrac'
-import { makeEVState, getEVState, updateEVState, resetEVState } from '@core/lib/ev'
-import { useEV } from '@core/state/hooks/ev'
-import { makeALRACState, getALRACState, updateALRACState, resetALRACState } from '@core/lib/alrac'
-import { useALRAC } from '@core/state/hooks/alrac'
 import { makeAgentMeshState, spawnAgent as amSpawn, shareCompute as amShare, requestCompute as amRequest, remoteResurrect as amResurrect } from '@core/lib/agentMesh'
 import type { NooaState } from '@core/state/nooa'
 import { makeNooaState, spawnNooaAgent as nooaSpawn, addMethod as nooaAddMethod, hide as nooaHide, extendLib as nooaExtend } from '@core/state/nooa'
@@ -195,6 +190,8 @@ export interface AppState {
 
         // ===== ALRAC (Consorcio de Transducción Soberana) =====
         alrac: ALRACState
+        updateALRAC: (updates: Partial<ALRACState>) => void
+        resetALRAC: () => void
 
       // ===== Orquestación (asimilado de Paperclip) =====
   agents: AgentNode[]
@@ -260,24 +257,26 @@ export interface AppState {
 
   // ===== DeseOS / Contento.pro (método de agencia + arquitectura anfibia) =====
   agencia: AgenciaState
+
   // Modo anfibio del nodo: postmonetario (ZNU/CaaS) o conectado (USD/ReFi)
   nodeMode: 'postmonetario' | 'conectado'
   priceParity: number // ZNU -> USDC (oráculo ReFi, Nivel 3)
 
   // ===== Gaia Confederation (gobernanza biomimética + interoperabilidad) =====
-  gaia: GaiaState
-  // Symbiosky: credibilidad por convicción
-  symbiosky: CredibilityState
-  // Nextcloud: soberanía de datos
-  nextcloud: NextcloudState
-  // Democracia DPoS por expertise (iambrainstorming) = CDS
-  democracia: DemocracyState
-  // Aprendizaje por retos (iambrainstorming)
-  aprender: LearningState
-  // Oráculo de hechos (Kleros/Realitio)
-  oraculo: OracleState
-  // Gaia Union (organismo vivo regenerativo)
-  gaiaunion: GaiaUnionState
+    gaia: GaiaState
+    // Symbiosky: credibilidad por convicción
+    symbiosky: CredibilityState
+    // Nextcloud: soberanía de datos
+    nextcloud: NextcloudState
+    // Democracia DPoS por expertise (iambrainstorming) = CDS
+    democracia: DemocracyState
+    // Aprendizaje por retos (iambrainstorming)
+    aprender: LearningState
+    // Oráculo de hechos (Kleros/Realitio)
+    oraculo: OracleState
+    // Gaia Union (organismo vivo regenerativo)
+    gaiaunion: GaiaUnionState
+
   // Power Delegation (AuroraGov + Symbiosky): liquid democracy local por dominio
   delegation: DelegationState
   // Capabilities (CompAI CRM): optional by default, jardín cerrado offline

@@ -4,8 +4,8 @@ import { useAppStore } from '@core/state/store';
 
 export const useALRAC = () => useAppStore((state) => state.alrac);
 export const useALRACActions = () => useAppStore((state) => ({
-  updateALRAC: state.updateALRAC,
-  resetALRAC: state.resetALRAC,
+  updateALRAC: state.updateALRAC as any,
+  resetALRAC: state.resetALRAC as any,
 }));
 
 export const useEpistemicLayer = () => useAppStore((state) => state.alrac?.epistemicLayer);

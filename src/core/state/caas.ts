@@ -22,7 +22,7 @@ export interface CaaSMembership {
   znuEarned: number
 }
 
-export type CaaSStreamKey = 'suscripcion' | 'revenue_share' | 'b2b' | 'afiliados_verdes' | 'educacion'
+export type CaaSStreamKey = 'suscripcion' | 'revenue_share' | 'b2b' | 'afiliados_verdes' | 'educacion' | 'csa_subscription'
 
 export interface CaaSRevenueStream {
   key: CaaSStreamKey
@@ -32,6 +32,8 @@ export interface CaaSRevenueStream {
   usdcIn: number
   znuOut: number
   touchesBaseMaterial: boolean
+  // extensión para streams personalizados (ej: CSA)
+  [key: string]: any
 }
 
 export interface CaaSPayout {
