@@ -55,6 +55,7 @@ import { AgentCanvas } from '@app/screens/AgentCanvas'
 import { Video } from '@app/screens/Video'
 import { Highlight } from '@app/screens/Highlight'
 import { EV } from '@app/screens/EV'
+import { ALRAC } from '@app/screens/ALRAC'
 
 
 export function App() {
@@ -118,7 +119,8 @@ export function App() {
               <Route path="video" element={<Video />} />
               <Route path="highlight" element={<Highlight />} />
               <Route path="ev" element={<EV />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+                            <Route path="alrac" element={<ALRAC />} />
+                          <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

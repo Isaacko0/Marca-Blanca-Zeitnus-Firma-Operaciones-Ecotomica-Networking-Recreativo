@@ -2,7 +2,7 @@ import {
   Mountain, Database, Eye, Users, Cpu, Coins, LayoutDashboard, Network, Radio, Gauge, SlidersHorizontal, Users2, Bot, Leaf, MessagesSquare, ListChecks, Unlock, Link2, Briefcase, ShieldHalf, RefreshCw, Globe, LifeBuoy, Compass, Scale, Award, Landmark, GraduationCap, HelpCircle, Workflow, Dna, Waypoints, Boxes, PenLine,
   ChevronsLeft, ChevronsRight,
   GitBranch, ShieldCheck, Library, Brain, Cloud,
-  BookOpen, Palette, Film, Scissors, User} from 'lucide-react'
+  BookOpen, Palette, Film, Scissors, User, GitBranch as GitBranchIcon} from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAppStore } from '@core/state/store'
 import { clsx } from 'clsx'
@@ -65,7 +65,8 @@ const NAV_ITEMS = [
   { key: 'video', navKey: 'nav.video', icon: Film, color: 'text-rose-400', path: '/video' },
   { key: 'highligt', navKey: 'nav.highlight', icon: Scissors, color: 'text-orange-400', path: '/highlight' },
     { key: 'ev', navKey: 'nav.ev', icon: Scale, color: 'text-emerald-400', path: '/ev' },
-  ] as const
+      { key: 'alrac', navKey: 'nav.alrac', icon: GitBranchIcon, color: 'text-amber-400', path: '/alrac' },
+    ] as const
 
 interface AsideProps {
   collapsed: boolean

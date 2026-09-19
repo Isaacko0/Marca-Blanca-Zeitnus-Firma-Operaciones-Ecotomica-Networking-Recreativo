@@ -47,6 +47,7 @@ import type { CapabilityState, CapabilityKey } from '@core/state/capacidades'
 import type { EducationState } from '@core/state/education'
 import type { EducaasState } from '@core/state/educaas'
 import type { EVState } from '@core/state/ev'
+import type { ALRACState } from '@core/state/alrac'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -96,10 +97,12 @@ import { makeRegenState, addEcoTech as rgAdd, catalogByCategory as rgCat, avgSav
 import { makeVecinalState, raisePropuesta as vRaise, castCommit as vCast, openReveal as vOpen, revealVote as vReveal, tally as vTally } from '@core/lib/vecinal'
 import type { NostrRelayState } from '@core/state/nostrRelay'
 import { makeNostrRelayState, publishLocal as nrPublish, setRelayConfig as nrSetCfg, connect as nrConnect, disconnect as nrDisconnect } from '@core/lib/nostrRelay'
-import type { AgentMeshState } from '@core/state/agentMesh'
 import type { EVState } from '@core/state/ev'
+import type { ALRACState } from '@core/state/alrac'
 import { makeEVState, getEVState, updateEVState, resetEVState } from '@core/lib/ev'
 import { useEV } from '@core/state/hooks/ev'
+import { makeALRACState, getALRACState, updateALRACState, resetALRACState } from '@core/lib/alrac'
+import { useALRAC } from '@core/state/hooks/alrac'
 import { makeAgentMeshState, spawnAgent as amSpawn, shareCompute as amShare, requestCompute as amRequest, remoteResurrect as amResurrect } from '@core/lib/agentMesh'
 import type { NooaState } from '@core/state/nooa'
 import { makeNooaState, spawnNooaAgent as nooaSpawn, addMethod as nooaAddMethod, hide as nooaHide, extendLib as nooaExtend } from '@core/state/nooa'
@@ -188,9 +191,12 @@ export interface AppState {
     znu: ZNUState
 
     // ===== EV (E→V pattern) =====
-    ev: EVState
+        ev: EVState
 
-  // ===== Orquestación (asimilado de Paperclip) =====
+        // ===== ALRAC (Consorcio de Transducción Soberana) =====
+        alrac: ALRACState
+
+      // ===== Orquestación (asimilado de Paperclip) =====
   agents: AgentNode[]
   goals: GoalNode[]
   tasks: TaskNode[]
@@ -846,8 +852,10 @@ export const useAppStore = create<AppState>()(
             // NEAR asimilado
             proofOfResponse: makeProofOfResponseState(),
             // E→V (asimilado de E→V Documento Maestro v1.0)
-            ev: makeEVState(),
-            // Conector de flujo
+                        ev: makeEVState(),
+                        // ALRAC (Consorcio de Transducción Soberana)
+                        alrac: makeALRACState(),
+                        // Conector de flujo
             stageSeeds: {},
 
       setNodeName: (n: string) => set({ nodeName: n }),
@@ -1388,27 +1396,34 @@ export const useAppStore = create<AppState>()(
         stageSeeds: { ...st.stageSeeds, [target]: params },
       })),
       // ===== Pipeline: actuator (CIERRA el loop) =====
-      pipeDispatch: (needTitle, assignee) => set((st) => {
-        const next = dispatchMatch(st.integral, needTitle, assignee)
-        return { integral: next }
-      }),
-      pipeAdvisory: (finding, severity = 'warning') => set((st) => {
-        const { state } = autoAdvisory(st.integral, finding, severity)
-        // P1: si es concentración, aplica decay al balance derivado (anti-acumulación real)
-        // znuBalanceFrom es computado desde credits (no duplica estado) -> no desincroniza
-        return { integral: state }
-      }),
-      pipeApply: (drId) => set((st) => {
-        const next = applyDecisionTo(st.integral, drId)
-        return { integral: next }
-      }),
-      pipeDecay: () => set((st) => {
-        const decayed = znuDecayOnBalance(st.integral)
-        // el decay es informativo (el balance es derivado de credits); se registra señal FRS
-        const sig = ingestSignal('ITC', 'info', `decay ZNU aplicado → balance ${Math.round(decayed)}`)
-        return { integral: { ...st.integral, signals: st.integral.signals.concat(sig) } }
-      }),
-      // ===== Boundaries (policy gateway anfibio inspirado en OpenBot) =====
+            pipeDispatch: (needTitle, assignee) => set((st) => {
+              const next = dispatchMatch(st.integral, needTitle, assignee)
+              return { integral: next }
+            }),
+            pipeAdvisory: (finding, severity = 'warning') => set((st) => {
+              const { state } = autoAdvisory(st.integral, finding, severity)
+              // P1: si es concentración, aplica decay al balance derivado (anti-acumulación real)
+              // znuBalanceFrom es computado desde credits (no duplica estado) -> no desincroniza
+              return { integral: state }
+            }),
+            pipeApply: (drId) => set((st) => {
+              const next = applyDecisionTo(st.integral, drId)
+              return { integral: next }
+            }),
+            pipeDecay: () => set((st) => {
+              const decayed = znuDecayOnBalance(st.integral)
+              // el decay es informativo (el balance es derivado de credits); se registra señal FRS
+              const sig = ingestSignal('ITC', 'info', `decay ZNU aplicado → balance ${Math.round(decayed)}`)
+              return { integral: { ...st.integral, signals: st.integral.signals.concat(sig) } }
+            }),
+            // ===== ALRAC (Consorcio de Transducción Soberana) =====
+            updateALRAC: (updates: Partial<ALRACState>) => set((st) => ({
+              alrac: { ...st.alrac, ...updates },
+            })),
+            resetALRAC: () => set((st) => ({
+              alrac: makeALRACState(),
+            })),
+            // ===== Boundaries (policy gateway anfibio inspirado en OpenBot) =====
       setBoundaryPolicy: (policy) => set((st) => ({
         boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, ...policy } },
       })),
@@ -1555,11 +1570,13 @@ export const useAppStore = create<AppState>()(
       // AgentCanvas (OpenHands)
       canvas: { agents: [], automations: [], logs: [] },
       // Video (Remotion)
-      video: { compositions: [], activeComposition: null, playbackFrame: 0, playing: false },
-      // Highlight (AutoClip)
-      highlight: { projects: [], activeProject: null },
-      // CaaS (Comunidad como Servicio reconciliado con MJ)
-      caasTier: 'visitante' as CaaSTierKey,
+            video: { compositions: [], activeComposition: null, playbackFrame: 0, playing: false },
+            // Highlight (AutoClip)
+            highlight: { projects: [], activeProject: null },
+            // ALRAC (Consorcio de Transducción Soberana)
+            alrac: makeALRACState(),
+            // CaaS (Comunidad como Servicio reconciliado con MJ)
+            caasTier: 'visitante' as CaaSTierKey,
       caasMembers: [],
       caasStreams: [
         { key: 'suscripcion', name: 'Suscripción de pertenencia (stake ZNU)', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
@@ -1719,7 +1736,8 @@ export const useAppStore = create<AppState>()(
                 lang: st.lang,
                 lucidez: st.lucidez,
                 ev: st.ev,
-              }),
+                                alrac: st.alrac,
+                              })),
     },
   ),
 )
