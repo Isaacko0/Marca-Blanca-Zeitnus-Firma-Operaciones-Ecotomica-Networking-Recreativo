@@ -1,0 +1,18 @@
+{
+  "id": "FA-1",
+  "title": "Establish GNAP bridge between Zeitnus and HSCSG_v15_OS",
+  "description": "Create shared .gnap directory structure in both repos to enable cross-repo agent coordination via git. Both repos have SSH/PAT access configured.",
+  "status": "ready",
+  "assignees": ["zeitnus-architect", "hscsg-researcher"],
+  "labels": ["gnap", "bridge", "cross-repo", "hscsg-integration"],
+  "priority": "high",
+  "created_at": "2026-09-18T21:00:00Z",
+  "updated_at": "2026-09-18T21:00:00Z",
+  "dependencies": [],
+  "acceptance_criteria": [
+    ".gnap/ directory exists in both Zeitnus_local and HSCSG_v15_OS_local",
+    "agents.json includes agents from both ecosystems",
+    "Shared task namespace for cross-repo work",
+    "Heartbeat loop documented for both agent teams"
+  ]
+}

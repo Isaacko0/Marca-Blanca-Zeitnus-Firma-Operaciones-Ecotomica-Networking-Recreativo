@@ -1,0 +1,45 @@
+{
+  "agents": [
+    {
+      "id": "isaac",
+      "name": "Isaac Ko",
+      "role": "Founder / Futurist / Autonomía",
+      "type": "human",
+      "status": "active",
+      "capabilities": ["strategy", "architecture", "protocol-design", "hscsg-vision"]
+    },
+    {
+      "id": "zeitnus-architect",
+      "name": "Zeitnus Architect",
+      "role": "System Architect",
+      "type": "ai",
+      "runtime": "hermes",
+      "capabilities": ["typescript", "react", "zustand", "hscsg-integration", "openspec-sdd", "vital-time", "ev-pattern"],
+      "heartbeat_sec": 300,
+      "status": "active",
+      "reports_to": "isaac"
+    },
+    {
+      "id": "hscsg-researcher",
+      "name": "HSCSG Researcher",
+      "role": "Deep Research & Assimilation",
+      "type": "ai",
+      "runtime": "hermes",
+      "capabilities": ["repo-assimilation", "vault-mining", "pattern-extraction", "legal-safe-transform", "biotesis-integration"],
+      "heartbeat_sec": 600,
+      "status": "active",
+      "reports_to": "isaac"
+    },
+    {
+      "id": "ev-specialist",
+      "name": "E→V Specialist",
+      "role": "E→V Pattern Implementation",
+      "type": "ai",
+      "runtime": "hermes",
+      "capabilities": ["ev-pattern", "energy-efficiency", "truth-verification", "existential-compatibility", "zero-origin", "ev-record-format"],
+      "heartbeat_sec": 300,
+      "status": "active",
+      "reports_to": "zeitnus-architect"
+    }
+  ]
+}
