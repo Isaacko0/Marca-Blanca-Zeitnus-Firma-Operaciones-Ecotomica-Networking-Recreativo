@@ -12,16 +12,6 @@ import type {
   ALRACState,
   PilotConfig,
 } from '@core/state/alrac';
-import type {
-  ConversionFactor,
-  ProductFederationEntry,
-  CrossNodePool,
-  LandRegistryEntry,
-  AssemblyMember,
-  AssemblyProposal,
-  CommunityFund,
-  AutonomyMetrics,
-} from '@core/lib/tq';
 
 /**
  * Verificar estabilidad de un credo (αʰ > κ)
@@ -35,12 +25,16 @@ export const verifyCredoStability = (credo: CredoSet): boolean => {
  * Un 𝕮 es una red relacional estable si αʰ = Ω·s > κ
  */
 export const credoSet = (observer: string, domain: string): CredoSet => ({
+  id: `credo-${Date.now()}`,
+  name: `${observer}-${domain}`,
   observer,
   domain,
-  elements: [],           // Elementos relacionales
-  harmony: 0,             // αʰ = Ω·s
-  criticalThreshold: 1,   // κ
+  elements: [],
+  harmony: 0,
+  criticalThreshold: 1,
+  isStable: false,
   stability: false,
+  relations: [],
   timestamp: Date.now()
 });
 
@@ -90,13 +84,13 @@ export const triaxialVerification = (
 /**
  * Analizador Ecróxico Integrado (AEI) - Diagnostica ideas
  */
-export const AEI = (idea: string): {
+export const AEI = (_idea: string): {
   analysis: string;
   structuralIntegrity: number;  // 0-1
   evasionDetected: boolean;
   recommendations: string[];
 } => ({
-  analysis: `AEI analysis for: ${idea}`,
+  analysis: `AEI analysis for: ${_idea}`,
   structuralIntegrity: 0.5,
   evasionDetected: false,
   recommendations: ['Verificar con triaxial', 'Registrar huella y rastro']

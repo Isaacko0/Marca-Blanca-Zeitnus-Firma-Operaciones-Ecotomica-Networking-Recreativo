@@ -407,11 +407,11 @@ export const makeALRACState = (): ALRACState => ({
         timestamp: Date.now(),
       },
       integratedEcroticAnalyzer: {
-        diagnose: (idea: string) => ({
-          valid: false,
-          limits: [],
-          recommendations: [],
-        }),
+              diagnose: (_idea: string) => ({
+                valid: false,
+                limits: [],
+                recommendations: [],
+              }),
       },
       cognitiveLimits: [
         { id: 'TAD', name: 'TAD', description: 'Explotar demora acción-consecuencia', severity: 'high' },

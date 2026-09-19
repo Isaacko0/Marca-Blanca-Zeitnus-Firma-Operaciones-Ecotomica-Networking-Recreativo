@@ -1,7 +1,5 @@
 // ALRAC Hooks - Selectors and actions for ALRAC Consorcio
 
-import { create } from 'zustand';
-import type { ALRACState } from '@core/state/alrac';
 import { useAppStore } from '@core/state/store';
 
 export const useALRAC = () => useAppStore((state) => state.alrac);

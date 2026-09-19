@@ -47,8 +47,8 @@ export function verifyTQProhibition(tx: TQTransaction): boolean {
     tx.fromCurrency === 'TQ' &&
     tx.toCurrency === 'TQ' &&
     ['reciprocity', 'production', 'regeneration'].includes(tx.type) &&
-    !tx.exchangeRate &&
-    !tx.fiatValue &&
+    !('exchangeRate' in tx) &&
+    !('fiatValue' in tx) &&
     isValidTQAccount(tx.from) &&
     isValidTQAccount(tx.to)
   );
@@ -80,7 +80,7 @@ export function blockArbitrageAttempt(attempt: {
   };
 }
 
-function isValidTQAccount(accountId: string): boolean {
+function isValidTQAccount(_accountId: string): boolean {
   // Implementación: verificar en estado del nodo
   return true; // placeholder
 }
@@ -197,7 +197,7 @@ export interface ProductFilters {
   iceCode?: string;
 }
 
-export function queryProductFederation(filters: ProductFilters): ProductFederationEntry[] {
+export function queryProductFederation(_filters: ProductFilters): ProductFederationEntry[] {
   // TODO: Implementar consulta catálogo federado cross-nodo
   return [];
 }
@@ -264,23 +264,23 @@ export interface PoolResult {
   timestamp: number;
 }
 
-export function createCrossNodePool(config: PoolConfig): PoolResult {
+export function createCrossNodePool(_config: PoolConfig): PoolResult {
   const gov: PoolGovernance = {
-    minNodes: config.governance?.minNodes ?? 3,
-    maxNodes: config.governance?.maxNodes ?? 10,
-    rebalanceThreshold: config.governance?.rebalanceThreshold ?? 0.20,
-    exitNoticePeriod: config.governance?.exitNoticePeriod ?? 30,
-    decisionRule: config.governance?.decisionRule ?? 'harmony-weighted'
+    minNodes: _config.governance?.minNodes ?? 3,
+    maxNodes: _config.governance?.maxNodes ?? 10,
+    rebalanceThreshold: _config.governance?.rebalanceThreshold ?? 0.20,
+    exitNoticePeriod: _config.governance?.exitNoticePeriod ?? 30,
+    decisionRule: _config.governance?.decisionRule ?? 'harmony-weighted'
   };
   
-  if (config.nodes.length < gov.minNodes) {
+  if (_config.nodes.length < gov.minNodes) {
     return { success: false, timestamp: Date.now() };
   }
-  if (config.nodes.length > gov.maxNodes) {
+  if (_config.nodes.length > gov.maxNodes) {
     return { success: false, timestamp: Date.now() };
   }
   
-  const total = Object.values(config.initialContributions).reduce((a, b) => a + b, 0);
+  const total = Object.values(_config.initialContributions).reduce((a, b) => a + b, 0);
   if (total <= 0) {
     return { success: false, timestamp: Date.now() };
   }
@@ -309,7 +309,7 @@ export interface TxResult {
   timestamp: number;
 }
 
-export function executeCrossNodeTransaction(poolId: string, tx: CrossNodeTx): TxResult {
+export function executeCrossNodeTransaction(_poolId: string, _tx: CrossNodeTx): TxResult {
   // TODO: Implementar validaciones y ejecución atómica
   return { success: true, transactionId: generateId(), timestamp: Date.now() };
 }
@@ -320,7 +320,7 @@ export interface RebalanceResult {
   timestamp: number;
 }
 
-export function rebalancePool(poolId: string): RebalanceResult {
+export function rebalancePool(_poolId: string): RebalanceResult {
   // TODO: Rebalanceo ponderado por armonía φʰ = 0.95^k * (1 + αʰ/10)
   return { success: true, newContributions: {}, timestamp: Date.now() };
 }
@@ -392,7 +392,7 @@ export interface GammaCARMISResult {
   deadline?: number;
 }
 
-export function checkGammaCARMISTrigger(nodeId: string): GammaCARMISResult {
+export function checkGammaCARMISTrigger(_nodeId: string): GammaCARMISResult {
   // TODO: Obtener nodo y calcular overload
   return { triggered: false };
 }
@@ -461,7 +461,7 @@ export interface UpdateResult {
   timestamp: number;
 }
 
-export function updateLandProduction(landId: string, production: Partial<CurrentProduction>): UpdateResult {
+export function updateLandProduction(_landId: string, _production: Partial<CurrentProduction>): UpdateResult {
   return { success: true, timestamp: Date.now() };
 }
 
@@ -502,15 +502,16 @@ export interface RedistributionDestination {
   amount: number;
 }
 
-export function applyBetaCrit(nodeId: string, config: BetaCritConfig): BetaCritResult {
+export function applyBetaCrit(_nodeId: string, _config: BetaCritConfig): BetaCritResult {
   // TODO: Obtener nodo, calcular liquidez total, aplicar β_crit
   return { applied: false, timestamp: Date.now() };
 }
 
-function computeRedistributionDestinations(amount: number): RedistributionDestination[] {
-  // TODO: Distribuir a fondo comunitario, pools, nodos deficitarios
-  return [];
-}
+// computeRedistributionDestinations removed - unused
+// function computeRedistributionDestinations(_amount: number): RedistributionDestination[] {
+//   // TODO: Distribuir a fondo comunitario, pools, nodos deficitarios
+//   return [];
+// }
 
 export interface CommunityFund {
   id: string;
@@ -759,7 +760,7 @@ export function computeAutonomyMetrics(
   };
 }
 
-function computeResourceControl(nodeId: string): ResourceControl {
+function computeResourceControl(_nodeId: string): ResourceControl {
   // TODO: Obtener datos del nodo
   return { land: 1, energy: 1, water: 1, compute: 1, data: 1 };
 }
