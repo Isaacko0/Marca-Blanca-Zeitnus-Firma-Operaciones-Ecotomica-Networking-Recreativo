@@ -766,19 +766,309 @@ function computeResourceControl(_nodeId: string): ResourceControl {
 }
 
 // ============================================================================
-// UTILITIES
+// ENTERPRISE STAKING + REGENERATIVE TOURISM + CSA + BRAND (Video Samay)
 // ============================================================================
 
+export interface EnterpriseStakingStack {
+  totalArea: number; // m²
+  
+  // Rubro 1: Huerta Biointensiva (Motor de Liquidez - Horizonte Corto)
+  marketGarden: {
+    tqProductionPerM2: number;        // TQ/m²/mes
+    cyclesPerYear: number;            // 6-12 ciclos
+    znuRevenue: number;               // Ventas directas → ZNU
+    biowasteToCompost: number;        // kWh → estiercol
+  };
+  
+  // Rubro 2: Gallinas Pastoreo (Flujo Caja + Fertilidad - Horizonte Corto/Medio)
+  pasturedPoultry: {
+    tqEggsPerWeek: number;            // TQ/huevo
+    manureKwhPerMonth: number;        // kWh estiercol → compost
+    pestControlValue: number;         // kWh ahorrados (control biológico)
+    znuRevenue: number;               // Huevos + carne
+  };
+  
+  // Rubro 3: Agroforestería (Patrimonio Largo - Horizonte Largo)
+  agroforestry: {
+    treesPlanted: number;
+    biomassKwhPerYear: number;        // Podas → compost + leña
+    shadeValue: number;               // kWh ahorrados (riego)
+    carbonSequestration: number;      // TQ reserves futuras
+    timberZnuFuture: number;          // ZNU reserves 10-30 años
+  };
+  
+  // Rubro 4: Turismo Regenerativo (Experiencias de Alto Valor - Horizonte Medio)
+  regenerativeTourism: {
+    visitsPerMonth: number;
+    znuPerVisit: number;              // Precio experiencia
+    workshopRevenue: number;          // Talleres cocina/siembra
+    lodgingRevenue: number;           // Hospedaje rural
+    ambassadorConversion: number;     // % visitantes → embajadores CSA
+  };
+  
+  // Rubro 5: CSA / Suscripción ZNU (Riesgo Compartido - Horizonte Medio)
+  csaSubscription: {
+    members: number;
+    znuMonthlyPerMember: number;
+    tqDeliveryPerMonth: number;       // Canasta TQ (verduras, huevos, frutas)
+    riskSharing: boolean;             // Abundancia/escasez compartida
+    ambassadorRate: number;           // % → embajadores
+  };
+  
+  // Métricas Compuestas (Video → KPIs)
+  computeStackMetrics(): StackMetrics {
+    const opexAvoided = 
+      this.marketGarden.biowasteToCompost + 
+      this.pasturedPoultry.manureKwhPerMonth + 
+      this.agroforestry.shadeValue;
+    
+    const totalArea = this.totalArea || 1;
+    
+    return {
+      // Rentabilidad por Omisión (Video: kWh ahorrados = TQ ganados)
+      opexAvoided,
+      opexAvoidedRatio: opexAvoided / (this.monthlyOpex || 1),
+      
+      // Enterprise Staking (Apilamiento TQ/ZNU/CaaS/Turismo)
+      stackedValuePerM2: (
+        this.marketGarden.tqProductionPerM2 * 12 +
+        this.pasturedPoultry.tqEggsPerWeek * 52 / totalArea +
+        this.agroforestry.biomassKwhPerYear / totalArea
+      ),
+      
+      // Tres Horizontes Balance
+      liquidityRatio: (this.marketGarden.znuRevenue + this.pasturedPoultry.znuRevenue) / (this.monthlyOpex || 1),
+      stabilityRatio: (this.csaSubscription.znuMonthlyPerMember * this.csaSubscription.members) / (this.yearlyFixedCosts || 1),
+      patrimonyGrowth: this.agroforestry.timberZnuFuture / (this.totalInvestment || 1),
+      
+      // Enterprise Staking Score
+      stakingScore: this.computeStakingScore()
+    };
+  }
+  
+  // OPEX mensual estimado
+  monthlyOpex: number;
+  yearlyFixedCosts: number;
+  totalInvestment: number;
+  
+  computeStakingScore(): number {
+    const weights = {
+      liquidity: 0.25,
+      stability: 0.25,
+      patrimony: 0.25,
+      regeneration: 0.25
+    };
+    
+    const liquidityScore = Math.min(this.liquidityRatio || 0, 2) / 2;
+    const stabilityScore = Math.min(this.stabilityRatio || 0, 2) / 2;
+    const patrimonyScore = Math.min(this.patrimonyGrowth || 0, 1);
+    const regenerationScore = (this.agroforestry.carbonSequestration + this.agroforestry.shadeValue) / (this.monthlyOpex || 1);
+    
+    return (
+      weights.liquidity * liquidityScore +
+      weights.stability * stabilityScore +
+      weights.patrimony * patrimonyScore +
+      weights.regeneration * Math.min(regenerationScore, 1)
+    );
+  }
+}
+
+export interface StackMetrics {
+  opexAvoided: number;
+  opexAvoidedRatio: number;
+  stackedValuePerM2: number;
+  liquidityRatio: number;
+  stabilityRatio: number;
+  patrimonyGrowth: number;
+  stakingScore: number;
+}
+
+// ============================================================================
+// REGENERATIVE TOURISM DESIGN (Video: capacidad de carga, seguridad, coherencia)
+// ============================================================================
+
+export interface Trail {
+  id: string;
+  name: string;
+  lengthKm: number;
+  difficulty: 'easy' | 'moderate' | 'hard';
+  pointsOfInterest: string[];
+}
+
+export interface SanitationFacility {
+  id: string;
+  type: 'dry_compost' | 'biogas' | 'conventional';
+  capacity: number; // personas/día
+  location: { lat: number; lng: number };
+}
+
+export interface EmergencyPlan {
+  evacuationRoutes: string[];
+  firstAidStations: string[];
+  emergencyContacts: string[];
+}
+
+export interface Experience {
+  id: string;
+  name: string;
+  type: 'tour' | 'harvest' | 'workshop' | 'planting' | 'lodging' | 'retreat';
+  durationHours: number;
+  priceZNU: number;
+  tqGenerated: number;              // 1 TQ = 1 kWh (educación/trabajo)
+  maxParticipants: number;
+  ambassadorConversionRate: number; // % → embajadores CSA
+  ecologicalImpact: number;         // Negativo = regeneración neta
+}
+
+export interface RegenerativeTourismDesign {
+  carryingCapacity: {
+    maxVisitorsPerDay: number;
+    maxVisitorsPerWeek: number;
+    recoveryDaysBetweenGroups: number;
+    ecologicalCarryingCapacity: number;
+  };
+  
+  safetyAndCoherence: {
+    trails: Trail[];
+    sanitation: SanitationFacility[];
+    emergencyPlan: EmergencyPlan;
+    guideRatio: number; // guías por visitante
+  };
+  
+  experiences: Experience[];
+  
+  metrics: {
+    znuRevenuePerMonth: number;
+    ambassadorConversionRate: number;    // % → embajadores CSA
+    csaSignupsPerVisit: number;
+    educationHoursDelivered: number;
+    visitorSatisfaction: number;         // NPS
+    ecologicalImpactScore: number;       // Negativo = regeneración neta
+  };
+  
+  // Validación (Video: "no destrozar el lugar al nombre del turismo")
+  validateCoherence(): boolean {
+    return this.metrics.ecologicalImpactScore > 0 && 
+           this.metrics.visitorSatisfaction > 8 &&
+           this.carryingCapacity.maxVisitorsPerDay < this.carryingCapacity.ecologicalCarryingCapacity;
+  }
+}
+
+// ============================================================================
+// CSA SUBSCRIPTION STREAM (Video: riesgo compartido, embajadores, transparencia)
+// ============================================================================
+
+export interface CSASubscriptionStream extends CaaSRevenueStream {
+  key: 'csa_subscription';
+  name: 'Suscripción CSA (Comunidad que Sostiene la Agricultura)';
+  
+  riskSharing: {
+    abundanceMultiplier: number;      // 1.5x en abundancia
+    scarcityBuffer: number;           // 0.7x en escasez
+    communicationProtocol: string;    // Transparencia honesta
+  };
+  
+  ambassadorProgram: {
+    referralZnuBonus: number;         // ZNU por miembro referido
+    ambassadorTier: 'bronze' | 'silver' | 'gold';
+    benefits: string[];               // Visitas gratis, talleres, prioridad
+  };
+  
+  transparency: {
+    weeklyUpdate: boolean;            // Estado finca (abundancia/escasez)
+    soilHealthReport: boolean;        // Métricas suelo (kWh, carbono)
+    financialTransparency: boolean;   // OPEX, márgenes, reinversión
+  };
+}
+
+// ============================================================================
+// NODE CREDO BRAND (Video: Marca personal, embajadores, storytelling honesto)
+// ============================================================================
+
+export interface WeeklyLogEntry {
+  date: number;
+  advances: string[];
+  difficulties: string[];      // Video: "cada dificultad"
+  soilMetrics: {
+    kwh: number;
+    carbon: number;
+    biodiversity: number;
+  };
+  financials: {
+    opex: number;
+    margin: number;
+    reinvestment: number;
+  };
+}
+
+export interface SoilMetrics {
+  kwh: number;
+  carbon: number;
+  biodiversity: number;
+  timestamp: number;
+}
+
+export interface FinancialReport {
+  opex: number;
+  margin: number;
+  reinvestment: number;
+  timestamp: number;
+}
+
+export interface Ambassador {
+  did: string;
+  name: string;
+  tier: 'bronze' | 'silver' | 'gold';
+  joinedAt: number;
+  referrals: number;
+  csaMember: boolean;
+  visitsCount: number;
+}
+
+export interface NodeCredoBrand {
+  credo: CredoSet;                    // αʰ = Ω·s > κ (coherencia)
+  purpose: string;                    // "Regenerar suelo y comunidad"
+  values: string[];                   // ["Transparencia", "Regeneración", "Soberanía"]
+  
+  // Storytelling Honesto (Video: "No inventar historia, reconocer lo que vive")
+  transparentStorytelling: {
+    weeklyLog: WeeklyLogEntry[];      // Avances + Dificultades
+    soilMetrics: SoilMetrics[];       // kWh, carbono, biodiversidad
+    financialTransparency: FinancialReport[]; // OPEX, márgenes, reinversión
+    noManipulation: boolean;          // No manipular emociones (video)
+  };
+  
+  ambassadors: Ambassador[];
+}
+
+export interface CredoSet {
+  id: string;
+  name: string;
+  observer: string;
+  domain: string;
+  elements: any[];
+  harmony: number;                    // αʰ = Ω·s
+  criticalThreshold: number;          // κ
+  isStable: boolean;                  // αʰ > κ
+  stability: boolean;
+  relations: CredoRelation[];
+  timestamp: number;
+  
+  // Brand extension (Video)
+  brand?: NodeCredoBrand;
+}
+
+// UTILITIES (ya existentes)
 function generateId(): string {
   return Math.random().toString(36).slice(2, 15) + Date.now().toString(36);
 }
 
-function hashData(data: string): string {
+function hashData(_data: string): string {
   // TODO: SHA-256 real
   return '0'.repeat(64);
 }
 
-function signData(data: string): string {
+function signData(_data: string): string {
   // TODO: Firmar con clave privada DID
   return 'signature';
 }
