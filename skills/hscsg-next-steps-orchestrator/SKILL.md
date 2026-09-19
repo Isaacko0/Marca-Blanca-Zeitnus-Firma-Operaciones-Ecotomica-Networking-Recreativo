@@ -423,20 +423,101 @@ Cuando el usuario pida recomendaciones o "qué sigue", el agente debe evaluar el
 
 #### Prioridad P5 (Integración Libro Ecoaldeas Federadas v1.0 — specs funcionales completas):
 
-||| ID | Tarea | Workstream | Esfuerzo | Valor ||
-|||----|-------|------------|----------|-------||
-||| `LEF-energy-catalog` | Catálogo Energético ICE/Ecoinvent/Agribalyse + pricing engine (1 TQ = 1 kWh) | LEF_SPECS | 3 | 95 ||
-||| `LEF-symmetric-limits` | Límite Simétrico ±500 TQ + Confianza Progresiva (500→1000→5000→∞) | LEF_SPECS | 2 | 95 ||
-||| `LEF-exchange-guard` | Prohibición Cambiaria TQ≠Fiat/Cripto + auditoría expulsión | LEF_SPECS | 2 | 95 ||
-||| `LEF-conversion-factor` | Factor Conversión FC = canasta_TQ(500) / canasta_Fiat + DEX import/export | LEF_SPECS | 3 | 95 ||
-||| `LEF-product-federation` | Federación Productos + Filtro Soberano (compuestos: ALL ingredients approved) | LEF_SPECS | 2 | 90 ||
-||| `LEF-cross-node-pools` | Piscinas Separadas: Global multilateral + Bilaterales + aislamiento riesgo | LEF_SPECS | 2 | 90 ||
-||| `LEF-governance-3levels` | Gobernanza 3 Niveles (General/Org/Dept) + Voto Ed25519 + umbrales configurables | LEF_SPECS | 3 | 90 ||
-||| `LEF-land-tenure` | Tenencia Tierra: CLT / Usufructo / Coop + propiedad frutos trabajo | LEF_SPECS | 2 | 85 ||
-||| `LEF-tax-fund` | Impuestos Automáticos (progresivos) + Fondo Comunitario (solo Orgs/Depts) | LEF_SPECS | 2 | 85 ||
-||| `LEF-node-architecture` | Arquitectura Nodo: mTLS + Gossip + YugabyteDB + 3 modos (Internet/Intranet/Híbrido) | LEF_SPECS | 3 | 85 ||
-||| `LEF-digital-sovereignty` | Soberanía Digital: Mesh/VoIP/Self-hosted + Forward Secrecy (ECDH+AES-256-GCM) | LEF_SPECS | 2 | 85 ||
-||| `LEF-progressive-autonomy` | Autonomía Progresiva: cerrar escotilla DEX al internalizar capacidades | LEF_SPECS | 2 | 85 ||
+|||| ID | Tarea | Workstream | Esfuerzo | Valor ||
+||||----|-------|------------|----------|-------||
+|||| `LEF-energy-catalog` | Catálogo Energético ICE/Ecoinvent/Agribalyse + pricing engine (1 TQ = 1 kWh) | LEF_SPECS | 3 | 95 ||
+|||| `LEF-symmetric-limits` | Límite Simétrico ±500 TQ + Confianza Progresiva (500→1000→5000→∞) | LEF_SPECS | 2 | 95 ||
+|||| `LEF-exchange-guard` | Prohibición Cambiaria TQ≠Fiat/Cripto + auditoría expulsión | LEF_SPECS | 2 | 95 ||
+|||| `LEF-conversion-factor` | Factor Conversión FC = canasta_TQ(500) / canasta_Fiat + DEX import/export | LEF_SPECS | 3 | 95 ||
+|||| `LEF-product-federation` | Federación Productos + Filtro Soberano (compuestos: ALL ingredients approved) | LEF_SPECS | 2 | 90 ||
+|||| `LEF-cross-node-pools` | Piscinas Separadas: Global multilateral + Bilaterales + aislamiento riesgo | LEF_SPECS | 2 | 90 ||
+|||| `LEF-governance-3levels` | Gobernanza 3 Niveles (General/Org/Dept) + Voto Ed25519 + umbrales configurables | LEF_SPECS | 3 | 90 ||
+|||| `LEF-land-tenure` | Tenencia Tierra: CLT / Usufructo / Coop + propiedad frutos trabajo | LEF_SPECS | 2 | 85 ||
+|||| `LEF-tax-fund` | Impuestos Automáticos (progresivos) + Fondo Comunitario (solo Orgs/Depts) | LEF_SPECS | 2 | 85 ||
+|||| `LEF-node-architecture` | Arquitectura Nodo: mTLS + Gossip + YugabyteDB + 3 modos (Internet/Intranet/Híbrido) | LEF_SPECS | 3 | 85 ||
+|||| `LEF-digital-sovereignty` | Soberanía Digital: Mesh/VoIP/Self-hosted + Forward Secrecy (ECDH+AES-256-GCM) | LEF_SPECS | 2 | 85 ||
+|||| `LEF-progressive-autonomy` | Autonomía Progresiva: cerrar escotilla DEX al internalizar capacidades | LEF_SPECS | 2 | 85 ||
+
+#### Prioridad P6 (Integración Sistema Alráico Modo Compacto 3 — epistemología operativa):
+
+|||| ID | Tarea | Workstream | Esfuerzo | Valor ||
+||||----|-------|------------|----------|-------||
+|||| `ALRAICO-credoSet` | Conjunto Credeófilo 𝕮 + αʰ = Ω·s + fractura/resonancia | ALRAICO_CORE | 3 | 95 ||
+|||| `ALRAICO-gammaCarmis` | γ-CARMIS motor reconfiguración ΣPᵢ > κ + 7 pasos | ALRAICO_CORE | 3 | 95 ||
+|||| `ALRAICO-cognitiveLimits` | 20 Límites Cognitivos + protocolos IA | ALRAICO_CORE | 2 | 95 ||
+|||| `ALRAICO-triaxialVerification` | Verificación Triaxial (Mental/Sim/Lab) score ≥ 0.7 | ALRAICO_CORE | 3 | 95 ||
+|||| `ALRAICO-alraicFilter` | Filtro Alráico 4 pasos (candado + análisis + diagnóstico + reformulación) | ALRAICO_CORE | 2 | 90 ||
+|||| `ALRAICO-logicByInherence` | Lógica por Inherencias (LpI) 7 pasos + anti-regla | ALRAICO_CORE | 3 | 90 ||
+|||| `ALRAICO-needDesire` | Necesidad vs Deseo (topológico: 𝕮-Necesidad vs 𝕮-Deseo) | ALRAICO_CORE | 2 | 90 ||
+|||| `ALRAICO-economicBlackHole` | Agujero Negro Económico β_crit = κ/s · ω | ALRAICO_CORE | 2 | 85 ||
+|||| `ALRAICO-hollowConcepts` | Conceptos Huecos [·] anti-sustancialización | ALRAICO_CORE | 2 | 85 ||
+|||| `ALRAICO-temporalCubes` | Cubos Temporales R-P-T verificación claims | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-ecroxAnalyzer` | Analizador Ecróxico Integrado (AEI) 4 fases | ALRAICO_CORE | 3 | 80 ||
+|||| `ALRAICO-socialMantle` | Manto Social (macro-ECrox) + andamiaje externo | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-entropy` | Entropía = pérdida sincronía (Δs = -ΣΔk - ∫δ_disp dσ) | ALRAICO_CORE | 2 | 75 ||
+|||| `ALRAICO-cognoscible` | Espacio Cognoscible B + Subespacio A + Incapacidad C denso | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-logisticTime` | Tiempo Logístico n𝕿[θ] + pertem | ALRAICO_CORE | 2 | 75 ||
+|||| `ALRAICO-resonance` | Resonancia 𝕮₁₂ > 𝕮₁ + 𝕮₂ | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-reconfigCycle` | Ciclo Reconfiguración 7 fases | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-degenerativeHeritage` | Herencia Degenerativa (HD) detección | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-pathologicalCognitiveEase` | Facilidad Cognitiva Patológica (FCP) detección | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-dysfunctionalTolerance` | Tolerancia Ambiental Disfuncional (TAD) detección | ALRAICO_CORE | 2 | 80 ||
+|||| `ALRAICO-ecroxState` | ECROx estado cognitivo momentáneo | ALRAICO_CORE | 2 | 75 ||
+|||| `ALRAICO-massiveOpacity` | Opacidad Masiva (O) métrica incertidumbre | ALRAICO_CORE | 2 | 75 ||
+|||| `ALRAICO-personalSynchronicity` | Sincronía Personal 𝔾𝔲𝔞𝔴 coherencia interna | ALRAICO_CORE | 2 | 75 ||
+|||| `ALRAICO-relationalDensity` | Densidad Relacional ρ acoplamiento 𝕮 | ALRAICO_CORE | 2 | 75 ||
+|||| `ALRAICO-contextualVolatility` | Volatilidad Contextual σ riesgo/estabilidad | ALRAICO_CORE | 2 | 75 ||
+
+#### Prioridad P7 (Integración ALRAC Consortium Model — modelo negocio federado):
+
+|||| ID | Tarea | Workstream | Esfuerzo | Valor ||
+||||----|-------|------------|----------|-------||
+|||| `ALRAC-pvlCore` | pvl-core types compartidos (TS+Go) para 5 capas ALRAC | ALRAC_CORE | 3 | 100 ||
+|||| `ALRAC-currencySeparation` | Separación TQ vs ZNU (dual currency, membrana fiat) | ALRAC_CORE | 3 | 100 ||
+|||| `ALRAC-ldfv` | Ley Distribución Fractal Valor (LDFV) como código ejecutable | ALRAC_CORE | 2 | 100 ||
+|||| `ALRAC-governanceCode` | Gobernanza como código: noAbsorption, triaxialArbiter, gammaCarmisDistributed | ALRAC_CORE | 3 | 95 ||
+|||| `ALRAC-90dayPlan` | Plan 90 días ejecutable con métricas verificables | ALRAC_CORE | 2 | 95 ||
+|||| `ALRAC-pilotExperiments` | 5 experimentos piloto (Passport, Credential, AI Matching, Educación, Territorio) | ALRAC_CORE | 4 | 100 ||
+
+#### Prioridad P8 (Solarpunk Utopia — Primer caso hardware+comunidad real):
+
+||||| ID | Tarea | Workstream | Esfuerzo | Valor ||||
+|||||----|-------|------------|----------|-------||||
+||||| `SOLARPUNK-meshProtocol` | meshProtocol.ts/go — DTN + NATS federation logic | SOLARPUNK_CORE | 3 | 100 ||||
+||||| `SOLARPUNK-offlineStore` | offlineFirstStore.ts — Zustand + IndexedDB + sync queue | SOLARPUNK_CORE | 2 | 95 ||||
+||||| `SOLARPUNK-dtnBundle` | dtnBundle.ts/go — Bundle protocol store-and-forward | SOLARPUNK_CORE | 3 | 95 ||||
+||||| `SOLARPUNK-meshNode` | meshNode.ts — Raspberry Pi AP + Android bridge config | SOLARPUNK_CORE | 3 | 90 ||||
+||||| `SOLARPUNK-valueflowsREA` | valueflowsREA.ts/go — REA ontology + TQ=1kWh mapping | SOLARPUNK_CORE | 3 | 100 ||||
+||||| `SOLARPUNK-energyAccounting` | energyAccounting.ts — Solar/biodigester kWh → TQ mint | SOLARPUNK_CORE | 2 | 95 ||||
+||||| `SOLARPUNK-permaculture` | permaculturePlanner.ts — Calendars + work parties + AUT vectors | SOLARPUNK_CORE | 2 | 90 ||||
+||||| `SOLARPUNK-skillCredential` | skillCredential.ts — DID/VC para habilidades | SOLARPUNK_CORE | 2 | 90 ||||
+||||| `SOLARPUNK-localAIAdapter` | localAIAdapter.ts — Ollama/MLX + alraicFilter + triaxial | SOLARPUNK_CORE | 2 | 95 ||||
+||||| `SOLARPUNK-mcpTools` | mcpSolarpunkTools.ts — MCP tools para mesh ops | SOLARPUNK_CORE | 2 | 90 ||||
+||||| `SOLARPUNK-nodeKit` | solarpunkNodeKit.sh — Provisioning Pi AP + Android bridge + DTN + ValueFlows + AI | SOLARPUNK_CORE | 3 | 100 ||||
+||||| `SOLARPUNK-pilotDeployment` | Piloto 3 comunas reales + mesh + DTN + federation + métricas validación | SOLARPUNK_CORE | 4 | 100 ||||
+
+#### Prioridad P9 (Artemis — Automatización Android para nodos mesh):
+
+||||| ID | Tarea | Workstream | Esfuerzo | Valor ||||
+|||||----|-------|------------|----------|-------||||
+||||| `ARTEMIS-mobilePerception` | mobilePerception.ts/go — UI tree + vision fusion triaxial | ARTEMIS_CORE | 3 | 95 ||||
+||||| `ARTEMIS-mobileActions` | mobileActions.ts/go — Action space tipado + UnifiedAutomation (Jev) | ARTEMIS_CORE | 2 | 90 ||||
+||||| `ARTEMIS-actionSpecs` | actionSpecs.ts/go — Structured specs + AlraicFilter (Ley I veto, FCP/HD) | ARTEMIS_CORE | 3 | 95 ||||
+||||| `ARTEMIS-mcpExposure` | mcpExposure.ts — MCP server PVL (5 tools: mobile_automate, web_automate, verify_triaxial, gamma_carmis, rao_query) | ARTEMIS_CORE | 2 | 90 ||||
+||||| `ARTEMIS-triaxialMobile` | mobileTriaxial.ts — Verificación triaxial móvil (mental=UI tree, sim=VLM, lab=device) | ARTEMIS_CORE | 3 | 95 ||||
+||||| `ARTEMIS-raoMobile` | raoMobile.ts — RAO chain para acciones móviles | ARTEMIS_CORE | 2 | 85 ||||
+||||| `ARTEMIS-androidBridge` | androidBridgeNode.ts — Android bridge node config para mesh Solarpunk | ARTEMIS_CORE | 2 | 90 ||||
+
+#### Prioridad P10 (Integración completa Zeitnus — Wire + Build + Verify):
+
+||||| ID | Tarea | Workstream | Esfuerzo | Valor ||||
+|||||----|-------|------------|----------|-------||||
+||||| `ZT-store-wire` | Wire 8 módulos (7 Polymarket + Jev + 7 ALRAC + Solarpunk + Artemis) en store.ts | ZEITNUS | 4 | 100 ||||
+||||| `ZT-routes-nav` | Añadir 15+ rutas en App.tsx + nav items Aside.tsx + i18n keys | ZEITNUS | 3 | 95 ||||
+||||| `ZT-typecheck-build` | Ejecutar npx tsc --noEmit + npm run build + fix errores | ZEITNUS | 3 | 100 ||||
+||||| `ZT-verify-routes` | Servir preview + curl 200 en 15+ nuevas rutas | ZEITNUS | 2 | 95 ||||
+||||| `ZT-docs-update` | Actualizar README.md + CHANGELOG.md + PITCH.md con todos los módulos | ZEITNUS | 2 | 90 ||||
+||||| `ZT-pvl-compliance` | pvl verify --suite=all pasa en Zeitnus runtime | ZEITNUS | 3 | 100 ||||
 
 #### Cómo proponer tareas al usuario:
 
