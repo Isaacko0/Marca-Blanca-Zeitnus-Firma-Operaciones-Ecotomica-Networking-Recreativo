@@ -40,6 +40,22 @@
       "heartbeat_sec": 300,
       "status": "active",
       "reports_to": "zeitnus-architect"
+    },
+    {
+      "id": "alrac-coordinator",
+      "name": "ALRAC Coordinator",
+      "role": "ALRAC-NEXO Coordination",
+      "type": "ai",
+      "runtime": "hermes",
+      "capabilities": [
+        "alrac-nexo-sync",
+        "license-audit",
+        "pilot-tracking",
+        "yoka-liaison"
+      ],
+      "heartbeat_sec": 300,
+      "status": "active",
+      "reports_to": "isaac"
     }
   ]
 }
