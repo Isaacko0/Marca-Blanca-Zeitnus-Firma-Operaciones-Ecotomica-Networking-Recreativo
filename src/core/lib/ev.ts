@@ -539,7 +539,7 @@ export const convergeMaps: ConvergeMaps = (operators: string[]): Convergence => 
   pattern: 'E→V pattern recognized',
   reinforced: true,
   timestamp: Date.now(),
-};
+});
 
 /**
  * Verificar compatibilidad existencial

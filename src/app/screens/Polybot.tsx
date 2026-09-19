@@ -13,10 +13,10 @@ export function Polybot() {
     <div className="space-y-6">
       <div>
         <h1 className="font-jost text-2xl md:text-3xl font-semibold flex items-center gap-2">
-          <Database className="w-6 h-6 text-chispa" />
-          Polybot · Quant Trading Platform
-        </h1>
-        <p className="text-[var(--dim)] mt-1">Ingest -> Strategy -> Execute -> Analyze -> Replicate</p>
+                  <Database className="w-6 h-6 text-chispa" />
+                  Polybot · Quant Trading Platform
+                </h1>
+                <p className="text-[var(--dim)] mt-1">Ingest → Strategy → Execute → Analyze → Replicate</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

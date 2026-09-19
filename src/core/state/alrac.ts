@@ -56,10 +56,15 @@ export interface YokaRegister {
 export interface CredoSet {
   id: string;
   name: string;
+  observer: string;
+  domain: string;
+  elements: any[];
   harmony: number; // αʰ = Ω·s
   criticalThreshold: number; // κ
   isStable: boolean; // αʰ > κ
+  stability: boolean;
   relations: CredoRelation[];
+  timestamp: number;
 }
 
 export interface CredoRelation {
@@ -70,9 +75,13 @@ export interface CredoRelation {
 }
 
 export interface GammaCARMIS {
-  overloadThreshold: number;
+  triggered: boolean;
+  overload: number;
+  kappa: number;
   reconfigurationProtocol: string[];
   mandatoryBeforeRupture: boolean;
+  deadline: number;
+  timestamp: number;
 }
 
 export interface TriaxialVerification {
@@ -80,6 +89,7 @@ export interface TriaxialVerification {
   simulation: boolean;
   laboratory: boolean;
   passed: boolean;
+  timestamp: number;
 }
 
 export interface IntegratedEcroticAnalyzer {
@@ -370,21 +380,31 @@ export const makeALRACState = (): ALRACState => ({
       credoSet: {
         id: 'alrac-credo',
         name: 'ALRAC Consorcio',
+        observer: 'ALRAC',
+        domain: 'transduccion-soberana',
+        elements: [],
         harmony: 0,
         criticalThreshold: 1,
         isStable: false,
+        stability: false,
         relations: [],
+        timestamp: Date.now(),
       },
       gammaCARMIS: {
-        overloadThreshold: 1,
+        triggered: false,
+        overload: 0,
+        kappa: 1,
         reconfigurationProtocol: ['detect', 'diagnose', 'reconfigure', 'verify'],
         mandatoryBeforeRupture: true,
+        deadline: 0,
+        timestamp: Date.now(),
       },
       triaxialVerification: {
         mental: false,
         simulation: false,
         laboratory: false,
         passed: false,
+        timestamp: Date.now(),
       },
       integratedEcroticAnalyzer: {
         diagnose: (idea: string) => ({

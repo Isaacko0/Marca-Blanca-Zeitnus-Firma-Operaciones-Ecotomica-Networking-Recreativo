@@ -440,8 +440,8 @@ const PresenceTab = ({ ev, verifyPresence }) => (
           {ev.attention.length === 0 && <EmptyState icon={Eye} title="Sin historial de atención" />}
         </div>
       </Card>
-    </div>
   </Card>
+    </div>
 );
 
 const TruthTab = ({ ev }) => (
@@ -495,17 +495,17 @@ const TruthTab = ({ ev }) => (
         <div className="space-y-3">
           {ev.sovereignty.slice(-3).map(s => (
             <Badge key={s.timestamp} variant={s.evaluationInstance === 'operator' ? 'default' : 'secondary'} className="gap-2">
-              <span>Instancia: {s.evaluationInstance}</span>
-              <Badge variant={s.validationRequired ? 'secondary' : 'default'}>
-                {s.validationRequired ? 'Requiere validación' : 'Autovalidación'}
-              </Badge>
-            </Badge>
-          )}
+                          <span>Instancia: {s.evaluationInstance}</span>
+                          <Badge variant={s.validationRequired ? 'secondary' : 'default'}>
+                            {s.validationRequired ? 'Requiere validación' : 'Autovalidación'}
+                          </Badge>
+                        </Badge>
+                      ))}
           {ev.sovereignty.length === 0 && <EmptyState icon={ShieldHalf} title="Sin registros de soberanía" />}
         </div>
       </Card>
-    </div>
   </Card>
+    </div>
 );
 
 const RecordsTab = ({ ev }) => (
@@ -681,7 +681,8 @@ const MethodTab = ({ ev }) => (
 
         <div className="p-4 bg-red-50 border-red-200">
           <h4 className="font-semibold text-red-800 mb-3">Paso 4: Observar qué pasa</h4>
-          <p className="text-sm text-muted-foreground mb-2">No en la cabeza. En el cuerpo. En la vida.</          <div className="space-y-2 text-sm mt-4">
+          <p className="text-sm text-muted-foreground mb-2">No en la cabeza. En el cuerpo. En la vida.</p>
+          <div className="space-y-2 text-sm mt-4">
             <Badge variant="default" className="gap-2">Alivio <span className="ml-2">✓</span></Badge>
             <Badge variant="destructive" className="gap-2">Caos <span className="ml-2">✓</span></Badge>
             <Badge variant="secondary" className="gap-2">Ambiguo <span className="ml-2">✓</span></Badge>
@@ -793,7 +794,8 @@ const MethodDetail = ({ ev, zeroOrigin }) => (
 
           <Card className="p-4">
             <h4 className="font-semibold mb-4">CaaS — Comunidad como Servicio</h4>
-            <p className="text-sm text-muted-foreground mb-4">Acceso por contribución real, no por dinero.</            <div className="space-y-2 text-sm">
+            <p className="text-sm text-muted-foreground mb-4">Acceso por contribución real, no por dinero.</p>
+            <div className="space-y-2 text-sm">
               <Badge variant="outline" className="gap-2">Acceso por contribución real <span className="ml-2">✓</span></Badge>
               <Badge variant="outline" className="gap-2">No por dinero <span className="ml-2">✓</span></Badge>
               <Badge variant="outline" className="gap-2">CaaS = acceso por contribución real <span className="ml-2">✓</span></Badge>
@@ -890,7 +892,7 @@ const MethodDetail = ({ ev, zeroOrigin }) => (
           </Card>
         </div>
       </div>
-    </Card>
+    </div>
   </div>
 );
 

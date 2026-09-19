@@ -271,13 +271,13 @@ export function testScalability(
   const passed = scalabilityScore >= criteria.minScalabilityScore;
   
   return {
-    test: 'SCALABILITY',
-    passed,
-    score: scalabilityScore,
-    evidence: `Escalabilidad: ${scalabilityScore}/100. Promedio padres: ${avgParentScalability}. Mercado: ${proposal.targetMarket}. Mecanismo: ${proposal.combinedMechanism}`,
-    risks: passed ? [] => ['Mercado limitado', 'Cuellos de botella en mecanismo'],
-    mitigation: passed ? [] : ['Expandir mercado objetivo', 'Automatizar cuellos de botella']
-  };
+      test: 'SCALABILITY',
+      passed,
+      score: scalabilityScore,
+      evidence: `Escalabilidad: ${scalabilityScore}/100. Promedio padres: ${avgParentScalability}. Mercado: ${proposal.targetMarket}. Mecanismo: ${proposal.combinedMechanism}`,
+      risks: passed ? [] : ['Mercado limitado', 'Cuellos de botella en mecanismo'],
+      mitigation: passed ? [] : ['Expandir mercado objetivo', 'Automatizar cuellos de botella']
+    };
 }
 
 /**

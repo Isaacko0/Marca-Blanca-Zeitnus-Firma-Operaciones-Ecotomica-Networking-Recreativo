@@ -2,22 +2,26 @@
 // Consorcio de Transducción Soberana - Federar proyectos afines sin fusionarlos
 
 import type {
-  ALRACState,
   CredoSet,
-  TQLedger,
-  TQAccount,
-  TQTransaction,
-  RevenueLayer,
-  ProductLine,
-  PilotConfig,
   GammaCARMIS,
   TriaxialVerification,
-  SixFieldMethod,
+  TQAccount,
+  TQTransaction,
   LicenseAudit,
   LicenseConflict,
-  RevenueSplit,
-  ALRACGovernance,
+  ALRACState,
+  PilotConfig,
 } from '@core/state/alrac';
+import type {
+  ConversionFactor,
+  ProductFederationEntry,
+  CrossNodePool,
+  LandRegistryEntry,
+  AssemblyMember,
+  AssemblyProposal,
+  CommunityFund,
+  AutonomyMetrics,
+} from '@core/lib/tq';
 
 /**
  * Verificar estabilidad de un credo (αʰ > κ)
@@ -27,11 +31,101 @@ export const verifyCredoStability = (credo: CredoSet): boolean => {
 };
 
 /**
+ * Crear conjunto credeófilo (𝕮) - Capa 0 Amid
+ * Un 𝕮 es una red relacional estable si αʰ = Ω·s > κ
+ */
+export const credoSet = (observer: string, domain: string): CredoSet => ({
+  observer,
+  domain,
+  elements: [],           // Elementos relacionales
+  harmony: 0,             // αʰ = Ω·s
+  criticalThreshold: 1,   // κ
+  stability: false,
+  timestamp: Date.now()
+});
+
+/**
  * Calcular armonía αʰ = Ω · s
  */
 export const calculateHarmony = (oscillation: number, synchrony: number): number => {
   return oscillation * synchrony;
 };
+
+/**
+ * Protocolo γ-CARMIS - Fractura y reconfiguración cuando sobrecarga > κ
+ */
+export const gammaCARMIS = (overload: number, kappa: number): GammaCARMIS => {
+  const triggered = overload > kappa;
+  return {
+    triggered,
+    overload,
+    kappa,
+    reconfigurationProtocol: triggered ? [
+      'Congelar transacciones nuevas (excepto emergencia)',
+      'Convocar asamblea extraordinaria en 24h',
+      'Opciones: reducir carga, expandir capacidad, dividir nodo, federar excedente',
+      'Decisión vinculante (no opcional)'
+    ] : [],
+    deadline: triggered ? Date.now() + 24 * 60 * 60 * 1000 : 0,
+    timestamp: Date.now()
+  };
+};
+
+/**
+ * Verificación Triaxial (mental + simulación + laboratorio) - Estándar validez Amid
+ */
+export const triaxialVerification = (
+  mental: boolean,
+  simulation: boolean,
+  laboratory: boolean
+): TriaxialVerification => ({
+  mental,
+  simulation,
+  laboratory,
+  passed: mental && simulation && laboratory,
+  timestamp: Date.now()
+});
+
+/**
+ * Analizador Ecróxico Integrado (AEI) - Diagnostica ideas
+ */
+export const AEI = (idea: string): {
+  analysis: string;
+  structuralIntegrity: number;  // 0-1
+  evasionDetected: boolean;
+  recommendations: string[];
+} => ({
+  analysis: `AEI analysis for: ${idea}`,
+  structuralIntegrity: 0.5,
+  evasionDetected: false,
+  recommendations: ['Verificar con triaxial', 'Registrar huella y rastro']
+});
+
+/**
+ * 20 Límites Cognitivos (Amid) - Array tipado
+ */
+export const cognitiveLimits = (): string[] => [
+  'Límite 1: No se puede observar sin cambiar lo observado',
+  'Límite 2: Todo modelo es incompleto (PI)',
+  'Límite 3: La certeza es evasión',
+  'Límite 4: El lenguaje estructura la percepción',
+  'Límite 5: La memoria reconstruye, no recupera',
+  'Límite 6: La atención es recurso finito',
+  'Límite 7: Los sesgos son estructurales, no accidentales',
+  'Límite 8: La causalidad narrativa es falaz',
+  'Límite 9: La identidad es proceso, no cosa',
+  'Límite 10: El tiempo subjetivo ≠ tiempo físico',
+  'Límite 11: La racionalidad es bounded',
+  'Límite 12: El consenso no implica verdad',
+  'Límite 13: La complejidad excede cognición individual',
+  'Límite 14: Los mapas no son el territorio',
+  'Límite 15: La emergencia no es reducible',
+  'Límite 16: La coherencia ≠ correspondencia',
+  'Límite 17: La evasión mascara incapacidad',
+  'Límite 18: La verificación triaxial es mínima',
+  'Límite 19: La separación legítima requiere reconocimiento',
+  'Límite 20: El cero originario no es elegible'
+];
 
 /**
  * Detectar sobrecarga y disparar γ-CARMIS
@@ -46,58 +140,6 @@ export const detectOverloadAndTriggerCARMIS = (
     protocol: overloaded ? gammaCARMIS.reconfigurationProtocol : [],
   };
 };
-
-/**
- * Verificación Triaxial (mental + simulación + laboratorio)
- */
-export const runTriaxialVerification = (
-  mental: boolean,
-  simulation: boolean,
-  laboratory: boolean
-): TriaxialVerification => {
-  return {
-    mental,
-    simulation,
-    laboratory,
-    passed: mental && simulation && laboratory,
-  };
-};
-
-/**
- * Método de seis campos (Yoka) - registro unificado
- */
-export const createSixFieldRecord = (fields: SixFieldMethod): SixFieldMethod => {
-  return { ...fields };
-};
-
-/**
- * Registrar huella (ocurrió) vs rastro (comprendido + integrado)
- */
-export const registerHuella = (event: string, understanding: string): { huella: string; rastro: string } => {
-  return {
-    huella: event,
-    rastro: understanding,
-  };
-};
-
-/**
- * Convergencia sin autoridad - múltiples operadores llegan al mismo patrón
- */
-export const checkConvergence = (operators: string[], pattern: string): boolean => {
-  // En implementación real: comparar patrones estructurales reduciendo evasión
-  return operators.length > 1;
-};
-
-/**
- * Separación legítima sin pelea
- */
-export const legitimateSeparation = (directions: string[]): boolean => {
-  return directions.length > 1 && directions[0] !== directions[1];
-};
-
-/**
- * Crear cuenta TQ con límites simétricos ±500
- */
 export const createTQAccount = (id: string, owner: string): TQAccount => ({
   id,
   owner,

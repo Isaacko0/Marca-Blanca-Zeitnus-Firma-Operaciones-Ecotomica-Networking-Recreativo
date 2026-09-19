@@ -204,9 +204,9 @@ export class SubsetSumCaaSWorkerImpl implements SubsetSumCaaSWorker {
     
     // Propiedad clausura polinomial
     const algorithms: Algorithm[] = [
-      { name: 'criterion1', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({})})})})})})}) }) }) }) },
-      { name: 'criterion2', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial', compose: () => ({}) }) }
-    ];
+          { name: 'criterion1', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial' }) },
+          { name: 'criterion2', complexity: 'polynomial', compose: () => ({ name: '', complexity: 'polynomial' }) }
+        ];
     const polyTimeClosure = verifyPolynomialClosure(algorithms);
     
     const runtime = performance.now() - startTime;
