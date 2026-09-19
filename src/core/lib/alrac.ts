@@ -66,6 +66,7 @@ export const gammaCARMIS = (overload: number, kappa: number): GammaCARMIS => {
       'Opciones: reducir carga, expandir capacidad, dividir nodo, federar excedente',
       'Decisión vinculante (no opcional)'
     ] : [],
+    mandatoryBeforeRupture: true,
     deadline: triggered ? Date.now() + 24 * 60 * 60 * 1000 : 0,
     timestamp: Date.now()
   };
