@@ -227,20 +227,34 @@ gaps = []
 - 3 SK (1 por capability crítica)
 - **Total estimado: 23 briefs nuevos**
 
-### **NUEVA PREDICCIÓN: Libro Ecoaldeas Federadas v1.0 (LEF)**
-**Probabilidad: 100%** — Ya asimilado como spec funcional, genera 13 specs P0/P1:
-- LEF-energy-catalog, LEF-symmetric-limits, LEF-exchange-guard, LEF-conversion-factor
-- LEF-product-federation, LEF-cross-node-pools, LEF-governance-3levels
-- LEF-land-tenure, LEF-tax-fund, LEF-node-architecture, LEF-digital-sovereignty, LEF-progressive-autonomy
+### **NUEVA PREDICCIÓN: Solarpunk Utopia (Hardware + Comunidad — Primer Caso Real)**
+**Probabilidad: 100%** — Ya asimilado como caso de uso real hardware+comunidad que valida PVL/ALRAC:
+- meshProtocol (DTN + NATS), offlineFirstStore (Zustand+IndexedDB), dtnBundle (store-and-forward), meshNode (Pi AP + Android bridge)
+- valueflowsREA (REA + TQ=1kWh), energyAccounting (kWh medidos → TQ), permaculturePlanner (AUT vectors), skillCredential (DID/VC)
+- localAIAdapter (Ollama/MLX + alraicFilter + triaxial), mcpSolarpunkTools, nodeKit, pilotDeployment
+**Impacto**: +13 módulos SOLARPUNK_CORE, workstream nuevo, valida PVL/ALRAC en territorio real, métricas hardware (mesh uptime, DTN delivery, TQ accuracy, AI triaxial, federation sync)
 
-**Impacto**: +13 specs P0/P1, workstream LEF_SPECS nuevo, desbloquea autonomía completa
+### **NUEVA PREDICCIÓN: Sistema Alráico Modo Compacto 3**
+**Probabilidad: 100%** — Ya asimilado como epistemología operativa, genera 24 conceptos core para pvl-core:
+- crenSet, gammaCarmis, cognitiveLimits, triaxialVerification, alraicFilter
+- logicByInherence, needDesire, economicBlackHole, hollowConcepts
+- temporalCubes, ecroxAnalyzer, socialMantle, entropy
+- cognoscibleSpace, credoSet, logisticTime, resonance, reconfigCycle
+- degenerativeHeritage, pathologicalCognitiveEase, dysfunctionalTolerance
+- ecroxState, massiveOpacity, personalSynchronicity, relationalDensity, contextualVolatility
+
+**Impacto**: +24 módulos pvl-core, workstream ALRAICO_CORE nuevo, desbloquea verificación triaxial + γ-CARMIS distribuido + epistemología unificada
 
 ### Recomendación Estratégica Actualizada
 - Priorizar Copiosis + Conway (desbloquean Autómata + GAIA_INTEGRATION)
 - **Ejecutar LEF_SPECS workstream en paralelo** (13 specs, 26 días esfuerzo, valor 90+)
-- Crear skill `lef-assimilation` antes de empezar specs
-- Parallelizar: energy-catalog + symmetric-limits + exchange-guard (P0 paralelo)
-- Parallelizar: conversion-factor + product-federation + cross-node-pools (P1 paralelo)
+- **Ejecutar ALRAICO_CORE workstream en paralelo** (24 módulos, 35 días esfuerzo, valor 95+)
+- Crear skill `lef-assimilation` antes de empezar specs LEF
+- Crear skill `alraico-core` antes de empezar módulos pvl-core
+- Parallelizar LEF: energy-catalog + symmetric-limits + exchange-guard (P0 paralelo)
+- Parallelizar LEF: conversion-factor + product-federation + cross-node-pools (P1 paralelo)
+- Parallelizar ALRAICO: credoSet + cognoscible + hollowConcept (P0 paralelo, base de todo)
+- Parallelizar ALRAICO: gammaCarmis + cognitiveLimits + triaxialVerification (P0 paralelo, motor reconfiguración)
 ```
 
 ---

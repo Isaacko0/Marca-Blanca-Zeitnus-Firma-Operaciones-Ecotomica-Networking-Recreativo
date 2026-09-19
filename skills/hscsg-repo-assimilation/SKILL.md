@@ -105,6 +105,11 @@ done                        # TODAS deben ser 200
 - CRLF warnings en git commit: inofensivos en Windows.
 - No duplicar: si el usuario reitera un repo ya asimilado, confirmar y no rehacer (usar clarify si hay duda).
 - Sin credenciales: nunca incluir API keys/tokens; redactar como [REDACTED].
+- **Principio Anfibio**: al asimilar repos con infra monetizada (Stripe/USD/analytics/ad-networks), NO extirpar la lógica de cálculo — hacer el módulo ANFIBIO. Misma lógica opera en modo 'postmonetario' (ZNU/CaaS, default offline) o 'conectado' (USD/USDC vía oráculo priceParity, Nivel 3 ReFi); el render decide la etiqueta, la lógica es agnóstica a la unidad. Aplicado en DeseOS/Contento.pro (lib/valueDual.ts + nodeMode/priceParity en store + pantalla /agencia). Extirpar solo la INFRA ajena, conservar la LÓGICA.
+- **Gate de docs sensibles**: CHANGELOG.md, *_backup.md, *_integration.md, package-lock.json, .env*, *.key — requieren consentimiento explícito del usuario antes de push. Implementado en skill `repo-assimilation` (Step 4 auto-commit con detección y prompt).
+- **Asimilación en paralelo**: múltiples repos se clonan en lote (bucle git clone --depth 1), se documentan en lote (backup + integration × N), se crean módulos en lote (state + lib + screen × N), luego se wirean en store/App/Aside/i18n de una sola pasada. Reduce overhead de context-switching.
+- **Análisis de incompatibilidad via Alráico**: antes de integrar dos runtimes distintos (ej. Zeitnus TS + Rif Go), ejecutar diagnóstico PI: mapear C_zeitnus ∩ C_rif ≈ ∅ → incapacidades disjuntas. No forzar merge de código; construir `pvl-core` (tipos compartidos) + `federationBridge` (protocolo) + γ-CARMIS distribuido. Verificación triaxial obligatoria en 3 ejes (Mental/Sim/Lab) antes de laboratorio compartido.
+- **Especificación viva (PVL) como contrato**: el Libro Ecoaldeas Federadas v1.0 + Sistema Alráico = Spec PVL v1.0. Los runtimes (Zeitnus, Rif, futuros) son implementaciones fieles. `pvl verify --suite=all` + consenso triaxial = gate para divergencia.
 
 ## Commitear y pushear (Fase 3 GitHub)
 El repo YA está en GitHub (origin configurado). Después de verificar:
@@ -126,3 +131,77 @@ Para añadir funcionalidad interna (toggles de tema, banners, reveal de datos): 
 - Reportar siempre: backup creado (ruta+size), rutas verificadas (200), tsc/build OK, isomorfismo con Leyes.
 - Ofrecer siguiente paso (otro repo / documentar / commitear).
 - Creatividad: el usuario valora ir más allá de lo literal y sumar valor coherente con la filosofía del proyecto (no solo lo mínimo). Al pedir funcionalizar algo, agradece iniciativa extra (ej. Modo Lucidez: pidió el botón de luna y se entregó tema diurno + reveal de datos crudos + banner de Ley III).
+
+---
+
+## Pendientes de integración completa (Zeitnus — asimilación 7 bots Polymarket + Jev Ultrafast + Libro Ecoaldeas Federadas + Sistema Alráico)
+
+Los módulos están creados (state + lib + screen + docs) pero **faltan conectar en store/App/Aside/i18n** y verificar build:
+
+### 1. Store wiring (`src/core/state/store.ts`)
+- Import types: `CloddsState`, `PMTState`, `PolyWeatherState`, `LPToolState`, `PolybotState`, `PMBotState`, `PolyDataState`, `BrowserAgentState`
+- Import libs: `clodds`, `pmt`, `polyweather`, `lptool`, `polybot`, `pmbot`, `polydata`, `browserAgent`
+- Add 8 state slices to `AppState` interface + initial state + `resetAll()` + `partialize()`
+- Add 40+ actions to `AppState` interface + implementations
+- Add 8 lib imports
+
+### 2. App routes (`src/app/App.tsx`)
+- 8 imports: `Clodds`, `PMT`, `PolyWeather`, `LPTool`, `Polybot`, `PMBot`, `PolyData`, `BrowserAgent`
+- 8 routes: `/clodds`, `/pmt`, `/polyweather`, `/lptool`, `/polybot`, `/pmbot`, `/polydata`, `/browser-agent`
+
+### 3. Aside nav (`src/app/layout/Aside.tsx`)
+- 8 lucide icons: `Bot`, `Cpu`, `Cloud`, `Droplets`, `Database`, `Brain`, `Download`, `Globe`
+- 8 nav items in `NAV_ITEMS` array with keys, icons, colors, paths
+
+### 4. i18n (`src/core/lib/i18n.ts`)
+- 8 nav keys: `nav.clodds`, `nav.pmt`, `nav.polyweather`, `nav.lptool`, `nav.polybot`, `nav.pmbot`, `nav.polydata`, `nav.browserAgent`
+
+### 5. LEF Specs (Libro Ecoaldeas Federadas v1.0 — 13 specs P0/P1)
+- `energyCatalog.ts` + `energy.ts` — ICE/Ecoinvent factors, pricing engine (1 TQ = 1 kWh)
+- `symmetricLimits.ts` — ±500 TQ + confianza progresiva (500→1000→5000→∞)
+- `exchangeGuard.ts` — Prohibición TQ≠Fiat/Cripto + auditoría expulsión
+- `conversionFactor.ts` — FC = canasta_TQ(500)/canasta_Fiat + DEX import/export
+- `productFederation.ts` — Federación Productos + Filtro Soberano (ALL ingredients approved)
+- `crossNodePools.ts` — Piscinas Global multilateral + Bilaterales + aislamiento riesgo
+- `governance.ts` — 3 niveles (General/Org/Dept) + voto Ed25519 + umbrales configurables
+- `land.ts` — CLT / Usufructo / Coop + propiedad frutos trabajo
+- `taxEngine.ts` — Impuestos progresivos + Fondo Comunitario (solo Orgs/Depts)
+- `nodeArchitecture.ts` — mTLS + Gossip + YugabyteDB + 3 modos
+- `digitalSovereignty.ts` — Mesh/VoIP/Self-hosted + Forward Secrecy (ECDH+AES-256-GCM)
+- `autonomy.ts` — Cerrar escotilla DEX al internalizar capacidades
+
+### 6. ALRAICO Specs (Sistema Alráico Modo Compacto 3 — 24 módulos pvl-core P0/P1)
+- `credoSet.ts` + `credo.go` — 𝕮 core, αʰ=Ω·s, fractura, resonancia
+- `cognoscible.ts` + `cognoscible.go` — B/A/C topología, PI, density
+- `hollowConcept.ts` + `hollowConcept.go` — [·] anti-sustancialización
+- `gammaCarmis.ts` + `gammaCarmis.go` — ΣPᵢ>κ trigger, 7 pasos reconfig
+- `cognitiveLimits.ts` + `cognitiveLimits.go` — L1-L20 + protocolos IA
+- `triaxialVerification.ts` + `triaxial.go` — Mental/Sim/Lab score ≥0.7
+- `alraicFilter.ts` + `filter.go` — 4 pasos interceptación cognitiva
+- `logicByInherence.ts` + `lpi.go` — flujo 7 pasos + anti-regla
+- `needDesire.ts` + `needDesire.go` — 𝕮-Necesidad vs 𝕮-Deseo topológico
+- `economicBlackHole.ts` + `blackhole.go` — β_crit = κ/s·ω acaparamiento
+- `temporalCubes.ts` + `cubes.go` — R-P-T verificación claims
+- `ecroxAnalyzer.ts` + `aei.go` — AEI 4 fases diagnóstico
+- `socialMantle.ts` + `mantle.go` — Macro-ECrox contratos
+- `entropy.ts` + `entropy.go` — Δs = -ΣΔk - ∫δ_disp dσ
+- `logisticTime.ts` + `logisticTime.go` — n𝕿[θ] pertem clock
+- `resonance.ts` + `resonance.go` — αʰ₁₂ > αʰ₁+αʰ₂ sinérgico
+- `reconfigCycle.ts` + `reconfig.go` — loop 7 fases
+- `degenerativeHeritage.ts` + `hd.go` — HD detección
+- `pathologicalCognitiveEase.ts` + `fcp.go` — FCP salto B→D
+- `dysfunctionalTolerance.ts` + `tad.go` — TAD latencia
+- `ecrox.ts` + `ecrox.go` — estado momentáneo pertem
+- `massiveOpacity.ts` + `opacity.go` — O métrica incertidumbre
+- `personalSynchronicity.ts` + `gaw.go` — 𝔾𝔲𝔞𝔴 coherencia
+- `relationalDensity.ts` + `density.go` — ρ acoplamiento
+- `contextualVolatility.ts` + `volatility.go` — σ riesgo
+
+### 7. Verificación
+```bash
+cd /c/Users/Isaacko0/Zeitnus_local
+npx tsc --noEmit            # 0 errores
+npm run build               # build OK
+npm run preview &           # background
+curl 200 en 8+13+24 nuevas rutas
+```
