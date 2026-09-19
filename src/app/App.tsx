@@ -54,6 +54,7 @@ import { Avatar } from '@app/screens/Avatar'
 import { AgentCanvas } from '@app/screens/AgentCanvas'
 import { Video } from '@app/screens/Video'
 import { Highlight } from '@app/screens/Highlight'
+import { EV } from '@app/screens/EV'
 
 
 export function App() {
@@ -111,11 +112,12 @@ export function App() {
         <Route path="simulador" element={<Simulador />} />
       </Route>
         <Route path="story" element={<Story />} />
-        <Route path="visual" element={<Visual />} />
-        <Route path="avatar" element={<Avatar />} />
-        <Route path="canvas" element={<AgentCanvas />} />
-        <Route path="video" element={<Video />} />
-        <Route path="highlight" element={<Highlight />} />
+              <Route path="visual" element={<Visual />} />
+              <Route path="avatar" element={<Avatar />} />
+              <Route path="canvas" element={<AgentCanvas />} />
+              <Route path="video" element={<Video />} />
+              <Route path="highlight" element={<Highlight />} />
+              <Route path="ev" element={<EV />} />
             <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

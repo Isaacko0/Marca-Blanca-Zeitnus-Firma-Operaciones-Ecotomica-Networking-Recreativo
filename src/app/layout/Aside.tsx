@@ -63,8 +63,9 @@ const NAV_ITEMS = [
   { key: 'avatar', navKey: 'nav.avatar', icon: User, color: 'text-cyan-400', path: '/avatar' },
   { key: 'canvas', navKey: 'nav.canvas', icon: Bot, color: 'text-fuchsia-400', path: '/canvas' },
   { key: 'video', navKey: 'nav.video', icon: Film, color: 'text-rose-400', path: '/video' },
-  { key: 'highlight', navKey: 'nav.highlight', icon: Scissors, color: 'text-orange-400', path: '/highlight' },
-] as const
+  { key: 'highligt', navKey: 'nav.highlight', icon: Scissors, color: 'text-orange-400', path: '/highlight' },
+    { key: 'ev', navKey: 'nav.ev', icon: Scale, color: 'text-emerald-400', path: '/ev' },
+  ] as const
 
 interface AsideProps {
   collapsed: boolean

@@ -46,6 +46,7 @@ import type { DelegationState, DomainKey } from '@core/state/delegation'
 import type { CapabilityState, CapabilityKey } from '@core/state/capacidades'
 import type { EducationState } from '@core/state/education'
 import type { EducaasState } from '@core/state/educaas'
+import type { EVState } from '@core/state/ev'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -96,6 +97,9 @@ import { makeVecinalState, raisePropuesta as vRaise, castCommit as vCast, openRe
 import type { NostrRelayState } from '@core/state/nostrRelay'
 import { makeNostrRelayState, publishLocal as nrPublish, setRelayConfig as nrSetCfg, connect as nrConnect, disconnect as nrDisconnect } from '@core/lib/nostrRelay'
 import type { AgentMeshState } from '@core/state/agentMesh'
+import type { EVState } from '@core/state/ev'
+import { makeEVState, getEVState, updateEVState, resetEVState } from '@core/lib/ev'
+import { useEV } from '@core/state/hooks/ev'
 import { makeAgentMeshState, spawnAgent as amSpawn, shareCompute as amShare, requestCompute as amRequest, remoteResurrect as amResurrect } from '@core/lib/agentMesh'
 import type { NooaState } from '@core/state/nooa'
 import { makeNooaState, spawnNooaAgent as nooaSpawn, addMethod as nooaAddMethod, hide as nooaHide, extendLib as nooaExtend } from '@core/state/nooa'
@@ -172,16 +176,19 @@ export interface AppState {
   setSearch: (s: string) => void
 
   // ===== HSCSG v15 domain state =====
-  nodeName: string
-  base: BaseMaterial
-  cac: CACVectors
-  sensors: SensorReading[]
-  members: Member[]
-  flows: ValueFlow[]
-  talents: Talent[]
-  plans: PlanCycle[]
-  pvsos: PVSO[]
-  znu: ZNUState
+    nodeName: string
+    base: BaseMaterial
+    cac: CACVectors
+    sensors: SensorReading[]
+    members: Member[]
+    flows: ValueFlow[]
+    talents: Talent[]
+    plans: PlanCycle[]
+    pvsos: PVSO[]
+    znu: ZNUState
+
+    // ===== EV (E→V pattern) =====
+    ev: EVState
 
   // ===== Orquestación (asimilado de Paperclip) =====
   agents: AgentNode[]
@@ -821,25 +828,27 @@ export const useAppStore = create<AppState>()(
       gaiaunion: makeGaiaUnionState(),
       // Power Delegation (AuroraGov + Symbiosky)
       delegation: makeDelegationState(),
-      // Capabilities (CompAI CRM)
-      capacidades: makeCapabilityState(),
-      // Educación postmonetaria (Didacta) + Educaas anfibio
-      education: makeEducationState(),
-      educaas: makeEducaasState(),
-      // Urbanika asimilado
-      sovereignCredit: makeSovereignCreditState(),
-      regen: makeRegenState(),
-      vecinal: makeVecinalState(),
-      // block/buzz asimilado
-      nostrRelay: makeNostrRelayState(),
-      agentMesh: makeAgentMeshState(),
-      nooa: makeNooaState(),
-      content: makeContentState(),
-      usdglo: makeUsdgloState(),
-      // NEAR asimilado
-      proofOfResponse: makeProofOfResponseState(),
-      // Conector de flujo
-      stageSeeds: {},
+            // Capabilities (CompAI CRM)
+            capacidades: makeCapabilityState(),
+            // Educación postmonetaria (Didacta) + Educaas anfibio
+            education: makeEducationState(),
+            educaas: makeEducaasState(),
+            // Urbanika asimilado
+            sovereignCredit: makeSovereignCreditState(),
+            regen: makeRegenState(),
+            vecinal: makeVecinalState(),
+            // block/buzz asimilado
+            nostrRelay: makeNostrRelayState(),
+            agentMesh: makeAgentMeshState(),
+            nooa: makeNooaState(),
+            content: makeContentState(),
+            usdglo: makeUsdgloState(),
+            // NEAR asimilado
+            proofOfResponse: makeProofOfResponseState(),
+            // E→V (asimilado de E→V Documento Maestro v1.0)
+            ev: makeEVState(),
+            // Conector de flujo
+            stageSeeds: {},
 
       setNodeName: (n: string) => set({ nodeName: n }),
       updateBase: (u) => set((st) => ({ base: { ...st.base, ...u } })),
@@ -1704,12 +1713,13 @@ export const useAppStore = create<AppState>()(
         symbiosky: st.symbiosky,
         democracia: st.democracia,
         aprender: st.aprender,
-        oraculo: st.oraculo,
-        gaiaunion: st.gaiaunion,
-        stageSeeds: st.stageSeeds,
-        lang: st.lang,
-        lucidez: st.lucidez,
-      }),
+                oraculo: st.oraculo,
+                gaiaunion: st.gaiaunion,
+                stageSeeds: st.stageSeeds,
+                lang: st.lang,
+                lucidez: st.lucidez,
+                ev: st.ev,
+              }),
     },
   ),
 )

@@ -68,8 +68,9 @@ export const I18N: Dict = {
   'nav.vecinal': { es: 'Vecinal', en: 'Neighborhood', pt: 'Vecinal' },
   'nav.nostr': { es: 'Nostr', en: 'Nostr', pt: 'Nostr' },
   'nav.agentes': { es: 'Agentes', en: 'Agents', pt: 'Agentes' },
+    'nav.ev': { es: 'E→V · Energía→Eficiencia', en: 'E→V · Energy→Efficiency', pt: 'E→V · Energia→Eficiência' },
 
-  // Títulos de módulos (h1)
+    // Títulos de módulos (h1)
   'title.base': { es: 'Base Material', en: 'Material Base', pt: 'Base Material' },
   'title.lucidez': { es: 'Lucidez', en: 'Lucidity', pt: 'Lucidez' },
   'title.colectivo': { es: 'Colectivo', en: 'Collective', pt: 'Coletivo' },
