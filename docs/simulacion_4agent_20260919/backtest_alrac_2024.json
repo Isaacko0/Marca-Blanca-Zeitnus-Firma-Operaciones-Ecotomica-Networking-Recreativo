@@ -1,0 +1,213 @@
+{
+  "metadata": {
+    "simulacion": "ALRAC Backtest Sintético",
+    "fecha_ejecucion": "2026-09-19T19:19:22.385959",
+    "periodo": "2024-01 a 2024-12",
+    "meses_simulados": 12,
+    "split": {
+      "train": "2020-2023 (diseño estrategia)",
+      "test_oos": "2024-YTD (una sola vez al final)"
+    },
+    "version_skill": "alrac-backtest v1.0.0"
+  },
+  "metricas_estandar": {
+    "retorno_total_estrategia_pct": 17.4,
+    "retorno_total_baseline_pct": 9.6,
+    "exceso_retorno_total_pct": 7.8,
+    "sharpe_ratio": 5.588,
+    "max_drawdown_pct": 0.0,
+    "win_rate_pct": 100.0,
+    "volatilidad_mensual_pct": 0.12
+  },
+  "metricas_regenerativas": {
+    "autonomia_nodal_AUT_final": 0.8875,
+    "capacidad_soberania_CDS_final": 0.8302,
+    "indice_ZNU_final": 0.7395,
+    "regeneracion_neta_acumulada": 2.624,
+    "coherencia_alpha_h_final": 0.7905,
+    "coherencia_sobre_kappa_final": 0.2905,
+    "znu_circulado_produccion": 1.7056,
+    "znu_acumulado": 0.9184,
+    "ratio_circulacion_acumulacion": 1.86,
+    "capacidad_ociosa_movilizada_CaaS_AUT_pct": 69.2,
+    "huella_energetica_neta_kwh": 7974.0,
+    "energia_producida_kwh": 8874.0,
+    "energia_consumida_kwh": 900.0,
+    "autonomia_nodal_decisiones_locales_pct": 88.8
+  },
+  "costos_reales_aplicados": {
+    "comisiones_slippage_spread_pct": 0.0015,
+    "costo_energetico_transaccion_kwh": 0.045,
+    "costo_oportunidad_capital_ocioso_pct": 0.008
+  },
+  "validaciones_criticas": {
+    "no_forward_looking_bias": true,
+    "supervivencia_universo_incluye_fallidos": true,
+    "metricas_regenerativas_junto_estandar": true,
+    "coherencia_alpha_h_sobre_kappa_todos_meses": true,
+    "test_oos_unica_vez": true
+  },
+  "serie_mensual": [
+    {
+      "mes": "2024-01",
+      "autonomia_AUT": 0.6478,
+      "capacidad_soberania_CDS": 0.5776,
+      "indice_ZNU": 0.6687,
+      "regeneracion_neta_acumulada": 0.1875,
+      "regeneracion_neta_mensual": 0.1875,
+      "coherencia_alpha_h": 0.7178,
+      "coherencia_sobre_kappa": 0.2178,
+      "retorno_estrategia": 0.0127,
+      "retorno_baseline": 0.0079,
+      "exceso_retorno": 0.0048
+    },
+    {
+      "mes": "2024-01",
+      "autonomia_AUT": 0.6674,
+      "capacidad_soberania_CDS": 0.5981,
+      "indice_ZNU": 0.6274,
+      "regeneracion_neta_acumulada": 0.3766,
+      "regeneracion_neta_mensual": 0.189,
+      "coherencia_alpha_h": 0.7254,
+      "coherencia_sobre_kappa": 0.2254,
+      "retorno_estrategia": 0.0128,
+      "retorno_baseline": 0.0079,
+      "exceso_retorno": 0.0049
+    },
+    {
+      "mes": "2024-03",
+      "autonomia_AUT": 0.6883,
+      "capacidad_soberania_CDS": 0.6202,
+      "indice_ZNU": 0.638,
+      "regeneracion_neta_acumulada": 0.5721,
+      "regeneracion_neta_mensual": 0.1956,
+      "coherencia_alpha_h": 0.7343,
+      "coherencia_sobre_kappa": 0.2343,
+      "retorno_estrategia": 0.0132,
+      "retorno_baseline": 0.0079,
+      "exceso_retorno": 0.0053
+    },
+    {
+      "mes": "2024-03",
+      "autonomia_AUT": 0.7205,
+      "capacidad_soberania_CDS": 0.6546,
+      "indice_ZNU": 0.6553,
+      "regeneracion_neta_acumulada": 0.7829,
+      "regeneracion_neta_mensual": 0.2107,
+      "coherencia_alpha_h": 0.7335,
+      "coherencia_sobre_kappa": 0.2335,
+      "retorno_estrategia": 0.014,
+      "retorno_baseline": 0.0083,
+      "exceso_retorno": 0.0057
+    },
+    {
+      "mes": "2024-04",
+      "autonomia_AUT": 0.7281,
+      "capacidad_soberania_CDS": 0.6619,
+      "indice_ZNU": 0.7089,
+      "regeneracion_neta_acumulada": 0.9941,
+      "regeneracion_neta_mensual": 0.2112,
+      "coherencia_alpha_h": 0.7501,
+      "coherencia_sobre_kappa": 0.2501,
+      "retorno_estrategia": 0.0141,
+      "retorno_baseline": 0.0079,
+      "exceso_retorno": 0.0062
+    },
+    {
+      "mes": "2024-05",
+      "autonomia_AUT": 0.7275,
+      "capacidad_soberania_CDS": 0.6603,
+      "indice_ZNU": 0.6555,
+      "regeneracion_neta_acumulada": 1.1915,
+      "regeneracion_neta_mensual": 0.1974,
+      "coherencia_alpha_h": 0.7375,
+      "coherencia_sobre_kappa": 0.2375,
+      "retorno_estrategia": 0.0134,
+      "retorno_baseline": 0.0073,
+      "exceso_retorno": 0.0061
+    },
+    {
+      "mes": "2024-06",
+      "autonomia_AUT": 0.775,
+      "capacidad_soberania_CDS": 0.7115,
+      "indice_ZNU": 0.682,
+      "regeneracion_neta_acumulada": 1.4158,
+      "regeneracion_neta_mensual": 0.2244,
+      "coherencia_alpha_h": 0.763,
+      "coherencia_sobre_kappa": 0.263,
+      "retorno_estrategia": 0.0148,
+      "retorno_baseline": 0.0081,
+      "exceso_retorno": 0.0067
+    },
+    {
+      "mes": "2024-07",
+      "autonomia_AUT": 0.786,
+      "capacidad_soberania_CDS": 0.7226,
+      "indice_ZNU": 0.6866,
+      "regeneracion_neta_acumulada": 1.639,
+      "regeneracion_neta_mensual": 0.2231,
+      "coherencia_alpha_h": 0.772,
+      "coherencia_sobre_kappa": 0.272,
+      "retorno_estrategia": 0.0148,
+      "retorno_baseline": 0.0079,
+      "exceso_retorno": 0.007
+    },
+    {
+      "mes": "2024-08",
+      "autonomia_AUT": 0.8067,
+      "capacidad_soberania_CDS": 0.7444,
+      "indice_ZNU": 0.748,
+      "regeneracion_neta_acumulada": 1.8726,
+      "regeneracion_neta_mensual": 0.2336,
+      "coherencia_alpha_h": 0.7807,
+      "coherencia_sobre_kappa": 0.2807,
+      "retorno_estrategia": 0.0154,
+      "retorno_baseline": 0.0079,
+      "exceso_retorno": 0.0075
+    },
+    {
+      "mes": "2024-09",
+      "autonomia_AUT": 0.8317,
+      "capacidad_soberania_CDS": 0.7709,
+      "indice_ZNU": 0.71,
+      "regeneracion_neta_acumulada": 2.1121,
+      "regeneracion_neta_mensual": 0.2396,
+      "coherencia_alpha_h": 0.7903,
+      "coherencia_sobre_kappa": 0.2903,
+      "retorno_estrategia": 0.0157,
+      "retorno_baseline": 0.0081,
+      "exceso_retorno": 0.0077
+    },
+    {
+      "mes": "2024-10",
+      "autonomia_AUT": 0.8535,
+      "capacidad_soberania_CDS": 0.7938,
+      "indice_ZNU": 0.7211,
+      "regeneracion_neta_acumulada": 2.3591,
+      "regeneracion_neta_mensual": 0.2469,
+      "coherencia_alpha_h": 0.7965,
+      "coherencia_sobre_kappa": 0.2965,
+      "retorno_estrategia": 0.0161,
+      "retorno_baseline": 0.0081,
+      "exceso_retorno": 0.008
+    },
+    {
+      "mes": "2024-11",
+      "autonomia_AUT": 0.8875,
+      "capacidad_soberania_CDS": 0.8302,
+      "indice_ZNU": 0.7395,
+      "regeneracion_neta_acumulada": 2.624,
+      "regeneracion_neta_mensual": 0.2649,
+      "coherencia_alpha_h": 0.7905,
+      "coherencia_sobre_kappa": 0.2905,
+      "retorno_estrategia": 0.017,
+      "retorno_baseline": 0.0085,
+      "exceso_retorno": 0.0084
+    }
+  ],
+  "comparativa_baseline": {
+    "estrategia_supera_baseline": true,
+    "diferencia_sharpe": 4.738,
+    "diferencia_max_dd": -12.0
+  }
+}

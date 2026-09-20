@@ -1,0 +1,39 @@
+{
+  "agent": "@alrac-strategy",
+  "timestamp": "2026-09-19T00:00:00-06:00",
+  "simulation": true,
+  "status": "HIPOTÉTICO - γ-CARMIS ACTIVO",
+  "inputs": {
+    "hypothesis": "Rotación mensual excedentes ZNU→producción (flujos CaaS persiguen rendimiento trimestral)",
+    "dataset": "alrac-rotacion-znu-produccion-2026-09-19.json (simulated)"
+  },
+  "outputs": {
+    "strategy_file": "strategies/alrac-rotacion-znu-produccion-2026-09-19.json",
+    "entry_rules": {
+      "harmony_threshold": "αʰ > κ (κ=1.0)",
+      "znu_surplus_threshold": "Excedente ZNU > 50 ZNU",
+      "idle_capacity": "CaaS/AUT vectors > 20% ociosos",
+      "tq_balance_limits": "TQ saldo dentro ±500"
+    },
+    "exit_rules": {
+      "regenerative_stop_loss": "αʰ < κ por 3 períodos consecutivos",
+      "rebalance_harmony": "Redistribución hacia mayor αʰ",
+      "beta_crit_cap": "Techo β_crit = 0.3 anti-acaparamiento"
+    },
+    "sizing": {
+      "fraction_znu_surplus": "0.25 de excedente disponible",
+      "harmony_weight": "φʰ = (0.95)ᵏ · (1 + αʰ/10)",
+      "max_allocation_per_node": "30% excedente total"
+    },
+    "parameters": {
+      "count": 3,
+      "list": ["κ=1.0", "znu_surplus_threshold=50", "beta_crit=0.3"]
+    }
+  },
+  "warnings": [
+    "SIMULATED STRATEGY - Based on synthetic data",
+    "Parameters not calibrated on real data",
+    "αʰ=0.12 is hardcoded mask, not calculated",
+    "No real RAO verification for entry conditions"
+  ]
+}

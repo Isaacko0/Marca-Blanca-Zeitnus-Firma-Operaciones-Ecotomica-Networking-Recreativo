@@ -1,0 +1,40 @@
+{
+  "agent": "@alrac-data",
+  "timestamp": "2026-09-19T00:00:00-06:00",
+  "simulation": true,
+  "status": "HIPOTÉTICO - γ-CARMIS ACTIVO",
+  "inputs": {
+    "hypothesis": "Rotación mensual excedentes ZNU→producción (flujos CaaS persiguen rendimiento trimestral)",
+    "requested_data": [
+      "Precios electricidad México 2020-2024",
+      "Canasta básica ZNU",
+      "Transacciones TQ piloto"
+    ]
+  },
+  "outputs": {
+    "dataset_file": "data/alrac-rotacion-znu-produccion-2026-09-19.json",
+    "records": 1247,
+    "date_range": "2020-01-01 to 2024-08-31",
+    "fields": [
+      "timestamp",
+      "energy_price_mxn_kwh",
+      "znu_basket_index",
+      "tq_transactions_volume",
+      "tq_balance",
+      "caas_aut_vectors",
+      "rao_metadata"
+    ],
+    "data_quality": {
+      "forward_looking_bias_check": "PASSED (simulated)",
+      "survivorship_bias_check": "INCLUDED failed projects (simulated)",
+      "real_costs_included": "commissions, slippage, spread, opportunity_cost, energy_cost_kwh (simulated)",
+      "rao_provenance": "MOCK - no verified provenance"
+    }
+  },
+  "warnings": [
+    "SIMULATED DATA - Not real measurements",
+    "RAO metadata is MOCK - no verified emitter/permissions/state/revocation",
+    "TQ transactions are estimated, not from pilot",
+    "ZNU basket index is synthetic"
+  ]
+}

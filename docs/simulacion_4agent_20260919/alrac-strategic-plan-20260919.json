@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "hypothesis": "Rotación holónica de excedentes ZNU/CaaS/TQ entre 7 holones Gran Alianza según armonía αʰ y 3 horizontes (H1: TQ reciprocidad, H2: CaaS producción, H3: ZNU reserva), reparto Amid 35/35/30",
+    "date": "2026-09-19",
+    "simulation": true,
+    "dataset_ref": "data/alrac-simulated-dataset-20260919.json",
+    "skill": "alrac-strategy",
+    "version": "1.0.0"
+  },
+  "dataset_simulated": {
+    "holones": [
+      { "id": "holon-1", "name": "Energía Solar Comunitaria", "type": "produccion", "capacidad_ociosa_kwh": 12500, "aut": 0.72, "cds": 0.65, "tq_saldo": 120, "znu_excedente": 8500, "caas_vectores": ["energia", "mantenimiento"], "alpha_h": 0.78 },
+      { "id": "holon-2", "name": "Agricultura Regenerativa", "type": "produccion", "capacidad_ociosa_kwh": 3200, "aut": 0.81, "cds": 0.72, "tq_saldo": -80, "znu_excedente": 12000, "caas_vectores": ["alimentos", "semillas", "compost"], "alpha_h": 0.85 },
+      { "id": "holon-3", "name": "Fabricación Distribuida FABSHIP", "type": "produccion", "capacidad_ociosa_kwh": 8500, "aut": 0.68, "cds": 0.58, "tq_saldo": 200, "znu_excedente": 4200, "caas_vectores": ["herramientas", "repuestos", "prototipos"], "alpha_h": 0.71 },
+      { "id": "holon-4", "name": "Gestión Hídrica y Saneamiento", "type": "infraestructura", "capacidad_ociosa_kwh": 1800, "aut": 0.75, "cds": 0.80, "tq_saldo": 50, "znu_excedente": 6800, "caas_vectores": ["agua", "filtracion", "riego"], "alpha_h": 0.82 },
+      { "id": "holon-5", "name": "Salud Comunitaria y Cuidados", "type": "servicios", "capacidad_ociosa_kwh": 950, "aut": 0.62, "cds": 0.70, "tq_saldo": -40, "znu_excedente": 3100, "caas_vectores": ["cuidados", "medicinas", "formacion"], "alpha_h": 0.69 },
+      { "id": "holon-6", "name": "Educación y Transmisión de Oficios", "type": "servicios", "capacidad_ociosa_kwh": 600, "aut": 0.58, "cds": 0.60, "tq_saldo": 30, "znu_excedente": 2400, "caas_vectores": ["formacion", "aprendizaje", "documentacion"], "alpha_h": 0.64 },
+      { "id": "holon-7", "name": "Gobernanza y Coordinación Alónica", "type": "gobernanza", "capacidad_ociosa_kwh": 300, "aut": 0.55, "cds": 0.85, "tq_saldo": 10, "znu_excedente": 1800, "caas_vectores": ["facilitacion", "mediacion", "registro"], "alpha_h": 0.73 }
+    ],
+    "parametros_mercado": {
+      "precio_kwh_usd": 0.12,
+      "inflacion_local_anual": 0.045,
+      "tasa_interes_znu": 0.025,
+      "canasta_basica_znu_mensual": 450,
+      "umbral_excedente_znu": 2000,
+      "umbral_capacidad_ociosa": 500
+    }
+  },
+  "reglas_entrada": {
+    "descripcion": "Condiciones objetivas para activar flujo entre holones",
+    "reglas": [
+      {
+        "id": "RE-01",
+        "nombre": "Armonía supera umbral crítico Amid",
+        "condicion": "alpha_h > kappa_amid",
+        "kappa_amid": 0.65,
+        "explicacion": "Armonía αʰ = (0.95)^k · (1 + αʰ/10) donde k = ciclos sin fricción Yoka. Solo fluyen recursos si αʰ > 0.65 (Amid ausencia fricción)."
+      },
+      {
+        "id": "RE-02",
+        "nombre": "Excedente ZNU disponible",
+        "condicion": "znu_excedente > umbral_excedente_znu",
+        "umbral_excedente_znu": 2000,
+        "explicacion": "Solo se rota excedente ZNU por encima de canasta básica 3 meses (450*3*1.5 = 2025)."
+      },
+      {
+        "id": "RE-03",
+        "nombre": "Capacidad ociosa CaaS/AUT disponible",
+        "condicion": "capacidad_ociosa_kwh > umbral_capacidad_ociosa",
+        "umbral_capacidad_ociosa": 500,
+        "explicacion": "El holón receptor debe tener capacidad productiva ociosa para absorber el flujo."
+      },
+      {
+        "id": "RE-04",
+        "nombre": "TQ saldo dentro límites ±500",
+        "condicion": "abs(tq_saldo) <= 500",
+        "explicacion": "Ledger TQ ±500: reciprocidad medida en cinta métrica, no especulación. Saldo fuera de rango bloquea flujo."
+      },
+      {
+        "id": "RE-05",
+        "nombre": "Gobernanza holónica 1a1v confirmada",
+        "condicion": "cds >= 0.60",
+        "explicacion": "CDS ≥ 0.60 = 2+ decisiones reales + 50+ eventos ValueFlows. Sin soberanía de decisión, no hay flujo."
+      }
+    ],
+    "parametros_ajustables": 3,
+    "parametros_lista": ["kappa_amid", "umbral_excedente_znu", "umbral_capacidad_ociosa"]
+  },
+  "reglas_salida": {
+    "descripcion": "Condiciones para detener o rebalancear flujos",
+    "reglas": [
+      {
+        "id": "RS-01",
+        "nombre": "Stop-loss regenerativo por armonía",
+        "condicion": "alpha_h < kappa_amid por N_periodos_consecutivos",
+        "N_periodos_consecutivos": 3,
+        "accion": "Cortar flujo entrante, activar γ-CARMIS reconfiguración local",
+        "explicacion": "Si armonía cae bajo κ por 3 ciclos (≈3 meses), el holón entra en sobrecarga. No parche: reorg."
+      },
+      {
+        "id": "RS-02",
+        "nombre": "Rebalanceo por armonía (φʰ)",
+        "condicion": "delta_alpha_h > 0.15 entre holones",
+        "accion": "Redistribuir excedente ZNU/CaaS hacia mayor φʰ",
+        "phi_formula": "φʰ = (0.95)^k · (1 + αʰ/10)",
+        "explicacion": "Flujo persigue armonía marginal. φʰ pondera historial (k ciclos) + armonía actual."
+      },
+      {
+        "id": "RS-03",
+        "nombre": "Techo β_crit anti-acaparamiento",
+        "condicion": "znu_acumulado_holon > beta_crit * znu_total_sistema",
+        "beta_crit": 0.40,
+        "accion": "Redistribución forzosa excedente a holones con αʰ mayor",
+        "explicacion": "Ningún holón acapara >40% ZNU total. Límite duro, no negociable."
+      },
+      {
+        "id": "RS-04",
+        "nombre": "Prohibición cambiaria TQ ↔ Fiat/Cripto",
+        "condicion": "intento_conversion_tq_fiat_detectado",
+        "accion": "Bloqueo inmediato + auditoría RAO",
+        "explicacion": "TQ es reciprocidad (cinta métrica), NO moneda. Arquitectura, no buena voluntad. Violación = expulsión holón."
+      }
+    ]
+  },
+  "sizing": {
+    "descripcion": "Cálculo de monto por flujo activado",
+    "formula": "monto_flujo = min(excedente_znu_disponible * fraccion_excedente, capacidad_ociosa_receptora * precio_kwh) * φʰ_receptor / Σφʰ_candidatos",
+    "componentes": [
+      {
+        "nombre": "fraccion_excedente",
+        "valor": 0.30,
+        "explicacion": "Máx 30% del excedente ZNU por ciclo (conserva reserva 70%)."
+      },
+      {
+        "nombre": "φʰ (ponderación armonía)",
+        "formula": "(0.95)^k * (1 + alpha_h/10)",
+        "explicacion": "Decay 5% por ciclo sin fricción + bonus armonía actual. Normalizado entre candidatos."
+      },
+      {
+        "nombre": "reparto_amid_horizontes",
+        "H1_TQ_corto": 0.35,
+        "H2_CaaS_medio": 0.35,
+        "H3_ZNU_largo": 0.30,
+        "explicacion": "35% flujo inmediato reciprocidad TQ, 35% capacidad productiva CaaS, 30% reserva ZNU indexada canasta."
+      }
+    ],
+    "ejemplo_calculo": {
+      "holon_origen": "holon-2 (Agricultura, αʰ=0.85, ZNU_excedente=12000)",
+      "holon_destino": "holon-3 (FABSHIP, αʰ=0.71, cap_ociosa=8500 kWh)",
+      "k_origen": 4,
+      "k_destino": 2,
+      "phi_origen": "0.95^4 * (1 + 0.85/10) = 0.814 * 1.085 = 0.883",
+      "phi_destino": "0.95^2 * (1 + 0.71/10) = 0.902 * 1.071 = 0.966",
+      "excedente_disponible": "12000 - 2000 = 10000",
+      "fraccion": "10000 * 0.30 = 3000",
+      "capacidad_receptora_usd": "8500 * 0.12 = 1020",
+      "monto_base": "min(3000, 1020) = 1020 ZNU",
+      "ponderacion": "φʰ_destino / (φʰ_destino + φʰ_otros_candidatos) = 0.966 / (0.966+0.883+...) ≈ 0.42",
+      "monto_final_H1_TQ": "1020 * 0.42 * 0.35 = 150 ZNU",
+      "monto_final_H2_CaaS": "1020 * 0.42 * 0.35 = 150 ZNU",
+      "monto_final_H3_ZNU": "1020 * 0.42 * 0.30 = 129 ZNU"
+    }
+  },
+  "horizontes": {
+    "H1_corto_TQ": {
+      "plazo": "0-3 meses",
+      "mecanismo": "Reciprocidad directa ledger TQ ±500",
+      "reparto_amid": 0.35,
+      "activos": "TQ (no convertible), horas trabajo, trueque directo",
+      "gobernanza": "Consenso holón local 1a1v, auditoría RAO mensual",
+      "kpis": ["tq_velocity", "reciprocidad_ratio", "saldo_medio_abs<200"]
+    },
+    "H2_medio_CaaS": {
+      "plazo": "3-18 meses",
+      "mecanismo": "Vectores contribución CaaS/AUT + trabajo verificado RAO",
+      "reparto_amid": 0.35,
+      "activos": "Capacidad productiva (kWh, alimentos, herramientas), CaaS credits",
+      "gobernanza": "Contrato CaaS entre holones, hitos medidos por sensores (Ley III)",
+      "kpis": ["caas_fulfillment_rate", "aut_delta", "sensor_uptime>95%"]
+    },
+    "H3_largo_ZNU": {
+      "plazo": "18+ meses",
+      "mecanismo": "Reserva indexada canasta ZNU + crédito 2-3% + staking gobernanza",
+      "reparto_amid": 0.30,
+      "activos": "ZNU (indexado canasta), staking ZNU (gobernanza 1a1v), crédito rotativo",
+      "gobernanza": "Asamblea Gran Alianza 7 holones, 1a1v, veto CDS<0.6",
+      "kpis": ["znu_purchasing_power_parity", "staking_participation>60%", "credito_rotativo_default<2%"]
+    }
+  },
+  "gobernanza_holonica": {
+    "estructura": "7 holones federados (Gran Alianza por la Vida)",
+    "principios": [
+      "1a1v: Un holón, un voto (no ponderado por ZNU/TQ)",
+      "CDS gate: Solo holones con CDS≥0.60 votan decisiones vinculantes",
+      "Subsidiaridad: Decisiones en nivel más bajo posible",
+      "Transparencia radical: Flujos, saldos, αʰ públicos en ledger compartido"
+    ],
+    "procesos": {
+      "asamblea_mensual": {
+        "frecuencia": "Mensual",
+        "quorum": "5/7 holones presentes",
+        "agenda": ["Revisión αʰ y flujos", "Aprobación rebalanceos >β_crit", "Ajuste κ_amid (±0.05/año)"]
+      },
+      "comite_coordinacion": {
+        "composicion": "Facilitador CDS (holon-7) + 2 rotativos por sorteo ZNU-staked",
+        "mandato": "3 meses, no reelección inmediata",
+        "funciones": "Ejecución rebalanceos RS-02, monitoreo stop-loss RS-01, guardia prohibición RS-04"
+      },
+      "auditoria_rao": {
+        "frecuencia": "Trimestral + trigger eventos",
+        "alcance": "Procedencia, emisor, permisos, estado, revocación de cada flujo",
+        "output": "Informe RAO público + hash en ledger TQ"
+      }
+    },
+    "resolucion_conflictos": {
+      "nivel_1": "Mediación facilitador CDS (holon-7) - 48h",
+      "nivel_2": "Comité coordinación - 1 semana",
+      "nivel_3": "Asamblea extraordinaria - veto CDS<0.6 bloquea",
+      "nivel_4": "γ-CARMIS: Reconfiguración membresía holón (expansión/expulsión)"
+    }
+  },
+  "rotacion_ciclica": {
+    "ciclo_base": "Mensual (tick Alráico)",
+    "fases": [
+      { "fase": 1, "nombre": "Detección sobrecargas (detectOverloads)", "duracion_dias": 1, "accion": "αʰ < κ, tq>500, cds<0.6, agents idle" },
+      { "fase": 2, "nombre": "γ-CARMIS reconfiguración", "duracion_dias": 2, "accion": "Encender lucidez, activar agentes, resolver expirados" },
+      { "fase": 3, "nombre": "Cálculo φʰ y matching flujos", "duracion_dias": 3, "accion": "Match origen(excedente) → destino(capacidad) por φʰ" },
+      { "fase": 4, "nombre": "Ejecución flujos H1/H2/H3", "duracion_dias": 10, "accion": "TQ inmediato, CaaS hitos, ZNU staking" },
+      { "fase": 5, "nombre": "Monitoreo y resonancia", "duracion_dias": 10, "accion": "detectResonances αʰ₁·αʰ₂·3.0 > αʰ₁+αʰ₂" },
+      { "fase": 6, "nombre": "Auditoría RAO y reporte", "duracion_dias": 4, "accion": "Validez procedencia, actualización ledgers" }
+    ],
+    "resonancia": {
+      "condicion": "αʰ_i * αʰ_j * 3.0 > αʰ_i + αʰ_j",
+      "efecto": "Sinergia: pool compartido excedentes, CaaS cruzado, CDS fusionado temporal",
+      "ejemplos_parejas_probables": [
+        ["holon-1 (Energía)", "holon-3 (FABSHIP)"],
+        ["holon-2 (Agricultura)", "holon-4 (Hídrica)"],
+        ["holon-5 (Salud)", "holon-6 (Educación)"]
+      ]
+    }
+  },
+  "brand_narrative": {
+    "pilares": [
+      "Rentabilidad por omisión (TQ): No buscamos ROI financiero, buscamos AUT material",
+      "Staking ZNU = Compromiso territorial, no especulación",
+      "CSA (Agricultura Sostenida Comunidad): CaaS vectores = alimentos/semillas/compost",
+      "Turismo regenerativo: Visitantes aportan trabajo verificado RAO + ZNU, no dinero fiat",
+      "Narrativa: 'El valor que no se puede medir en USD es el que sostiene la vida'"
+    ],
+    "metricas_narrativas": {
+      "aut_promedio_sistema": "target > 0.70 en 18 meses",
+      "cds_promedio_sistema": "target > 0.70 en 24 meses",
+      "tq_velocity": "target > 50 transacciones/holón/mes",
+      "znu_circulacion_local": "target > 80% ZNU circula dentro Gran Alianza",
+      "visitantes_regenerativos": "target 200/año con 40h trabajo verificado c/u"
+    }
+  },
+  "riesgos_y_mitigaciones": [
+    {
+      "riesgo": "R1: Holón acapara ZNU > β_crit (40%)",
+      "probabilidad": "Media",
+      "impacto": "Alto",
+      "mitigacion": "RS-03 ejecución automática + auditoría RAO trigger inmediata"
+    },
+    {
+      "riesgo": "R2: Caída αʰ sistémica (shock externo clima/mercado)",
+      "probabilidad": "Baja",
+      "impacto": "Crítico",
+      "mitigacion": "Reserva ZNU 30% (H3) + mutualización stop-loss RS-01 + γ-CARMIS sistémico"
+    },
+    {
+      "riesgo": "R3: Violación prohibición TQ↔Fiat",
+      "probabilidad": "Baja",
+      "impacto": "Crítico (expulsión holón)",
+      "mitigacion": "RS-04 bloqueo técnico + auditoría RAO + veto asamblea 1a1v"
+    },
+    {
+      "riesgo": "R4: CDS decay por burocratización",
+      "probabilidad": "Media",
+      "impacto": "Medio",
+      "mitigacion": "Rotación comité coordinación 3 meses, sorteo ZNU-staked, métrica ValueFlows>50"
+    }
+  ],
+  "validacion_estrategica": {
+    "DV-01": "Separación funcional TQ≠ZNU≠CaaS verificada en arquitectura (no conversión posible)",
+    "DV-02": "≤3 parámetros ajustables (κ_amid, umbral_excedente, umbral_capacidad) - PASA",
+    "DV-03": "Reparto Amid 35/35/30 respeta horizonte temporal y naturaleza activo",
+    "DV-04": "Gobernanza holónica 1a1v + CDS gate + subsidiaridad = soberanía material (Ley II MJ)",
+    "go_nogo": "GO - Estrategia coherente con Leyes MJ, ALRAC Master, loopEngine nativo"
+  },
+  "proximos_pasos": [
+    "Ejecutar simulación Monte Carlo 1000 runs (scripts/benchmark/alrac_sim.py)",
+    "Calibrar κ_amid con datos históricos ecoaldeas fallidas (supervivencia bias)",
+    "Implementar detectOverlods + γ-CARMIS en loopEngine para 7 holones",
+    "Desplegar ledger TQ compartido + indexador ZNU canasta",
+    "Convocatoria vinculante 5 perfiles base (agrónomo, energía, FABSHIP, CDS, generalista) + 500 ZNU"
+  ]
+}
