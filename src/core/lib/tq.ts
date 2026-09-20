@@ -781,6 +781,7 @@ export interface EnterpriseStakingStack {
     cyclesPerYear: number;            // 6-12 ciclos
     znuRevenue: number;               // Ventas directas → ZNU
     biowasteToCompost: number;        // kWh → estiercol
+    hectares: number;                 // Hectáreas de huerta
   };
   
   // Rubro 2: Gallinas Pastoreo (Flujo Caja + Fertilidad - Horizonte Corto/Medio)
@@ -789,27 +790,47 @@ export interface EnterpriseStakingStack {
     manureKwhPerMonth: number;        // kWh estiercol → compost
     pestControlValue: number;         // kWh ahorrados (control biológico)
     znuRevenue: number;               // Huevos + carne
+    tqPerBirdPerMonth: number;        // TQ por ave/mes
+    birdCount: number;                // Número de aves
   };
   
-  // Rubro 3: Agroforestería (Patrimonio Largo - Horizonte Largo)
+  // Rubro 3: Policultivo Perenne (Estabilidad - Horizonte Medio)
+  perennialPolyculture: {
+    avoidedFertilizerKwh: number;     // kWh ahorrados fertilizante
+    carbonSequestrationKwh: number;   // kWh secuestrados carbono
+    tqPerHectarePerYear: number;      // TQ/ha/año
+    hectares: number;                 // Hectáreas
+  };
+  
+  // Rubro 4: Agroforestería (Patrimonio Largo - Horizonte Largo)
   agroforestry: {
     treesPlanted: number;
     biomassKwhPerYear: number;        // Podas → compost + leña
     shadeValue: number;               // kWh ahorrados (riego)
     carbonSequestration: number;      // TQ reserves futuras
+    carbonSequestrationKwh: number;   // kWh secuestrados
     timberZnuFuture: number;          // ZNU reserves 10-30 años
+    tqPerHectarePerYear: number;      // TQ/ha/año
+    hectares: number;                 // Hectáreas
+    landValueAppreciation: number;    // Valor tierra apreciación
   };
   
-  // Rubro 4: Turismo Regenerativo (Experiencias de Alto Valor - Horizonte Medio)
+  // Rubro 5: Turismo Regenerativo (Experiencias de Alto Valor - Horizonte Medio)
   regenerativeTourism: {
     visitsPerMonth: number;
     znuPerVisit: number;              // Precio experiencia
     workshopRevenue: number;          // Talleres cocina/siembra
     lodgingRevenue: number;           // Hospedaje rural
     ambassadorConversion: number;     // % visitantes → embajadores CSA
+    opexReduction: number;            // kWh ahorrados OPEX
+    tqPerVisitor: number;             // TQ generado por visitante
+    visitorsPerMonth: number;         // Visitantes/mes
+    visitorSatisfaction: number;      // NPS 0-100
+    brandCoherence: number;           // Coherencia marca 0-1
+    csaConversionRate: number;        // % visitantes → miembros CSA
   };
   
-  // Rubro 5: CSA / Suscripción ZNU (Riesgo Compartido - Horizonte Medio)
+  // Rubro 6: CSA / Suscripción ZNU (Riesgo Compartido - Horizonte Medio)
   csaSubscription: {
     members: number;
     znuMonthlyPerMember: number;
@@ -828,54 +849,18 @@ export interface EnterpriseStakingStack {
   computeStakingScore: () => number;
 }
 
-// Funciones standalone para EnterpriseStakingStack (no pueden ser métodos de interface)
-export function computeStackMetrics(stack: EnterpriseStakingStack): StackMetrics {
-  const opexAvoided = 
-    stack.marketGarden.biowasteToCompost + 
-    stack.pasturedPoultry.manureKwhPerMonth + 
-    stack.agroforestry.shadeValue;
-  
-  const totalArea = stack.totalArea || 1;
-  
-  return {
-    opexAvoided,
-    opexAvoidedRatio: opexAvoided / (stack.monthlyOpex || 1),
-    stackedValuePerM2: (
-      stack.marketGarden.tqProductionPerM2 * 12 +
-      stack.pasturedPoultry.tqEggsPerWeek * 52 / (stack.totalArea || 1) +
-      stack.agroforestry.biomassKwhPerYear / totalArea
-    ),
-    liquidityRatio: (stack.marketGarden.znuRevenue + stack.pasturedPoultry.znuRevenue) / (stack.monthlyOpex || 1),
-    stabilityRatio: (stack.csaSubscription.znuMonthlyPerMember * stack.csaSubscription.members) / (stack.yearlyFixedCosts || 1),
-    patrimonyGrowth: stack.agroforestry.timberZnuFuture / (stack.totalInvestment || 1),
-    stakingScore: computeStakingScore(stack)
-  };
-}
-
-export function computeStakingScore(stack: EnterpriseStakingStack): number {
-  const liquidityRatio = (stack.marketGarden.znuRevenue + stack.pasturedPoultry.znuRevenue) / (stack.monthlyOpex || 1);
-  
-  const liquidityScore = Math.min(liquidityRatio || 0, 2) / 2;
-  const stabilityScore = Math.min((stack.csaSubscription.znuMonthlyPerMember * stack.csaSubscription.members) / (stack.yearlyFixedCosts || 1) || 0, 2) / 2;
-  const patrimonyScore = Math.min(stack.agroforestry.timberZnuFuture / (stack.totalInvestment || 1) || 0, 1);
-  const regenerationScoreNorm = (stack.agroforestry.carbonSequestration + stack.agroforestry.shadeValue) / (stack.monthlyOpex || 1);
-  
-  return (
-    0.25 * (liquidityScore / 2) +
-    0.25 * (stabilityScore / 2) +
-    0.25 * patrimonyScore +
-    0.25 * Math.min(regenerationScoreNorm, 1)
-  );
-}
-
 export interface StackMetrics {
   opexAvoided: number;
-  opexAvoidedRatio: number;
-  stackedValuePerM2: number;
+  tqGenerated: number;
+  znuGenerated: number;
   liquidityRatio: number;
   stabilityRatio: number;
-  patrimonyGrowth: number;
-  stakingScore: number;
+  patrimonyRatio: number;
+  regenerationRatio: number;
+  ecologicalImpactScore: number;
+  visitorSatisfaction: number;
+  brandCoherence: number;
+  csaMemberGrowth: number;
 }
 
 // ============================================================================
@@ -1066,4 +1051,230 @@ function hashData(_data: string): string {
 function signData(_data: string): string {
   // TODO: Firmar con clave privada DID
   return 'signature';
+}
+
+// ============================================================================
+// CSA SUBSCRIPTION STREAM IMPLEMENTATION
+// ============================================================================
+
+export function calculateCSAMemberPrice(
+  basePrice: number,
+  harvestKwh: number,
+  expectedKwh: number,
+  config: { abundanceMultiplier: number; scarcityBuffer: number }
+): number {
+  if (harvestKwh >= expectedKwh * 1.2) {
+    return basePrice * config.abundanceMultiplier;
+  }
+  if (harvestKwh <= expectedKwh * 0.8) {
+    return basePrice * config.scarcityBuffer;
+  }
+  return basePrice;
+}
+
+export function calculateCSATQGenerated(harvestKwh: number): number {
+  return harvestKwh; // 1 TQ = 1 kWh
+}
+
+export function calculateCSAZNUEmitted(memberPrice: number, priceParity: number): number {
+  return memberPrice / priceParity;
+}
+
+export function validateCSATransparency(stream: CSASubscriptionStream): boolean {
+  return stream.transparency.weeklyUpdate &&
+         stream.transparency.soilHealthReport &&
+         stream.transparency.financialTransparency;
+}
+
+export function calculateCSAAmbassadorBonus(
+  referrals: number,
+  bonusPerReferral: number,
+  tier: 'bronze' | 'silver' | 'gold'
+): number {
+  const tierMultiplier = { bronze: 1, silver: 1.5, gold: 2 };
+  return referrals * bonusPerReferral * tierMultiplier[tier];
+}
+
+// ============================================================================
+// REGENERATIVE TOURISM IMPLEMENTATION
+// ============================================================================
+
+export function calculateTourismTQGenerated(experience: Experience): number {
+  return experience.tqGenerated;
+}
+
+export function validateTourismCoherence(design: RegenerativeTourismDesign): boolean {
+  const { carryingCapacity, safetyAndCoherence, experiences, metrics } = design;
+  
+  // Validar capacidad de carga
+  if (carryingCapacity.maxVisitorsPerDay <= 0) return false;
+  if (carryingCapacity.recoveryDaysBetweenGroups < 1) return false;
+  
+  // Validar seguridad
+  if (safetyAndCoherence.guideRatio <= 0) return false;
+  if (safetyAndCoherence.trails.length === 0) return false;
+  if (safetyAndCoherence.emergencyPlan.evacuationRoutes.length === 0) return false;
+  
+  // Validar experiencias
+  if (experiences.length === 0) return false;
+  for (const exp of experiences) {
+    if (exp.priceZNU <= 0) return false;
+    if (exp.tqGenerated < 0) return false;
+    if (exp.ecologicalImpact > 0) return false; // Debe ser regeneración neta (negativo)
+  }
+  
+  // Validar métricas
+  if (metrics.ecologicalImpactScore >= 0) return false; // Debe ser negativo = regeneración
+  if (metrics.visitorSatisfaction < 0 || metrics.visitorSatisfaction > 100) return false;
+  
+  return true;
+}
+
+export function calculateTourismAmbassadorConversion(
+  visitors: number,
+  conversionRate: number
+): number {
+  return Math.floor(visitors * conversionRate);
+}
+
+export function calculateTourismZNURevenue(
+  experiences: Experience[],
+  participants: Map<string, number> // experienceId -> participant count
+): number {
+  let total = 0;
+  for (const exp of experiences) {
+    const count = participants.get(exp.id) || 0;
+    total += exp.priceZNU * count;
+  }
+  return total;
+}
+
+// ============================================================================
+// NODE CREDO BRAND IMPLEMENTATION
+// ============================================================================
+
+export function calculateBrandCoherence(brand: NodeCredoBrand): number {
+  // αʰ del credo base
+  const baseCoherence = brand.credo.harmony / brand.credo.criticalThreshold;
+  
+  // Penalización si no hay transparencia
+  const transparencyPenalty = brand.transparentStorytelling.noManipulation ? 0 : 0.3;
+  
+  // Bonus por métricas de suelo reportadas
+  const soilBonus = brand.transparentStorytelling.soilMetrics.length > 0 ? 0.1 : 0;
+  
+  // Bonus por transparencia financiera
+  const financialBonus = brand.transparentStorytelling.financialTransparency.length > 0 ? 0.1 : 0;
+  
+  return Math.max(0, Math.min(1, baseCoherence - transparencyPenalty + soilBonus + financialBonus));
+}
+
+export function validateBrandStorytelling(brand: NodeCredoBrand): boolean {
+  const { transparentStorytelling } = brand;
+  
+  // Debe tener log semanal con avances Y dificultades
+  if (transparentStorytelling.weeklyLog.length === 0) return false;
+  
+  const hasAdvances = transparentStorytelling.weeklyLog.some(w => w.advances.length > 0);
+  const hasDifficulties = transparentStorytelling.weeklyLog.some(w => w.difficulties.length > 0);
+  if (!hasAdvances || !hasDifficulties) return false;
+  
+  // Debe tener métricas de suelo
+  if (transparentStorytelling.soilMetrics.length === 0) return false;
+  
+  // Debe tener transparencia financiera
+  if (transparentStorytelling.financialTransparency.length === 0) return false;
+  
+  // No manipulación
+  if (!transparentStorytelling.noManipulation) return false;
+  
+  return true;
+}
+
+export function calculateAmbassadorEffectiveness(ambassador: Ambassador): number {
+  const baseScore = ambassador.referrals * 10;
+  const tierBonus = { bronze: 0, silver: 20, gold: 50 }[ambassador.tier];
+  const csaBonus = ambassador.csaMember ? 30 : 0;
+  const visitBonus = Math.min(ambassador.visitsCount * 5, 50);
+  
+  return baseScore + tierBonus + csaBonus + visitBonus;
+}
+
+export function generateWeeklyLogEntry(
+  advances: string[],
+  difficulties: string[],
+  soilMetrics: { kwh: number; carbon: number; biodiversity: number },
+  financials: { opex: number; margin: number; reinvestment: number }
+): WeeklyLogEntry {
+  return {
+    date: Date.now(),
+    advances,
+    difficulties,
+    soilMetrics,
+    financials
+  };
+}
+
+// ============================================================================
+// ENTERPRISE STAKING STACK IMPLEMENTATION
+// ============================================================================
+
+export function computeStackMetrics(stack: EnterpriseStakingStack): StackMetrics {
+  const opexAvoided = 
+    stack.marketGarden.biowasteToCompost + 
+    stack.pasturedPoultry.manureKwhPerMonth + 
+    stack.perennialPolyculture.avoidedFertilizerKwh +
+    stack.agroforestry.carbonSequestrationKwh +
+    stack.regenerativeTourism.opexReduction;
+  
+  const tqGenerated = 
+    stack.marketGarden.tqProductionPerM2 * stack.marketGarden.hectares * 10000 +
+    stack.pasturedPoultry.tqPerBirdPerMonth * stack.pasturedPoultry.birdCount +
+    stack.perennialPolyculture.tqPerHectarePerYear * stack.perennialPolyculture.hectares / 12 +
+    stack.agroforestry.tqPerHectarePerYear * stack.agroforestry.hectares / 12 +
+    stack.regenerativeTourism.tqPerVisitor * stack.regenerativeTourism.visitorsPerMonth;
+  
+  const znuGenerated = tqGenerated * 0.1; // 10 TQ ≈ 1 ZNU capacity
+  
+  const liquidityRatio = (stack.marketGarden.znuRevenue + stack.pasturedPoultry.znuRevenue) / (stack.monthlyOpex || 1);
+  const stabilityRatio = (stack.csaSubscription.znuMonthlyPerMember * stack.csaSubscription.members) / (stack.yearlyFixedCosts || 1);
+  const patrimonyRatio = (stack.agroforestry.landValueAppreciation + stack.regenerativeTourism.lodgingRevenue * 12) / (stack.totalInvestment || 1);
+  const regenerationRatio = tqGenerated / (stack.totalArea * 10); // kWh/m² target
+  
+  return {
+    opexAvoided,
+    tqGenerated,
+    znuGenerated,
+    liquidityRatio,
+    stabilityRatio,
+    patrimonyRatio,
+    regenerationRatio,
+    ecologicalImpactScore: regenerationRatio * 100,
+    visitorSatisfaction: stack.regenerativeTourism.visitorSatisfaction,
+    brandCoherence: stack.regenerativeTourism.brandCoherence,
+    csaMemberGrowth: stack.regenerativeTourism.csaConversionRate
+  };
+}
+
+export function computeStakingScore(stack: EnterpriseStakingStack): number {
+  const metrics = computeStackMetrics(stack);
+  
+  const weights = {
+    liquidity: 0.25,
+    stability: 0.25,
+    patrimony: 0.25,
+    regeneration: 0.25
+  };
+  
+  const normalizedLiquidity = Math.min(metrics.liquidityRatio / 2, 1);
+  const normalizedStability = Math.min(metrics.stabilityRatio / 2, 1);
+  const normalizedPatrimony = Math.min(metrics.patrimonyRatio / 2, 1);
+  const normalizedRegeneration = Math.min(metrics.regenerationRatio, 1);
+  
+  return (
+    normalizedLiquidity * weights.liquidity +
+    normalizedStability * weights.stability +
+    normalizedPatrimony * weights.patrimony +
+    normalizedRegeneration * weights.regeneration
+  ) * 100; // Score 0-100
 }
