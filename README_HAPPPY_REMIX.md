@@ -230,10 +230,10 @@ No para unificaros. **Para que cada uno siga siendo sí mismo, pero interoperabl
 ## 🤝 PRÓXIMO PASO CONCRETO
 
 **Esta semana:**
-1. **Isaac** → Deploy QR 3D Generator (Vercel) → comparte URL
-2. **Pepe** → Mapea 1 cliente real por los 4 niveles → manda captura
-3. **Fernando** → Ejecuta `integrate_reference.py --referencia G1` → manda log
-4. **Felipe** → Abre issue en `Isaacko0/Zeitnus-Firma-Operaciones-Ecotomica` con: "AI Agents integration from Feloguarin"
+1. **El que despliega** → Deploy QR 3D Generator (Vercel) → comparte URL
+2. **El que mapea** → Mapea 1 cliente real por los 4 niveles → manda captura
+3. **El que integra** → Ejecuta `integrate_reference.py --referencia G1` → manda log
+4. **El que abreissues** → Abre issue en `Isaacko0/Zeitnus-Firma-Operaciones-Ecotomica` con: "AI Agents integration from Feloguarin"
 
 **En 30 días:** Primer ingreso real CaaS (USDC/ZNU) fluyendo por el split 35/35/30.
 
