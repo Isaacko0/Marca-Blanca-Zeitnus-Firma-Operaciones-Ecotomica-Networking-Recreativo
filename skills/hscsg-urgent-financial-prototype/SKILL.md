@@ -63,7 +63,7 @@ URL: https://frontend-rouge-eta-35.vercel.app
 - Requiere `GITHUB_TOKEN` con repo scope
 
 ## Rollback HSCSG v15
-Commit objetivo: `b9ea2ed` (previo a `7c2ff34` - Skilio work)
+Commit objective: `b9ea2eda (previo a `7c2ff34` - Skill work)
 ```bash
 git reset --hard b9ea2ed
 git push --force-with-lease origin main
@@ -73,3 +73,35 @@ git push --force-with-lease origin main
 - Fork/clone de HSCSG v15 en nuevo repo GitHub
 - Conectar a Vercel deploy existente
 - Mantener solo código Tool Forge + economics
+
+## Recomendaciones para Comunidad Happpy (Isaac Flores + Pepe Sevilla)
+
+### 1. Integración Inmediata Happpy → Zeitnus
+- **Happpy.mba** (4 niveles O/S/E/P) → Mapear a **ALRAC 4 Capas** (Diagnóstico/Nodo Llave/Medicinas/Estudio)
+- **Regla 100** → **GNAP Task Chains** (100 días = 100 chains auto-ejecutables)
+- **Imán de clientes** → **γ-CARMIS Preview** (detección fricción antes de ruptura)
+- **Referidos** → **TQ Ledger reciprocidad** (35/35/30 split Amid/Yoka/Nodos)
+- **Masterclass StorySelling + AI** → **CaaS Education Stream** (stream `education` en alrac-caas-revenue-streams)
+
+### 2. Fernando Palacios / 72gross → Nodo Zeitnus
+- **SofIA Asistente Cátedra** → **Motor Mental Zeitnus** (rol Asistente/Examinador = mentalAssistant/gammaCARMIS)
+- **12 Áreas Golf** → **Template 12 Capas MJ Universal** (aplicable a cualquier org)
+- **Diagnóstico 1a1 20min** → **γ-CARMIS Scanner** (herramienta operativa detección fricción)
+- **NSL (Never Stop Learning)** → **GNAP Task Chains auto-mejora** (Capa 8 Sistémica)
+- **Fricción invisible** → **Métrica EV_CORE** (entropía sistémica no contabilizada)
+
+### 3. Prototipo 90 Días (Hit Rate 90%)
+- **Semana 1-2**: Deploy QR 3D Generator (Vercel) + CaaS Wallet (ZNU)
+- **Semana 3-4**: Integrar Pepe/Contento (BrandDNA + Soulmate) como canal distribución
+- **Mes 2**: Activar Felipe Guarin (Feloguarin) → AI Agents + Zeitnus
+- **Mes 3**: Monetary Integration (G1/Túmin/PAR + priceParity + ZNU canasta 2-3%)
+- **KPIs**: Hit Rate 90% (primer cliente pagando día 90), AUT > 0.7, CDS > 0.8
+
+### 4. Pleonasmo Resuelto para Happpy
+> **"Happpy no inventa tu cliente. Lo revela en 4 niveles. Y te dice qué nivel habitas."**
+
+≡ **"Contenido / Estar contenido"**
+- **Contenido** = 4 niveles (O/S/E/P) fluyendo (scores, TQ ledger, γ-CARMIS)
+- **Estar contenido** = Arquitectura (Regla 100 + Imán + Referidos) contiene sin traicionar
+
+> Si cambias el nivel y el cliente sigue siendo el mismo → **no era tu cliente** = γ-CARMIS detectado: reconfiguración obligatoria antes de rupture.
