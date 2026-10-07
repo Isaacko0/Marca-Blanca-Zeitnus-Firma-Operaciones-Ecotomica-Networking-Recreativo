@@ -1,8 +1,8 @@
 # ALRAC Specs Indexer
 
-**Versión:** 2.0  
-**Fecha:** 2026-10-06  
-**Total Specs:** 24 (19 originales/simulación + 5 nuevas asimilación real)  
+**Versión:** 2.1  
+**Fecha:** 2026-10-07  
+**Total Specs:** 25 (19 originales/simulación + 6 nuevas asimilación real)  
 **Estado:** Todos en `openspec/specs/`
 
 ---
@@ -46,6 +46,7 @@
 | 20 | `clc-cpp-integration.md` | Bridge CLC White Paper v0.8 → ALRAC Capa 2 | ✅ Nueva v0.1 |
 | 21 | `archidiagram-integration.md` | Nodo piloto 60k arquitectos (ArchiMate 3.2, SketchUp) | ✅ Nueva v0.1 |
 | 22 | `febhouse-integration.md` | Nodo piloto Febhouse Studio (3 plugins, 9 proyectos, 60k users) | ✅ Nueva v0.1 |
+| 23 | `memegen-integration.md` | Nodo piloto cultural memegen.link (200+ templates, MIT, stateless) | ✅ Nueva v0.1 |
 
 ### **Capa 2: Interoperabilidad (CaaS/HSCSG)** (Simulación)
 | # | Archivo | Descripción | Estado |
@@ -79,9 +80,10 @@
 | 20 | Asimilación CLC (docs.cosmolocal.credit) | Bridge White Paper v0.8 |
 | 21 | Asimilación ArchiDiagram (archidiagram.com) | Nodo 60k arquitectos |
 | 22 | Asimilación Febhouse Studio (febhouse.com) | 3 plugins + 9 proyectos |
-| 23-24 | @alrac-coordinator (simulación) | Phase 1 Specs - CaaS |
-| 25-26 | @alrac-coordinator (simulación) | Phase 1 Specs - ZNU + Fiat |
-| 27 | @alrac-coordinator (simulación) | Phase 1 Specs - Governance |
+| 23 | Asimilación memegen (memegen.link) | Nodo cultural 200+ templates |
+| 24-25 | @alrac-coordinator (simulación) | Phase 1 Specs - CaaS |
+| 26-27 | @alrac-coordinator (simulación) | Phase 1 Specs - ZNU + Fiat |
+| 28 | @alrac-coordinator (simulación) | Phase 1 Specs - Governance |
 
 ---
 
