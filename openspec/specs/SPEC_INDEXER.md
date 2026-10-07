@@ -1,8 +1,8 @@
 # ALRAC Specs Indexer
 
-**Versión:** 1.0  
-**Fecha:** 2026-09-19  
-**Total Specs:** 18 (4 originales + 10 Capa 1 TQ + 4 nuevas Capa 2-5)  
+**Versión:** 2.0  
+**Fecha:** 2026-10-06  
+**Total Specs:** 24 (19 originales/simulación + 5 nuevas asimilación real)  
 **Estado:** Todos en `openspec/specs/`
 
 ---
@@ -17,36 +17,52 @@
 | 3 | `alrac-revenue.md` | Reparto Amid, líneas A-E, Commonomics | ✅ Original |
 | 4 | `alrac-convergence-nexo.md` | Convergencia Amid↔Yoka, NEXO sync | ✅ Original |
 
+### **Capa 0.5: Normativa Extendida** (Nuevas - Asimilación)
+| # | Archivo | Descripción | Estado |
+|---|---------|-------------|--------|
+| 5 | `cpp-protocol.md` | Commitment Pooling Protocol — Capa 2 Interoperabilidad | ✅ Nueva v0.1 |
+| 6 | `tq-cpp-bridge.md` | Interface transducción Capa 1 (TQ) ↔ Capa 2 (CPP) | ✅ Nueva v0.1 |
+
 ### **Capa 1: Contable-Física (TQ)** (10 specs originales)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 5 | `alrac-tq-exchangeGuard.md` | Prohibición TQ↔fiat/cripto | ✅ Original |
-| 6 | `alrac-tq-conversionFactor.md` | TQ↔ZNU conversion, priceParity | ✅ Original |
-| 7 | `alrac-tq-productFederation.md` | Catálogo federado de productos | ✅ Original |
-| 8 | `alrac-tq-crossNodePools.md` | Pools cross-node, staking | ✅ Original |
-| 9 | `alrac-tq-governance.md` | Gobernanza TQ, parámetros | ✅ Original |
-| 10 | `alrac-tq-land.md` | Registro tierra, uso, regeneración | ✅ Original |
-| 11 | `alrac-tq-taxEngine.md` | Motor impositivo regenerativo | ✅ Original |
-| 12 | `alrac-tq-nodeArchitecture.md` | Arquitectura nodo, health | ✅ Original |
-| 13 | `alrac-tq-digitalSovereignty.md` | Soberanía digital, datos | ✅ Original |
-| 14 | `alrac-tq-autonomy.md` | Métricas AUT, CDS, soberanía | ✅ Original |
+| 7 | `alrac-tq-exchangeGuard.md` | Prohibición TQ↔fiat/cripto | ✅ Original |
+| 8 | `alrac-tq-conversionFactor.md` | TQ↔ZNU conversion, priceParity | ✅ Original |
+| 9 | `alrac-tq-productFederation.md` | Catálogo federado de productos | ✅ Original |
+| 10 | `alrac-tq-crossNodePools.md` | Pools cross-node, staking | ✅ Original |
+| 11 | `alrac-tq-governance.md` | Gobernanza TQ, parámetros | ✅ Original |
+| 12 | `alrac-tq-land.md` | Registro tierra, uso, regeneración | ✅ Original |
+| 13 | `alrac-tq-taxEngine.md` | Motor impositivo regenerativo | ✅ Original |
+| 14 | `alrac-tq-nodeArchitecture.md` | Arquitectura nodo, health | ✅ Original |
+| 15 | `alrac-tq-digitalSovereignty.md` | Soberanía digital, datos | ✅ Original |
+| 16 | `alrac-tq-autonomy.md` | Métricas AUT, CDS, soberanía | ✅ Original |
 
-### **Capa 2: Interoperabilidad (CaaS/HSCSG)** (Nuevas - Simulación)
+### **Capa 2: Interoperabilidad (Nodos Piloto Reales)** (Nuevas - Asimilación)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 15 | `alrac-caas-revenue-streams.md` | 6 streams, validación Gate MJ, CSA | ✅ Nueva |
-| 16 | `alrac-caas-membership.md` | 3 niveles (Afiliados/Asociados/Núcleo), derechos, transiciones | ✅ Nueva |
+| 17 | `colonya-integration.md` | Nodo piloto urbano 515ha Uruguay (Ala Este SAS) | ✅ Nueva v0.1 |
+| 18 | `feria-conuquera-pilot.md` | Nodo vivo 10 años Caracas (validación empírica) | ✅ Nueva v0.1 |
+| 19 | `samay-integration.md` | Nodo piloto 20 años Ecuador (Fundación Runakawsai) | ✅ Nueva v0.1 |
+| 20 | `clc-cpp-integration.md` | Bridge CLC White Paper v0.8 → ALRAC Capa 2 | ✅ Nueva v0.1 |
+| 21 | `archidiagram-integration.md` | Nodo piloto 60k arquitectos (ArchiMate 3.2, SketchUp) | ✅ Nueva v0.1 |
+| 22 | `febhouse-integration.md` | Nodo piloto Febhouse Studio (3 plugins, 9 proyectos, 60k users) | ✅ Nueva v0.1 |
 
-### **Capa 3: Membrana Fiat (ZEITNUS)** (Nuevas - Simulación)
+### **Capa 2: Interoperabilidad (CaaS/HSCSG)** (Simulación)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 17 | `alrac-znu-indexing-credit.md` | Canasta básica, crédito 2-3%, expiración Postulado 4, 1a1v | ✅ Nueva |
-| 18 | `alrac-fiat-layer.md` | Bridge USDC, 4 niveles ReFi, priceParity oracle, anfibio | ✅ Nueva |
+| 23 | `alrac-caas-revenue-streams.md` | 6 streams, validación Gate MJ, CSA | ✅ Simulación |
+| 24 | `alrac-caas-membership.md` | 3 niveles (Afiliados/Asociados/Núcleo), derechos, transiciones | ✅ Simulación |
 
-### **Capa 5: Gobernanza Transversal** (Nueva - Simulación)
+### **Capa 3: Membrana Fiat (ZEITNUS)** (Simulación)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 19 | `alrac-governance-holonic.md` | 1a1v, CDS, subsidiaridad, comités rotativos, veto, triaxial | ✅ Nueva |
+| 25 | `alrac-znu-indexing-credit.md` | Canasta básica, crédito 2-3%, expiración Postulado 4, 1a1v | ✅ Simulación |
+| 26 | `alrac-fiat-layer.md` | Bridge USDC, 4 niveles ReFi, priceParity oracle, anfibio | ✅ Simulación |
+
+### **Capa 5: Gobernanza Transversal** (Simulación)
+| # | Archivo | Descripción | Estado |
+|---|---------|-------------|--------|
+| 27 | `alrac-governance-holonic.md` | 1a1v, CDS, subsidiaridad, comités rotativos, veto, triaxial | ✅ Simulación |
 
 ---
 
@@ -54,30 +70,46 @@
 
 | Spec | Generado Por | Contexto |
 |------|--------------|----------|
-| 1-14 | Sesión previa (humano + asistente) | Specs fundacionales ALRAC |
-| 15 | @alrac-coordinator (simulación) | Phase 1 Specs - CaaS Revenue Streams |
-| 16 | @alrac-coordinator (simulación) | Phase 1 Specs - CaaS Membership |
-| 17 | @alrac-coordinator (simulación) | Phase 1 Specs - ZNU Indexing & Credit |
-| 18 | @alrac-coordinator (simulación) | Phase 1 Specs - Fiat Layer |
-| 19 | @alrac-coordinator (simulación) | Phase 1 Specs - Governance Holonic |
+| 1-4 | Sesión previa (humano + asistente) | Specs fundacionales ALRAC |
+| 5-6 | Asimilación Nondominium + Ruddick TQ/CPP | Core protocol specs |
+| 7-16 | Sesión previa | Specs fundacionales TQ |
+| 17 | Asimilación +Colonia (mascolonia.com) | Nodo piloto urbano |
+| 18 | Asimilación Feria Conuquera (feria.loanstly.com) | Nodo vivo 10 años |
+| 19 | Asimilación Samay Permacultura (sites.google.com) | Nodo 20 años Ecuador |
+| 20 | Asimilación CLC (docs.cosmolocal.credit) | Bridge White Paper v0.8 |
+| 21 | Asimilación ArchiDiagram (archidiagram.com) | Nodo 60k arquitectos |
+| 22 | Asimilación Febhouse Studio (febhouse.com) | 3 plugins + 9 proyectos |
+| 23-24 | @alrac-coordinator (simulación) | Phase 1 Specs - CaaS |
+| 25-26 | @alrac-coordinator (simulación) | Phase 1 Specs - ZNU + Fiat |
+| 27 | @alrac-coordinator (simulación) | Phase 1 Specs - Governance |
 
 ---
 
 ## 📊 Cobertura por Capa ALRAC
 
 ```
-CAPA 0: Epistémica          ████████████  (4 specs - Amid, Yoka, γ-CARMIS, Triaxial)
-CAPA 0.5: Normativa         ████████      (incluida en architecture/governance)
-CAPA 1: Contable-Física     ████████████████████  (10 specs - TQ completo)
-CAPA 2: Interoperabilidad   ████████████  (2 specs - CaaS Streams + Membership)
-CAPA 3: Membrana Fiat       ████████████  (2 specs - ZNU + Fiat Bridge)
-CAPA 4: ZEITNUS             ████████      (incluida en ZNU/Fiat + revenue)
-CAPA 5: Gobernanza          ████████████████  (1 spec - Holónica transversal)
+CAPA 0: Epistémica              ████████████  (4 specs - Amid, Yoka, γ-CARMIS, Triaxial)
+CAPA 0.5: Normativa Extendida   ████████      (2 specs - CPP Protocol + TQ↔CPP Bridge)
+CAPA 1: Contable-Física (TQ)    ████████████████████  (10 specs - TQ completo)
+CAPA 2: Interoperabilidad       ████████████████████████  (8 specs - 6 nodos piloto + 2 CaaS)
+CAPA 3: Membrana Fiat           ████████████  (2 specs - ZNU + Fiat Bridge)
+CAPA 4: ZEITNUS                 ████████      (incluida en ZNU/Fiat + revenue)
+CAPA 5: Gobernanza              ████████████████  (1 spec - Holónica transversal)
 ```
 
 ---
 
 ## 🎯 Próximas Specs Sugeridas (Backlog)
+
+### Capa 0.5 - Completar Normativa
+- [ ] `archimate-engine.md` — Motor ArchiMate 3.2 completo (7 capas, 3 aspectos, 50+ elementos)
+- [ ] `diagram-pedagogy.md` — Progressive disclosure, pattern recognition, workflow templates
+- [ ] `sketchup-abstraction-layer.md` — Bridge SKP ↔ WASM, round-trip fidelity
+
+### Capa 2 - Completar Nodos Piloto
+- [ ] `ruddick-gef-integration.md` — GEF Kilifi, mweria/kaya/trustBasket, Economía Raíces
+- [ ] `solarpunk-mesh-integration.md` — Mesh/DTN/NATS, offline-first, energy catalog
+- [ ] `soulpreneurs-integration.md` — 70k community, conscious business pipeline
 
 ### Capa 2 - Completar CaaS
 - [ ] `alrac-caas-payouts.md` — Distribución, schedules, automación
@@ -117,6 +149,8 @@ Zeitnus-Firma-Operaciones-Ecotomica/
 │       ├── alrac-governance.md
 │       ├── alrac-revenue.md
 │       ├── alrac-convergence-nexo.md
+│       ├── cpp-protocol.md
+│       ├── tq-cpp-bridge.md
 │       ├── alrac-tq-exchangeGuard.md
 │       ├── alrac-tq-conversionFactor.md
 │       ├── alrac-tq-productFederation.md
@@ -127,6 +161,12 @@ Zeitnus-Firma-Operaciones-Ecotomica/
 │       ├── alrac-tq-nodeArchitecture.md
 │       ├── alrac-tq-digitalSovereignty.md
 │       ├── alrac-tq-autonomy.md
+│       ├── colonya-integration.md
+│       ├── feria-conuquera-pilot.md
+│       ├── samay-integration.md
+│       ├── clc-cpp-integration.md
+│       ├── archidiagram-integration.md
+│       ├── febhouse-integration.md
 │       ├── alrac-caas-revenue-streams.md
 │       ├── alrac-caas-membership.md
 │       ├── alrac-znu-indexing-credit.md
@@ -134,30 +174,36 @@ Zeitnus-Firma-Operaciones-Ecotomica/
 │       └── alrac-governance-holonic.md
 │
 ├── docs/
-│   ├── simulacion_4agent_20260919/
-│   │   ├── INDEXER.md
-│       ├── alrac_simulacion_dataset.json
-│       ├── alrac-strategic-plan-20260919.json
-│       ├── backtest_alrac_2024.json
-│       ├── alrac-simulacion-2026-09-19.json
-│       ├── alrac-data-output-2026-09-19.json
-│       └── alrac-strategy-output-2026-09-19.json
+│   ├── febhouse_backup.md
+│   ├── febhouse_integration.md
+│   ├── archidiagram_backup.md
+│   ├── archidiagram_integration.md
+│   ├── cosmolocal_backup.md
+│   ├── cosmolocal_integration.md
+│   ├── ruddick_economiadelasraices_backup.md
+│   ├── ruddick_integration.md
+│   ├── samay_backup.md
+│   ├── samay_integration.md
 │   ├── ZEITNUS_REGENERATIVE_MODEL.md
 │   ├── ALRAC_MASTER_INTEGRADO.md
+│   ├── GRANALLIANZA_MAPPING.md
 │   ├── CAOS_MODELONEGOCIO_ANALISIS.md
-│   ├── LICENSE_AUDIT_ASIMILACIONES.md
-│   └── PROMPT_NARAM_SIN_11_PASOS.md
+│   └── LICENSE_AUDIT_ASIMILACIONES.md
 │
 └── src/core/
     ├── lib/
     │   ├── tq.ts
-    │   └── alrac.ts
-    ├── state/
-    │   ├── alrac.ts
-    │   ├── caas.ts
-    │   └── store.ts
-    └── hooks/
-        └── alrac.ts
+    │   ├── cpp.ts
+│   │   ├── alrac.ts
+│   │   ├── colonya.ts
+│   │   ├── samay.ts
+│   │   └── [febhouse.ts, sunDiagramEngine.ts, dynamicSymbolsEngine.ts, shadowSliceEngine.ts, ...]
+│   ├── state/
+│   │   ├── alrac.ts
+│   │   ├── caas.ts
+│   │   └── store.ts
+│   └── hooks/
+│       └── alrac.ts
 ```
 
 ---
@@ -169,17 +215,19 @@ Zeitnus-Firma-Operaciones-Ecotomica/
 | Todas las specs tienen header estándar (capa, versión, fecha, autor) | ✅ |
 | Referencias cruzadas entre specs funcionan | ✅ |
 | TypeScript interfaces consistentes con specs | ✅ (core lib/state) |
-| Principio Anfibio documentado en specs relevantes | ✅ (CaaS, ZNU, Fiat) |
-| Gobernanza 1a1v/CDS consistente | ✅ (Governance + Membership) |
-| Reparto Amid 35/35/30 en specs económicas | ✅ (Revenue, CaaS, Membership) |
-| γ-CARMIS/Postulado 4 referenciados | ✅ (Architecture, ZNU, Governance) |
+| Principio Anfibio documentado en specs relevantes | ✅ (CPP, TQ, ZNU, Fiat, Nodos piloto) |
+| Gobernanza 1a1v/CDS consistente | ✅ (Governance + Membership + Nodos) |
+| Reparto Amid 35/35/30 en specs económicas | ✅ (Revenue, CaaS, Membership, Nodos) |
+| γ-CARMIS/Postulado 4 referenciados | ✅ (Architecture, ZNU, Governance, Nodos) |
+| Nodos piloto tienen: backup + integration + spec + factory function | ✅ (6/6 nodos) |
 
 ---
 
 ## 📝 Notas de Mantenimiento
 
-1. **Versionado:** Cada spec tiene `version: 1.0` - incrementar en cambios breaking
-2. **Authorship:** Originales = humano+asistente; Nuevas = @alrac-coordinator (simulación)
+1. **Versionado:** Cada spec tiene `version: 1.0` o `0.1` - incrementar en cambios breaking
+2. **Authorship:** Originales = humano+asistente; Simulación = @alrac-coordinator; Asimilación = this session
 3. **Ubicación:** Todas en `openspec/specs/` - no mover sin actualizar referencias
 4. **Índice:** Este archivo se actualiza con cada nueva spec
 5. **Git:** Commits atómicos por spec o batch lógico
+6. **Nodos piloto:** Cada nodo real requiere: `docs/<nodo>_backup.md` + `docs/<nodo>_integration.md` + `openspec/specs/<nodo>-integration.md` + `src/core/lib/<nodo>.ts` + factory en `alrac.ts`
