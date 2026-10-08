@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Scale, Zap, Activity, Heart, Brain, Eye, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAppStore } from '@core/state/store';
 import { Card, Stat, Btn, Badge, EmptyState, Field, Bar } from '@components/ui';
-import { useEV } from '@core/lib/ev';
+import { useEV } from '@core/state/hooks/ev';
 
 export const EV = () => {
   const {

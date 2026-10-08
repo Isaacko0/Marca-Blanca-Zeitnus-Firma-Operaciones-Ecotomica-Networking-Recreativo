@@ -4,17 +4,17 @@
   "description": "HSCSG v15 OS / Cosateca — Sistema operativo comunitario postmonetario (Materialismo Jerárquico + CaaS)",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit",
-    "license:check": "license-checker --production --failOn GPL-3.0,AGPL-3.0,CC-BY-NC-ND-4.0,Elastic-2.0",
-    "license:report": "license-checker --production --csv > license-report.csv",
-    "license:ci": "npm run license:check && echo \"License check passed\""
-  },
+      "dev": "vite",
+      "build": "vite build",
+      "preview": "vite preview",
+      "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+      "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
+      "test": "vitest",
+      "typecheck": "tsc --noEmit",
+      "license:check": "license-checker --production --failOn GPL-3.0,AGPL-3.0,CC-BY-NC-ND-4.0,Elastic-2.0",
+      "license:report": "license-checker --production --csv > license-report.csv",
+      "license:ci": "npm run license:check && echo \"License check passed\""
+    },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

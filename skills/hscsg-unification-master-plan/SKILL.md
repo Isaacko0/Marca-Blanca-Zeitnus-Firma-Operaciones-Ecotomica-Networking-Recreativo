@@ -349,17 +349,84 @@ echo "=== UNIFICACIÓN COMPLETA ==="
 
 ---
 
-## CRONOGRAMA RESUMIDO (22 días)
+---
 
-| Semana | Días | Fase | Entregable Principal |
-|--------|------|------|---------------------|
-| **1** | 1-2 | **Fase 0: Limpieza** | Repo limpio, PSG excisado, tsc sin errores nuevos |
-| **1** | 3-7 | **Fase 1: Core State** | 8 `state/*.ts` + `store.ts` actualizado + `alrac.ts` extendido |
-| **2** | 8-12 | **Fase 2: Módulos Ruddick** | 10 `lib/*.ts` + 5 specs OpenSpec |
-| **2** | 13-15 | **Fase 3: CLC/CPP** | `SwapEngine`, `ValuationModule`, `MeasurementEngine` + spec bridge |
-| **3** | 16-19 | **Fase 4: UI + Nav** | 11 pantallas + Aside + i18n + 11 rutas |
-| **3** | 20 | **Fase 5: GNAP** | 7 agentes + 4 task chains cross-border |
-| **3** | 21-22 | **Fase 6: Verificación** | `tsc=0`, `build=OK`, 11 rutas 200, 7 agentes GNAP |
+## FASE 7: PROOF OF AURA FARMING (Día 23-30) — *NUEVA FASE* 🎯
+
+### 7.1 Fixes Críticos Pendientes (Día 23)
+
+```bash
+# Fix 2 exports restantes en ev.ts
+sed -i 's/export const detectCoherence/const detectCoherence/' src/core/lib/ev.ts
+sed -i 's/export const calculateAutonomyCost/const calculateAutonomyCost/' src/core/lib/ev.ts
+
+# Verificar build
+npm run build
+```
+
+### 7.2 Módulos Proof of Aura Creados (Día 23-24) ✅
+
+| Módulo | Archivo | Estado |
+|--------|---------|--------|
+| Core Types & Scoring | `src/core/lib/aura.ts` | ✅ Creado |
+| Farming Detection (7 vectores) | `src/core/lib/aura-farming-detection.ts` | ✅ Creado |
+| Credencial Verificable | `src/core/lib/aura-credential.ts` | ✅ Creado |
+| State Slice + Factory | `src/core/state/aura.ts` + `aura-state-factory.ts` | ✅ Creados |
+| Store Integration | `src/core/state/store.ts` | ✅ Integrado |
+| Spec OpenSpec | `openspec/specs/aura-protocol.md` | ⏳ Pendiente |
+| UI Screen | `src/app/screens/Aura.tsx` | ⏳ Pendiente |
+| Tests Adversariales | `src/core/lib/__tests__/aura-farming.adversarial.test.ts` | ⏳ Pendiente |
+
+### 7.3 Integración Proof of Aura en Plan Maestro (Día 24-26)
+
+```bash
+# 1. Crear spec OpenSpec
+cat > openspec/specs/aura-protocol.md << 'EOF'
+# Spec: Aura Protocol — Proof of Authentic Presence
+**Capa ALRAC:** 0.5 (Normativa Extendida) + 1 (Contable-Física) + 2 (Interoperabilidad)
+**Versión:** 0.1.0
+**Estado:** Draft
+
+## Criterios de Aceptación (PVL)
+- [ ] `computeAuraScore()` typechecks + unit tests 100%
+- [ ] `detectAuraFarming()` detects 7 attack vectors in simulation
+- [ ] `AuraCredential` issued by GAIA COMMONS + verified by ConvergeMaps
+- [ ] Integration with TQ/EV/ZNU/Symbiosky/γ-CARMIS/ConvergeMaps verified
+- [ ] Farming detection catches 95% synthetic farmers in adversarial test
+- [ ] False positive rate < 2% on real node data
+- [ ] Credential renewal flow (90 days) operational
+EOF
+
+# 2. UI Screen Aura.tsx (tabs: Score, Credential, Farming Detection, History)
+# 3. Tests adversariales: 1000 synthetic farmers vs 100 real nodes
+# 4. CPP Pool para aura credentials cross-nodo
+# 4. GNAP task chain: cross-node aura verification
+```
+
+### 7.4 Integración con Nodos Piloto (Día 27-30)
+
+| Nodo | Integración Proof of Aura | Acción |
+|------|---------------------------|--------|
+| **Feria Conuquera** | TQ 10 años + 45 colectivos | Farming detection en trueque |
+| **+Colonia** | 515ha, CLT, ZNU | Credencial residente/inversor |
+| **Samay** | 20 años, water design | Aura regeneración territorial |
+| **Febhouse/ArchiDiagram** | 60k arquitectos | Aura profesional (portafolio EV) |
+| **memegen.link** | 200+ templates | Aura cultural (meme coherence) |
+| **Ruddick/GEF** | mweria/kaya/trustBasket | Aura ancestral (community trust) |
+| **Bancassol** | Banca comunitaria | Aura financiera soberana |
+
+### 7.5 Criterios de Éxito Actualizados (con Proof of Aura)
+
+| Criterio | Target |
+|----------|--------|
+| `tsc --noEmit` | **0 errores** (incluyendo aura modules) |
+| `npm run build` | **Exit code 0** |
+| `curl /<route>` | **200 OK** en 12 rutas (+ `/aura`) |
+| Proof of Aura | **Credential issued** + **Farming detection 95%** |
+| GNAP agents | **8 agentes** (incluye `aura-verifier`) |
+| Specs OpenSpec | **14 specs** (+ `aura-protocol.md`) |
+| Farming detection | **95% catch rate** + **<2% false positive** |
+| Credential renewal | **90 días** + ConvergeMaps re-attestation |
 
 ---
 

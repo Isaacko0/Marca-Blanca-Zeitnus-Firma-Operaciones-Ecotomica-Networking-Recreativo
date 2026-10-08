@@ -25,10 +25,10 @@ import {
   Lightbulb,
   Key,
 } from 'lucide-react';
-import { Card } from '@components/ui/Card';
-import { Stat } from '@components/ui/Stat';
-import { Btn } from '@components/ui/Btn';
-import { Badge } from '@components/ui/Badge';
+import { Card } from '@components/ui'
+import { Stat } from '@components/ui'
+import { Btn } from '@components/ui'
+import { Badge } from '@components/ui'
 import { useAppStore } from '@core/state/store';
 import { useALRAC, useEpistemicLayer, useAccountingLayer, useInteropLayer, useFiatLayer, useGovernance, useRevenueSplit, useProductLines } from '@core/state/hooks/alrac';
 import { t } from '@core/lib/i18n';

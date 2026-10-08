@@ -80,7 +80,7 @@ const clone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 // STATE FACTORY
 // ============================================================================
 
-export const makeEVState: MakeEVState = (): EVState => ({
+const makeEVState: MakeEVState = (): EVState => ({
   // Core cycle
   energy: [],
   experience: [],
@@ -152,7 +152,7 @@ export const makeEVState: MakeEVState = (): EVState => ({
  * Energy → Efficiency through Experience
  * E→V: La energía, a través de la experiencia, se convierte en eficiencia
  */
-export const energyToEfficiency: EnergyToEfficiency = (energy: Energy, experience: Experience): Efficiency => {
+const energyToEfficiency: EnergyToEfficiency = (energy: Energy, experience: Experience): Efficiency => {
   const isCoherent = experience.integrated && experience.truth.verified;
   
   return {
@@ -168,7 +168,7 @@ export const energyToEfficiency: EnergyToEfficiency = (energy: Energy, experienc
  * Life → Virtue through Truth
  * V→V: La vida, a través de la verdad, se convierte en virtud
  */
-export const lifeToVirtue: LifeToVirtue = (life: Energy, truth: Truth): Virtue => {
+const lifeToVirtue: LifeToVirtue = (life: Energy, truth: Truth): Virtue => {
   const isOwnTruth = truth.source === 'own' && truth.verified;
   
   return {
@@ -186,7 +186,7 @@ export const lifeToVirtue: LifeToVirtue = (life: Energy, truth: Truth): Virtue =
  * Detect fricciones en el estado
  * La fricción es la señal del gasto en dirección divergente
  */
-export const detectFriction: DetectFriction = (state: EVState): Friction[] => {
+const detectFriction: DetectFriction = (state: EVState): Friction[] => {
   const frictions: Friction[] = [];
   
   // Detectar evasiones activas → fricción
@@ -256,7 +256,7 @@ export const detectFriction: DetectFriction = (state: EVState): Friction[] => {
  * Detectar coherencia en el estado
  * Cuando el pasaje se completa, hay coherencia
  */
-export const detectCoherence: DetectCoherence = (state: EVState): Coherence[] => {
+const detectCoherence: DetectCoherence = (state: EVState): Coherence[] => {
   const coherences: Coherence[] = [];
   
   state.experience.forEach(exp => {
@@ -281,7 +281,7 @@ export const detectCoherence: DetectCoherence = (state: EVState): Coherence[] =>
  * Calcular margen real
  * Margen = espacio real de trayectorias disponibles
  */
-export const calculateMargin: CalculateMargin = (
+const calculateMargin: CalculateMargin = (
   dataRoot: DataRoot,
   presence: Presence,
   attention: Attention,
@@ -350,7 +350,7 @@ export const calculateMargin: CalculateMargin = (
  * Actualizar dato raíz desde la experiencia
  * La experiencia de las consecuencias actualiza el dato raíz
  */
-export const updateDataRoot: UpdateDataRoot = (experience: Experience): DataRoot => {
+const updateDataRoot: UpdateDataRoot = (experience: Experience): DataRoot => {
   return {
     content: experience.truth.content,
     verified: experience.truth.verified,
@@ -362,7 +362,7 @@ export const updateDataRoot: UpdateDataRoot = (experience: Experience): DataRoot
  * Integrar experiencia → aprendizaje
  * La integración es el puente entre experiencia y capacidad
  */
-export const integrateExperience: IntegrateExperience = (experience: Experience): Integration => {
+const integrateExperience: IntegrateExperience = (experience: Experience): Integration => {
   const learning: Learning = {
     content: `Integrated: ${experience.truth.content}`,
     modifiesCapacity: experience.integrated,
@@ -381,7 +381,7 @@ export const integrateExperience: IntegrateExperience = (experience: Experience)
  * Reconocer error
  * El error se admite, se corrige, se cierra. El error es dato.
  */
-export const recognizeError: RecognizeError = (
+const recognizeError: RecognizeError = (
   action: string,
   reality: string,
   recognition: boolean
@@ -406,7 +406,7 @@ export const recognizeError: RecognizeError = (
  * Distinguir error de evasión
  * Lo que importa es la relación del operador con lo que sabe
  */
-export const distinguishErrorFromEvasion: DistinguishErrorFromEvasion = (
+const distinguishErrorFromEvasion: DistinguishErrorFromEvasion = (
   action: string,
   reality: string,
   awareness: boolean
@@ -450,7 +450,7 @@ export const distinguishErrorFromEvasion: DistinguishErrorFromEvasion = (
  * Calcular costo de autonomía
  * Costo de sostenimiento = energía en mantener narrativa
  */
-export const calculateAutonomyCost: CalculateAutonomyCost = (cost: number): number => {
+const calculateAutonomyCost: CalculateAutonomyCost = (cost: number): number => {
   // Costo de no cambiar = costo de cambiar
   // La diferencia no está en la cantidad, está en la dirección
   return cost;
@@ -460,7 +460,7 @@ export const calculateAutonomyCost: CalculateAutonomyCost = (cost: number): numb
  * Calcular CDS (Capacidad de Soberanía)
  * CDS = capacidad × autonomía
  */
-export const calculateCDS: CalculateCDS = (capacity: number): number => {
+const calculateCDS: CalculateCDS = (capacity: number): number => {
   // CDS = AUT × CDS (autonomía × soberanía)
   // Simplificado: CDS ≈ capacity * autonomy_factor
   return capacity * 0.8; // factor autonomía base
@@ -470,7 +470,7 @@ export const calculateCDS: CalculateCDS = (capacity: number): number => {
  * Verificar presencia
  * Presencia = función que se ejecuta en cada micro-momento
  */
-export const verifyPresence: VerifyPresence = (operator: string): Presence => {
+const verifyPresence: VerifyPresence = (operator: string): Presence => {
   // En implementación real: leer sensores corporales, meditación, etc.
   return {
     active: true,
@@ -492,7 +492,7 @@ export const verifyPresence: VerifyPresence = (operator: string): Presence => {
  * Registrar huella
  * La verdad deja huella. La huella es que algo ocurrió.
  */
-export const registerHuella: RegisterHuella = (event: string, operatorId: string): Huella => ({
+const registerHuella: RegisterHuella = (event: string, operatorId: string): Huella => ({
   event,
   timestamp: Date.now(),
   operatorId,
@@ -502,7 +502,7 @@ export const registerHuella: RegisterHuella = (event: string, operatorId: string
  * Generar rastro
  * La verdad comprendida deja rastro. El rastro es lo que queda después de la comprensión integrada.
  */
-export const generateRastro: GenerateRastro = (
+const generateRastro: GenerateRastro = (
   understanding: string,
   direction: string,
   capacityModified: boolean,
@@ -519,7 +519,7 @@ export const generateRastro: GenerateRastro = (
  * Actualizar mapa vivo
  * La verdad deja huella, la verdad comprendida deja rastro, el rastro modifica el mapa
  */
-export const updateMapaVivo: UpdateMapaVivo = (rastro: Rastro): MapaVivo => {
+const updateMapaVivo: UpdateMapaVivo = (rastro: Rastro): MapaVivo => {
   // En implementación real: leer mapa actual, añadir rastro, actualizar versión
   return {
     version: 1,
@@ -534,7 +534,7 @@ export const updateMapaVivo: UpdateMapaVivo = (rastro: Rastro): MapaVivo => {
  * Convergencia de mapas
  * Múltiples operadores, reduciendo su evasión, llegan al mismo patrón estructural
  */
-export const convergeMaps: ConvergeMaps = (operators: string[]): Convergence => ({
+const convergeMaps: ConvergeMaps = (operators: string[]): Convergence => ({
   operators,
   pattern: 'E→V pattern recognized',
   reinforced: true,
@@ -545,7 +545,7 @@ export const convergeMaps: ConvergeMaps = (operators: string[]): Convergence => 
  * Verificar compatibilidad existencial
  * Se registra en el propio instrumento — cuerpo y conciencia
  */
-export const verifyCompatibility: VerifyCompatibility = (operators: string[]): CompatibilityExistential[] => {
+const verifyCompatibility: VerifyCompatibility = (operators: string[]): CompatibilityExistential[] => {
   return operators.map((op, i) => ({
     operatorA: operators[0],
     operatorB: op,
@@ -588,13 +588,13 @@ export const zeroOrigin: ZeroOrigin = (): ZeroOrigin => ({
 // RECORD HANDLING
 // ============================================================================
 
-export const createEVRecord = (form: EVRecordForm): EVRecord => ({
+const createEVRecord = (form: EVRecordForm): EVRecord => ({
   id: generateId(),
   ...form,
   timestamp: Date.now(),
 });
 
-export const validateEVRecord = (record: EVRecord): { valid: boolean; errors: string[] } => {
+const validateEVRecord = (record: EVRecord): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
   
   if (!['work', 'relationships', 'body', 'past', 'expectation', 'other'].includes(record.category)) {
@@ -686,8 +686,6 @@ export {
   type UpdateMapaVivo,
   type ConvergeMaps,
   type VerifyCompatibility,
-  type LegitimateSeparation,
-  type ZeroOrigin,
   // Functions
   makeEVState,
   energyToEfficiency,
@@ -707,8 +705,6 @@ export {
   updateMapaVivo,
   convergeMaps,
   verifyCompatibility,
-  legitimateSeparation,
-  zeroOrigin,
   createEVRecord,
   validateEVRecord,
 };

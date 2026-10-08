@@ -49,6 +49,20 @@ import type { EducaasState } from '@core/state/educaas'
 import type { EVState } from '@core/state/ev'
 import type { ALRACState } from '@core/state/alrac'
 import { makeALRACState } from '@core/state/alrac'
+import type { VideoState } from '@core/state/video'
+import { makeVideoState } from '@core/state/video'
+import type { HighlightState } from '@core/state/highlight'
+import { makeHighlightState } from '@core/state/highlight'
+import type { StoryState } from '@core/state/story'
+import { makeStoryState } from '@core/state/story'
+import type { CanvasState } from '@core/state/agentCanvas'
+import { makeCanvasState } from '@core/state/agentCanvas'
+import type { VisualState } from '@core/state/visual'
+import { makeVisualState } from '@core/state/visual'
+import type { AvatarState } from '@core/state/avatar'
+import { makeAvatarState } from '@core/state/avatar'
+import type { AuraState } from '@core/state/aura'
+import { makeAuraState } from '@core/state/aura-state-factory'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -290,19 +304,35 @@ export interface AppState {
   regen: RegenState
   vecinal: VecinalState
   // block/buzz asimilado
-  nostrRelay: NostrRelayState
-  agentMesh: AgentMeshState
-  // NVIDIA OO-Agents (NOOA) asimilado — capa agente-orobjeto isomorfa a agentMesh + Leyes MJ
-  nooa: NooaState
-  // ContentCreation-OS asimilado — co-pilot de contenido anfibio (gate humano = Ley III MJ)
-  content: ContentState
-  // usdglo (Glo Foundation USDGLO) asimilado — oráculo priceParity ReFi Nivel 3 anfibio
-  usdglo: UsdgloState
-  // NEAR asimilado
-  proofOfResponse: ProofOfResponseState
-  // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
-  stageSeeds: Record<string, Record<string, unknown>>
-  // actions
+    nostrRelay: NostrRelayState
+    agentMesh: AgentMeshState
+    // NVIDIA OO-Agents (NOOA) asimilado — capa agente-orobjeto isomorfa a agentMesh + Leyes MJ
+    nooa: NooaState
+    // ContentCreation-OS asimilado — co-pilot de contenido anfibio (gate humano = Ley III MJ)
+    content: ContentState
+    // usdglo (Glo Foundation USDGLO) asimilado — oráculo priceParity ReFi Nivel 3 anfibio
+    usdglo: UsdgloState
+    // NEAR asimilado
+    proofOfResponse: ProofOfResponseState
+    // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
+    stageSeeds: Record<string, Record<string, unknown>>
+
+    // ===== Video (Remotion) =====
+            video: VideoState
+            // ===== Highlight (AutoClip) =====
+            highlight: HighlightState
+            // ===== Story (MuMuAINovel) =====
+            story: StoryState
+            // ===== AgentCanvas (OpenHands) =====
+            canvas: CanvasState
+            // ===== Visual (RedInk) =====
+            visual: VisualState
+            // ===== Avatar (PersonaLive) =====
+                        avatar: AvatarState
+                        // ===== Aura (Proof of Aura) =====
+                        aura: AuraState
+
+                        // actions
   updateBase: (u: Partial<BaseMaterial>) => void
   updateCAC: (u: Partial<CACVectors>) => void
   addSensor: (s: Omit<SensorReading, 'id' | 'ts'>) => void
@@ -1545,36 +1575,38 @@ export const useAppStore = create<AppState>()(
         highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? exportHighlight(p, highlightId) : p) },
       })),
 
-      resetAll: () =>
-        set({
-          nodeName: 'Nodo Cosateca v0.1',
-          base: initialBase,
-          boundaries: initialBoundaries,
-          coworkers: initialCoworkers,
-          cac: initialCAC,
-          sensors: [],
-          members: [],
-          flows: [],
-          talents: initialTalents,
-          plans: initialPlans,
-          pvsos: [],
-          znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
-          agents: [], goals: [], tasks: [], audit: [],
-      // Story (MuMuAINovel)
-      story: { projects: [], chapters: [], outlines: [], activeProject: null },
-      // Visual (RedInk)
-      visual: { pieces: [], activePiece: null, history: [] },
-      // Avatar (PersonaLive)
-      avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
-      // AgentCanvas (OpenHands)
-      canvas: { agents: [], automations: [], logs: [] },
-      // Video (Remotion)
-            video: { compositions: [], activeComposition: null, playbackFrame: 0, playing: false },
+            resetAll: () =>
+              set({
+                nodeName: 'Nodo Cosateca v0.1',
+                base: initialBase,
+                boundaries: initialBoundaries,
+                coworkers: initialCoworkers,
+                cac: initialCAC,
+                sensors: [],
+                members: [],
+                flows: [],
+                talents: initialTalents,
+                plans: initialPlans,
+                pvsos: [],
+                znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
+                agents: [], goals: [], tasks: [], audit: [],
+            // Story (MuMuAINovel)
+            story: makeStoryState(),
+            // Visual (RedInk)
+            visual: { pieces: [], activePiece: null, history: [] },
+            // Avatar (PersonaLive)
+            avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
+            // AgentCanvas (OpenHands)
+            canvas: { agents: [], automations: [], logs: [] },
+            // Video (Remotion)
+            video: makeVideoState(),
             // Highlight (AutoClip)
-            highlight: { projects: [], activeProject: null },
-            // ALRAC (Consorcio de Transducción Soberana)
-            alrac: makeALRACState(),
-            // CaaS (Comunidad como Servicio reconciliado con MJ)
+                        highlight: makeHighlightState(),
+                        // ALRAC (Consorcio de Transducción Soberana)
+                        alrac: makeALRACState(),
+                        // Aura (Proof of Aura)
+                        aura: makeAuraState(),
+                        // CaaS (Comunidad como Servicio reconciliado con MJ)
             caasTier: 'visitante' as CaaSTierKey,
       caasMembers: [],
       caasStreams: [
@@ -1735,8 +1767,9 @@ audit: st.audit,
         lang: st.lang,
         lucidez: st.lucidez,
         ev: st.ev,
-        alrac: st.alrac,
-      }),
+                alrac: st.alrac,
+                aura: st.aura,
+              }),
     }
   )
 )
