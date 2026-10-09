@@ -63,6 +63,22 @@ import type { AvatarState } from '@core/state/avatar'
 import { makeAvatarState } from '@core/state/avatar'
 import type { AuraState } from '@core/state/aura'
 import { makeAuraState } from '@core/state/aura-state-factory'
+import type { TQState } from '@core/state/tq'
+import { makeTQState } from '@core/state/tq'
+import type { CPPState } from '@core/state/cpp'
+import { makeCPPState } from '@core/state/cpp'
+import type { ZNUState } from '@core/state/znu'
+import { makeZNUState } from '@core/state/znu'
+import type { SamayState } from '@core/state/samay'
+import { makeSamayState } from '@core/state/samay'
+import type { FeriaState } from '@core/state/feria'
+import { makeFeriaState } from '@core/state/feria'
+import type { CLCState } from '@core/state/clc'
+import { makeCLCState } from '@core/state/clc'
+import type { RuddickState } from '@core/state/ruddick'
+import { makeRuddickState } from '@core/state/ruddick'
+import type { VirginiaState } from '@core/state/virginia'
+import { makeVirginiaState } from '@core/state/virginia'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -203,11 +219,32 @@ export interface AppState {
         ev: EVState
 
         // ===== ALRAC (Consorcio de Transducción Soberana) =====
-        alrac: ALRACState
-        updateALRAC: (updates: Partial<ALRACState>) => void
-        resetALRAC: () => void
+                alrac: ALRACState
+                updateALRAC: (updates: Partial<ALRACState>) => void
+                resetALRAC: () => void
 
-      // ===== Orquestación (asimilado de Paperclip) =====
+              // ===== TQ (Transducción Quántica - Capa 1) =====
+                tq: TQState
+
+              // ===== CPP (Commitment Pooling Protocol - Capa 2) =====
+                cpp: CPPState
+
+              // ===== ZNU (Zeitnus Native Unit) =====
+                znu: ZNUState
+
+              // ===== Samay Permacultura =====
+                samay: SamayState
+
+              // ===== Feria Conuquera =====
+                feria: FeriaState
+
+              // ===== CLC/CPP (Cosmo-Local Credit) =====
+                clc: CLCState
+
+              // ===== Virginia Network (Prototipo IE v2) =====
+  virginia: VirginiaState
+
+              // ===== Orquestación (asimilado de Paperclip) =====
   agents: AgentNode[]
   goals: GoalNode[]
   tasks: TaskNode[]
@@ -872,6 +909,8 @@ export const useAppStore = create<AppState>()(
             sovereignCredit: makeSovereignCreditState(),
             regen: makeRegenState(),
             vecinal: makeVecinalState(),
+            // Virginia Network (Prototipo IE v2)
+            virginia: makeVirginiaState(),
             // block/buzz asimilado
             nostrRelay: makeNostrRelayState(),
             agentMesh: makeAgentMeshState(),
@@ -1576,38 +1615,52 @@ export const useAppStore = create<AppState>()(
       })),
 
             resetAll: () =>
-              set({
-                nodeName: 'Nodo Cosateca v0.1',
-                base: initialBase,
-                boundaries: initialBoundaries,
-                coworkers: initialCoworkers,
-                cac: initialCAC,
-                sensors: [],
-                members: [],
-                flows: [],
-                talents: initialTalents,
-                plans: initialPlans,
-                pvsos: [],
-                znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
-                agents: [], goals: [], tasks: [], audit: [],
-            // Story (MuMuAINovel)
-            story: makeStoryState(),
-            // Visual (RedInk)
-            visual: { pieces: [], activePiece: null, history: [] },
-            // Avatar (PersonaLive)
-            avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
-            // AgentCanvas (OpenHands)
-            canvas: { agents: [], automations: [], logs: [] },
-            // Video (Remotion)
-            video: makeVideoState(),
-            // Highlight (AutoClip)
-                        highlight: makeHighlightState(),
-                        // ALRAC (Consorcio de Transducción Soberana)
-                        alrac: makeALRACState(),
-                        // Aura (Proof of Aura)
-                        aura: makeAuraState(),
-                        // CaaS (Comunidad como Servicio reconciliado con MJ)
-            caasTier: 'visitante' as CaaSTierKey,
+                          set({
+                            nodeName: 'Nodo Cosateca v0.1',
+                            base: initialBase,
+                            boundaries: initialBoundaries,
+                            coworkers: initialCoworkers,
+                            cac: initialCAC,
+                            sensors: [],
+                            members: [],
+                            flows: [],
+                            talents: initialTalents,
+                            plans: initialPlans,
+                            pvsos: [],
+                            znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
+                            agents: [], goals: [], tasks: [], audit: [],
+                        // Story (MuMuAINovel)
+                        story: makeStoryState(),
+                        // Visual (RedInk)
+                        visual: { pieces: [], activePiece: null, history: [] },
+                        // Avatar (PersonaLive)
+                        avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
+                        // AgentCanvas (OpenHands)
+                        canvas: { agents: [], automations: [], logs: [] },
+                        // Video (Remotion)
+                        video: makeVideoState(),
+                        // Highlight (AutoClip)
+                                    highlight: makeHighlightState(),
+                                    // ALRAC (Consorcio de Transducción Soberana)
+                                    alrac: makeALRACState(),
+                                    // Aura (Proof of Aura)
+                                    aura: makeAuraState(),
+                                    // TQ (Transducción Quántica - Capa 1)
+                                    tq: makeTQState(),
+                                    // CPP (Commitment Pooling Protocol - Capa 2)
+                                    cpp: makeCPPState(),
+                                    // ZNU (Zeitnus Native Unit)
+                                    znu: makeZNUState(),
+                                    // Samay Permacultura
+                                    samay: makeSamayState(),
+                                    // Feria Conuquera
+                                    feria: makeFeriaState(),
+                                    // CLC/CPP (Cosmo-Local Credit)
+                                    clc: makeCLCState(),
+                                    // Ruddick/GEF (Grassroots Economics Foundation)
+                                    ruddick: makeRuddickState(),
+                                    // CaaS (Comunidad como Servicio reconciliado con MJ)
+                        caasTier: 'visitante' as CaaSTierKey,
       caasMembers: [],
       caasStreams: [
         { key: 'suscripcion', name: 'Suscripción de pertenencia (stake ZNU)', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
@@ -1769,6 +1822,13 @@ audit: st.audit,
         ev: st.ev,
                 alrac: st.alrac,
                 aura: st.aura,
+                tq: st.tq,
+                cpp: st.cpp,
+                znu: st.znu,
+                samay: st.samay,
+                feria: st.feria,
+                clc: st.clc,
+                ruddick: st.ruddick,
               }),
     }
   )

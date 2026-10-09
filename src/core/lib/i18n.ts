@@ -70,6 +70,7 @@ export const I18N: Dict = {
   'nav.agentes': { es: 'Agentes', en: 'Agents', pt: 'Agentes' },
     'nav.ev': { es: 'E→V · Energía→Eficiencia', en: 'E→V · Energy→Efficiency', pt: 'E→V · Energia→Eficiência' },
       'nav.alrac': { es: 'ALRAC · Consorcio Transducción', en: 'ALRAC · Transduction Consortium', pt: 'ALRAC · Consórcio Transdução' },
+      'nav.virginia': { es: 'Virginia Network', en: 'Virginia Network', pt: 'Virginia Network' },
 
       // Títulos de módulos (h1)
   'title.base': { es: 'Base Material', en: 'Material Base', pt: 'Base Material' },
