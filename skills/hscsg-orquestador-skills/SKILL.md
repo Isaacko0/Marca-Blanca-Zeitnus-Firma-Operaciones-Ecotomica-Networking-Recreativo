@@ -1,18 +1,18 @@
 ---
 name: hscsg-orquestador-skills
 description: >-
-  Skill maestra orquestadora de HSCSG v15 OS. Actúa como ROUTER entre las 9 skills propias:
+  Skill maestra orquestadora de HSCSG v15 OS. Actúa como ROUTER entre las 10 skills propias:
   detecta la intención del usuario y despacha a la skill correcta (o combina varias vía vasos
   comunicantes). Cubre asimilación de repos, protocolo científico (EBD), Sistema Alráico
   (loopEngine/γ-CARMIS), Coeficiente de Autonomía (AUT/CDS/Leyes MJ), monetary-integration,
-  document-architect, multi-framework-integration, repo-assimilation y unified-assimilation-science.
-  Garantiza que TODA fuente externa se asimile como módulo vivo Y documento trazable, y que el
+  document-architect, multi-framework-integration, repo-assimilation, unified-assimilation-science
+  y zeitnus-anthropology-analyzer. Garantiza que TODA fuente externa se asimile como módulo vivo Y documento trazable, y que el
   motor Alráico y la soberanía del nodo operen con vasos comunicantes cruzados.
 license: MIT
 author: HSCSG + Hermes Agent
 metadata:
   hermes:
-    tags: [hscsg, orquestador, router-skills, vasos-comunicantes, asimilacion, ciencia, alraico, autonomia]
+    tags: [hscsg, orquestador, router-skills, vasos-comunicantes, asimilacion, ciencia, alraico, autonomia, epistemologia]
     related_skills:
       - hscsg-repo-assimilation
       - hscsg-scientific-papers
@@ -23,6 +23,7 @@ metadata:
       - hscsg-document-architect
       - hscsg-multi-framework-integration
       - Sistema-Alraico-loop-engineering-skill
+      - hscsg-zeitnus-anthropology-analyzer
 ---
 
 # HSCSG v15 OS — Orquestador de Skills (Router + Vasos Comunicantes)
@@ -48,7 +49,8 @@ cruzada evidencia → decisión → código → test → skill → paper).
 | 6 | `hscsg-monetary-integration` | Sistemas monetarios alt. (G1, Túmin, PAR, ZCS/ZNU) | "integrar moneda X", "arquitectura monetaria" |
 | 7 | `hscsg-document-architect` | Documentos fundacionales unificados (BRIEF, modelo) | "documento exhaustivo", "modelo civilizatorio" |
 | 8 | `hscsg-multi-framework-integration` | Multi-framework (DisCO, 8 Capitales, Integral) | "integrar marco X en doc base" |
-| 9 | `Sistema-Alraico-loop-engineering-skill` (`loop-engineering-canvas`) | Canvas epistémico universal (20 límites, ECROx, triaxial) | "diagnosticar problema estancado", "canvas de bucles" |
+|| 9 | `Sistema-Alraico-loop-engineering-skill` (`loop-engineering-canvas`) | Canvas epistémico universal (20 límites, ECROx, triaxial) | "diagnosticar problema estancado", "canvas de bucles" |
+|| 10 | `hscsg-zeitnus-anthropology-analyzer` | Analizador epistemológico estilo @helenasarda: humor, antropología, dinámicas conductuales | "analiza el repo como @helenasarda", "perfil epistemológico ALRAC", "dinámicas de grupo en el código" |
 
 ---
 
@@ -68,6 +70,8 @@ INTENCIÓN DEL USUARIO
        ├─ "documento exhaustivo / modelo civilizatorio" ──► hscsg-document-architect
        ├─ "integrar marco (DisCO/Integral/8 Cap)" ────────► hscsg-multi-framework-integration
        ├─ "problema estancado / diagnosticar bucles" ─────► Sistema-Alraico-loop-engineering-skill
+       ├─ "analiza el repo como @helenasarda" ────────────► hscsg-zeitnus-anthropology-analyzer
+       │                                                    (+ orquestador: vasos comunicantes)
        └─ tarea mixta / ambigua ──────────────────────────► hscsg-unified-assimilation-science
                                                             (que a su vez invoca las específicas)
 ```
@@ -76,6 +80,7 @@ INTENCIÓN DEL USUARIO
 - Asimilar repo **+** documentar paper → `repo-assimilation` → `scientific-papers` (vaso: módulo↔EBD)
 - Correr motor **+** medir soberanía → `sistema-alraico` ↔ `coeficiente-autonomia` (vaso: overloads lucidez↔Ley III)
 - Monetary **+** documento → `monetary-integration` → `document-architect` (vaso: ZCS/ZNU↔arquitectura)
+- Analizar epistemología **+** orquestar skills → `zeitnus-anthropology-analyzer` ↔ `orquestador-skills` (vaso: perfil↔router)
 
 ---
 
@@ -83,16 +88,17 @@ INTENCIÓN DEL USUARIO
 
 Cada skill debe citar a las hermanas cuando su salida dependa de ellas:
 
-| Contexto | Formato de cita | Ejemplo |
-|---|---|---|
-| Módulo asimilado | `[repo:<nombre>]` | `hscsg-repo-assimilation` |
-| Decisión EBD | `[EBD-D#]` | `hscsg-scientific-papers` / `unified` |
-| Motor/γ-CARMIS | `[alraico:loopEngine]` | `hscsg-sistema-alraico` |
-| AUT/CDS/MJ | `[aut:CDS]` / `[mj:LeyIII]` | `hscsg-coeficiente-autonomia` |
-| Moneda | `[mon:G1]` / `[mon:ZNU]` | `hscsg-monetary-integration` |
-| Doc fundacional | `[doc:BRIEF§2]` | `hscsg-document-architect` |
-| Marco | `[mf:DisCO]` | `hscsg-multi-framework-integration` |
-| Canvas | `[canvas:20limites]` | `Sistema-Alraico-loop-engineering-skill` |
+|| Contexto | Formato de cita | Ejemplo |
+||---|---|---|
+|| Módulo asimilado | `[repo:<nombre>]` | `hscsg-repo-assimilation` |
+|| Decisión EBD | `[EBD-D#]` | `hscsg-scientific-papers` / `unified` |
+|| Motor/γ-CARMIS | `[alraico:loopEngine]` | `hscsg-sistema-alraico` |
+|| AUT/CDS/MJ | `[aut:CDS]` / `[mj:LeyIII]` | `hscsg-coeficiente-autonomia` |
+|| Moneda | `[mon:G1]` / `[mon:ZNU]` | `hscsg-monetary-integration` |
+|| Doc fundacional | `[doc:BRIEF§2]` | `hscsg-document-architect` |
+|| Marco | `[mf:DisCO]` | `hscsg-multi-framework-integration` |
+|| Canvas | `[canvas:20limites]` | `Sistema-Alraico-loop-engineering-skill` |
+|| Perfil epistemológico | `[epist:humor]` / `[epist:antropo]` / `[epist:conduct]` | `hscsg-zeitnus-anthropology-analyzer` |
 
 ---
 
