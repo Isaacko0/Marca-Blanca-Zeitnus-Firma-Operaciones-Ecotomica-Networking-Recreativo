@@ -1,18 +1,18 @@
 ---
 name: hscsg-orquestador-skills
 description: >-
-  Skill maestra orquestadora de HSCSG v15 OS. Actúa como ROUTER entre las 10 skills propias:
+  Skill maestra orquestadora de HSCSG v15 OS. Actúa como ROUTER entre las 11 skills propias:
   detecta la intención del usuario y despacha a la skill correcta (o combina varias vía vasos
   comunicantes). Cubre asimilación de repos, protocolo científico (EBD), Sistema Alráico
   (loopEngine/γ-CARMIS), Coeficiente de Autonomía (AUT/CDS/Leyes MJ), monetary-integration,
-  document-architect, multi-framework-integration, repo-assimilation, unified-assimilation-science
-  y zeitnus-anthropology-analyzer. Garantiza que TODA fuente externa se asimile como módulo vivo Y documento trazable, y que el
+  document-architect, multi-framework-integration, repo-assimilation, unified-assimilation-science,
+  zeitnus-anthropology-analyzer y zeitnus-meme-diffusion. Garantiza que TODA fuente externa se asimile como módulo vivo Y documento trazable, y que el
   motor Alráico y la soberanía del nodo operen con vasos comunicantes cruzados.
 license: MIT
 author: HSCSG + Hermes Agent
 metadata:
   hermes:
-    tags: [hscsg, orquestador, router-skills, vasos-comunicantes, asimilacion, ciencia, alraico, autonomia, epistemologia]
+    tags: [hscsg, orquestador, router-skills, vasos-comunicantes, asimilacion, ciencia, alraico, autonomia, epistemologia, difusion]
     related_skills:
       - hscsg-repo-assimilation
       - hscsg-scientific-papers
@@ -24,6 +24,7 @@ metadata:
       - hscsg-multi-framework-integration
       - Sistema-Alraico-loop-engineering-skill
       - hscsg-zeitnus-anthropology-analyzer
+      - hscsg-zeitnus-meme-diffusion
 ---
 
 # HSCSG v15 OS — Orquestador de Skills (Router + Vasos Comunicantes)
@@ -37,20 +38,21 @@ cruzada evidencia → decisión → código → test → skill → paper).
 
 ---
 
-## 1. Catálogo de Skills Propias (9)
+## 1. Catálogo de Skills Propias (11)
 
-| # | Skill | Dominio | Cuándo invocarla |
-|---|---|---|---|
-| 1 | `hscsg-repo-assimilation` | Asimilar repo externo como módulo vivo (4 fases) | "asimilar <repo>", "integrar código de <fuente>" |
-| 2 | `hscsg-scientific-papers` | Protocolo papers (EBD, vasos comunicantes) | "generar paper/white paper/brief científico" |
-| 3 | `hscsg-unified-assimilation-science` | Fusión asimilación + ciencia (maestra base) | tarea mixta repo+paper, o fallback metodológico |
-| 4 | `hscsg-sistema-alraico` | Kernel loopEngine: γ-CARMIS, resonancia, sobrecargas | "correr motor", "simular Alráico", "disparar γ-CARMIS" |
-| 5 | `hscsg-coeficiente-autonomia` | AUT, CDS, 3 Leyes MJ, soberanía del nodo | "medir autonomía", "evaluar CDS", "aplicar Leyes MJ" |
-| 6 | `hscsg-monetary-integration` | Sistemas monetarios alt. (G1, Túmin, PAR, ZCS/ZNU) | "integrar moneda X", "arquitectura monetaria" |
-| 7 | `hscsg-document-architect` | Documentos fundacionales unificados (BRIEF, modelo) | "documento exhaustivo", "modelo civilizatorio" |
-| 8 | `hscsg-multi-framework-integration` | Multi-framework (DisCO, 8 Capitales, Integral) | "integrar marco X en doc base" |
+|| # | Skill | Dominio | Cuándo invocarla |
+||---|---|---|---|
+|| 1 | `hscsg-repo-assimilation` | Asimilar repo externo como módulo vivo (4 fases) | "asimilar <repo>", "integrar código de <fuente>" |
+|| 2 | `hscsg-scientific-papers` | Protocolo papers (EBD, vasos comunicantes) | "generar paper/white paper/brief científico" |
+|| 3 | `hscsg-unified-assimilation-science` | Fusión asimilación + ciencia (maestra base) | tarea mixta repo+paper, o fallback metodológico |
+|| 4 | `hscsg-sistema-alraico` | Kernel loopEngine: γ-CARMIS, resonancia, sobrecargas | "correr motor", "simular Alráico", "disparar γ-CARMIS" |
+|| 5 | `hscsg-coeficiente-autonomia` | AUT, CDS, 3 Leyes MJ, soberanía del nodo | "medir autonomía", "evaluar CDS", "aplicar Leyes MJ" |
+|| 6 | `hscsg-monetary-integration` | Sistemas monetarios alt. (G1, Túmin, PAR, ZCS/ZNU) | "integrar moneda X", "arquitectura monetaria" |
+|| 7 | `hscsg-document-architect` | Documentos fundacionales unificados (BRIEF, modelo) | "documento exhaustivo", "modelo civilizatorio" |
+|| 8 | `hscsg-multi-framework-integration` | Multi-framework (DisCO, 8 Capitales, Integral) | "integrar marco X en doc base" |
 || 9 | `Sistema-Alraico-loop-engineering-skill` (`loop-engineering-canvas`) | Canvas epistémico universal (20 límites, ECROx, triaxial) | "diagnosticar problema estancado", "canvas de bucles" |
 || 10 | `hscsg-zeitnus-anthropology-analyzer` | Analizador epistemológico estilo @helenasarda: humor, antropología, dinámicas conductuales | "analiza el repo como @helenasarda", "perfil epistemológico ALRAC", "dinámicas de grupo en el código" |
+|| 11 | `hscsg-zeitnus-meme-diffusion` | Difusión memeética afiliativa TikTok/FB: conceptos → humor ALRAC | "difunde esto: <concepto>", "campaña: <tema>", "réplica: <noticia>" |
 
 ---
 
@@ -70,17 +72,24 @@ INTENCIÓN DEL USUARIO
        ├─ "documento exhaustivo / modelo civilizatorio" ──► hscsg-document-architect
        ├─ "integrar marco (DisCO/Integral/8 Cap)" ────────► hscsg-multi-framework-integration
        ├─ "problema estancado / diagnosticar bucles" ─────► Sistema-Alraico-loop-engineering-skill
-       ├─ "analiza el repo como @helenasarda" ────────────► hscsg-zeitnus-anthropology-analyzer
-       │                                                    (+ orquestador: vasos comunicantes)
-       └─ tarea mixta / ambigua ──────────────────────────► hscsg-unified-assimilation-science
-                                                            (que a su vez invoca las específicas)
-```
+              ├─ "analiza el repo como @helenasarda" ────────────► hscsg-zeitnus-anthropology-analyzer
+              │                                                    (+ orquestador: vasos comunicantes)
+              ├─ "difunde esto: <concepto>" ─────────────────────► hscsg-zeitnus-meme-diffusion
+              │                                                    (+ anthropology: estilo + vasos)
+              ├─ "campaña: <tema>" ──────────────────────────────► hscsg-zeitnus-meme-diffusion
+              │                                                    (+ anthropology: serie coherente)
+              ├─ "réplica: <noticia>" ───────────────────────────► hscsg-zeitnus-meme-diffusion
+              │                                                    (+ anthropology: tono reactivo)
+              └─ tarea mixta / ambigua ──────────────────────────► hscsg-unified-assimilation-science
+                                                                   (que a su vez invoca las específicas)
+       ```
 
-**Combinaciones frecuentes (vasos comunicantes abiertos):**
-- Asimilar repo **+** documentar paper → `repo-assimilation` → `scientific-papers` (vaso: módulo↔EBD)
-- Correr motor **+** medir soberanía → `sistema-alraico` ↔ `coeficiente-autonomia` (vaso: overloads lucidez↔Ley III)
-- Monetary **+** documento → `monetary-integration` → `document-architect` (vaso: ZCS/ZNU↔arquitectura)
-- Analizar epistemología **+** orquestar skills → `zeitnus-anthropology-analyzer` ↔ `orquestador-skills` (vaso: perfil↔router)
+       **Combinaciones frecuentes (vasos comunicantes abiertos):**
+       - Asimilar repo **+** documentar paper → `repo-assimilation` → `scientific-papers` (vaso: módulo↔EBD)
+       - Correr motor **+** medir soberanía → `sistema-alraico` ↔ `coeficiente-autonomia` (vaso: overloads lucidez↔Ley III)
+       - Monetary **+** documento → `monetary-integration` → `document-architect` (vaso: ZCS/ZNU↔arquitectura)
+       - Analizar epistemología **+** orquestar skills → `zeitnus-anthropology-analyzer` ↔ `orquestador-skills` (vaso: perfil↔router)
+       - Difusión **+** análisis estilo → `zeitnus-meme-diffusion` ↔ `zeitnus-anthropology-analyzer` (vaso: pack↔perfil)
 
 ---
 
@@ -98,7 +107,8 @@ Cada skill debe citar a las hermanas cuando su salida dependa de ellas:
 || Doc fundacional | `[doc:BRIEF§2]` | `hscsg-document-architect` |
 || Marco | `[mf:DisCO]` | `hscsg-multi-framework-integration` |
 || Canvas | `[canvas:20limites]` | `Sistema-Alraico-loop-engineering-skill` |
-|| Perfil epistemológico | `[epist:humor]` / `[epist:antropo]` / `[epist:conduct]` | `hscsg-zeitnus-anthropology-analyzer` |
+||| Perfil epistemológico | `[epist:humor]` / `[epist:antropo]` / `[epist:conduct]` | `hscsg-zeitnus-anthropology-analyzer` |
+||| Pack difusión | `[diff:pack]` / `[diff:campaign]` / `[diff:reply]` | `hscsg-zeitnus-meme-diffusion` |
 
 ---
 

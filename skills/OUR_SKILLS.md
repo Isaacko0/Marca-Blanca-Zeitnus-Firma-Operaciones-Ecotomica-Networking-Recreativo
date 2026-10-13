@@ -8,9 +8,9 @@ de las skills de instalación de Hermes (agency-*, business-design/*, software-d
 - Viven en `HSCSG_v15_OS/skills/` (carpetas `SKILL.md`) y se espejan a `~/.hermes/skills/hscsg/`.
 - El cron `sync_docs.sh` las re-copia automáticamente al índice de Hermes.
 
-## Skills propias (creadas en conjunto) — 11 TOTAL
+## Skills propias (creadas en conjunto) — 12 TOTAL
 
-> **Ubicación:** Todas en `HSCSG_v15_OS/skills/<nombre>/` (carpetas SKILL.md) y
+> **Ubicación:** Todas en `HSCSG_v15_OS/skills/<nombre>/` (carpetas `SKILL.md`) y
 > indexadas en `~/.hermes/skills/hscsg/<nombre>/` (verificadas `available`).
 
 || # | Skill (name) | Dominio | Indexada |
@@ -26,6 +26,7 @@ de las skills de instalación de Hermes (agency-*, business-design/*, software-d
 || 9 | `hscsg-sistema-alraico` | **NUEVA** Kernel loopEngine: γ-CARMIS, resonancia, sobrecargas | ✅ (available) |
 || 10 | `hscsg-orquestador-skills` | **NUEVA** Router maestro + vasos comunicantes entre las 9 | ✅ (available) |
 || 11 | `hscsg-zeitnus-anthropology-analyzer` | **NUEVA** Analizador epistemológico estilo @helenasarda: humor, antropología, dinámicas conductuales del repo | ✅ (available) |
+|| 12 | `hscsg-zeitnus-meme-diffusion` | **NUEVA** Difusión memeética afiliativa TikTok/FB: conceptos → humor ALRAC | ✅ (available) |
 
 ## Skills de instalación de Hermes (NO nuestras — no tocar con cron)
 
