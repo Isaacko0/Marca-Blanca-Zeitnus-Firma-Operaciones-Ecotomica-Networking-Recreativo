@@ -409,4 +409,82 @@ export async function updateConversionFactor(region: string): Promise<Conversion
 
 ---
 
-*Documento generado por asimilación rigurosa de repositorios públicos bajo licencias permisivas (MIT, CC0-1.0). Conceptos de economía post-trabajo, UHI Simulator, EAI Dashboard y GAIA Initiative mapeados a arquitectura ALRAC/TQ sin reproducir contenido protegido.*
+## 13. Colaboración Estratégica: Pepe Sevilla (DeseOS/ContenOS/Soul.MBA)
+
+> **Nota**: Esta colaboración **no está dada por hecho** en el repo; se documenta aquí como dependencia estratégica explícita para la ejecución del plan.
+
+### 13.1 Qué Aporta DeseOS/ContenOS
+
+| Capacidad DeseOS | Mapeo a Plan Shapiro→TQ | Archivo/Componente |
+|------------------|-------------------------|-------------------|
+| **Arquitectura Anfibia (ZNU↔USD)** | `valueDual.ts` + `nodeMode`/`priceParity` → base para TQ Dual-Layer (Flow/Stock) | `src/core/lib/valueDual.ts` |
+| **Pipeline Contenido P1→P11** | 11 módulos metodológicos → UI del Simulador Post-Labor (`/alrac` tab) | `src/modules/agencia/P1-P11` |
+| **Auto-llenado BranDNA→VITCH** | Generación automática piezas → Motor escenarios UHI (presets Proactive/Reactive/Delayed) | `src/core/lib/vitch-generator.ts` |
+| **Coach FAB (Happpy)** | Asistente IA integrado → Guía interactiva en Simulador TQ | `src/components/CoachFAB.tsx` |
+| **Roles Creative/Operator** | Sidebar Motor/Crecimiento → Perfiles usuario Simulador (Policy Maker / Node Operator / Citizen) | `src/app/screens/ALRAC.tsx` |
+| **Pagos/Pauta Anfibios** | Módulo facturación dual → `RegionalDividendFund` distribution + external commerce | `src/core/lib/tq-regional-dividend.ts` |
+
+### 13.2 Integración Requerida (Fase 0 - Semana 1)
+
+```typescript
+// src/core/lib/deseos-bridge.ts (NUEVO - puente DeseOS → TQ Post-Labor)
+
+import type { ValueDual, NodeMode } from '@core/lib/valueDual';
+import type { TQDividendPolicy, UHIParameters } from './tq-uhi-engine';
+
+// 1. Reutilizar valueDual para render dual TQ Stock/Flow
+export function renderTQValue(
+  amount: number, 
+  mode: NodeMode, 
+  parity: number,
+  layer: 'flow' | 'stock'
+): ValueDual {
+  // Flow: ±500 TQ (reciprocidad) — Stock: sin límite (equity kWh/año)
+  const unit = layer === 'flow' ? 'TQ' : 'TQ-kWh/yr';
+  return {
+    amount,
+    unit: mode === 'conectado' ? 'USD' : unit,
+    display: mode === 'conectado' 
+      ? `$${(amount * parity).toLocaleString()}`
+      : `${amount.toLocaleString()} ${unit}`
+  };
+}
+
+// 2. Mapear parámetros UHI → DeseOS BranDNA (ICP, Strategic Brain, escalera 5M)
+export function mapUHIToBranDNA(uhi: UHIParameters): BranDNAConfig {
+  return {
+    icp: defineICPFromAutomationPace(uhi.automationPace),
+    strategicBrain: defineStrategyFromRevenueToggles(uhi),
+    escalera5M: mapIncomeStreamsToLadder(uhi.enabledStreams),
+    nodeMode: uhi.targetMode // 'postmonetario' | 'conectado'
+  };
+}
+
+// 3. Generar escenarios UHI via auto-llenado VITCH
+export function generateUHIScenariosViaVITCH(branDNA: BranDNAConfig): UHIScenario[] {
+  // Usa motor VITCH de DeseOS para crear 4 presets: Proactive/Reactive/Delayed/NoAction
+  return vitchEngine.generate(branDNA, ['proactive', 'reactive', 'delayed', 'noAction']);
+}
+```
+
+### 13.3 Dependencias Críticas
+
+| Dependencia | Estado | Acción Requerida |
+|-------------|--------|------------------|
+| `DeseOS_project1.zip` (Fuente) | ✅ Disponible (Pepe Sevilla / Soul.MBA) | Confirmar acceso y licencia MIT |
+| `valueDual.ts` + `nodeMode`/`priceParity` | ✅ En `src/core/lib/` | Verificar compatibilidad con TQ Dual-Layer |
+| Módulos P1-P11 (39 bundles) | ⏳ Pendiente migración | Fase 0: migrar a `src/modules/agencia/` |
+| CoachFAB.tsx (Happpy) | ✅ Implementado en HSCSG | Adaptar a Simulador TQ (`/alrac`) |
+| `vitch-generator.ts` (BranDNA→VITCH) | ⏳ Por extraer de DeseOS | Extraer de `DeseOS_extracted/src/modules/P5_VITCH/` |
+
+### 13.4 Protocolo de Coordinación (Pepe Sevilla ↔ ALRAC)
+
+1. **Acceso a fuente**: Confirmar `DeseOS_project1.zip` actualizado + licencia MIT explícita
+2. **Mapeo técnico**: Sesión de trabajo (2h) para alinear `valueDual` ↔ `tq-equity/dividend`
+3. **Migración P1-P11**: Definir qué módulos son core vs opcionales para Simulador TQ
+4. **Testing conjunto**: Validar que presets UHI generados via VITCH coinciden con outputs esperados
+5. **Deploy coordinado**: Vercel preview compartido para validación UX/UI
+
+---
+
+*Documento generado por asimilación rigurosa de repositorios públicos bajo licencias permisivas (MIT, CC0-1.0). Conceptos de economía post-trabajo, UHI Simulator, EAI Dashboard y GAIA Initiative mapeados a arquitectura ALRAC/TQ sin reproducir contenido protegido. Colaboración Pepe Sevilla (DeseOS/ContenOS/Soul.MBA) documentada como dependencia estratégica explícita, no asumida.*
