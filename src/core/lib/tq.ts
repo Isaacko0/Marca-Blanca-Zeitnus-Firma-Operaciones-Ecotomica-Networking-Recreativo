@@ -1272,9 +1272,61 @@ export function computeStakingScore(stack: EnterpriseStakingStack): number {
   const normalizedRegeneration = Math.min(metrics.regenerationRatio, 1);
   
   return (
-    normalizedLiquidity * weights.liquidity +
-    normalizedStability * weights.stability +
-    normalizedPatrimony * weights.patrimony +
-    normalizedRegeneration * weights.regeneration
-  ) * 100; // Score 0-100
-}
+      normalizedLiquidity * weights.liquidity +
+      normalizedStability * weights.stability +
+      normalizedPatrimony * weights.patrimony +
+      normalizedRegeneration * weights.regeneration
+    ) * 100; // Score 0-100
+  }
+
+  // ============================================================================
+  // RE-EXPORTS: Extended TQ Types (UHI Engine, Equity, Dividends, Pools)
+  // ============================================================================
+
+  export type {
+    TQEquityAccount,
+    TQShare,
+    GovernanceRights,
+    ProductiveAsset,
+    OwnershipStructure,
+    TQDividendPolicy,
+    DividendCalculation,
+    DividendDistribution,
+    DividendExecutionResult,
+    EquityPool,
+    EquityPoolType,
+    EquityPoolMember,
+    EquityPoolGovernance,
+    RegionalDividendFund,
+    RegionalDividendPolicy,
+    RegionalRecipient,
+    LandDividendEntry,
+    ExtendedAutonomyMetrics,
+    UHIParameters,
+    UHIYearlyResult,
+    UHIResult,
+    ValidationResult,
+  } from './tq-types-extended';
+
+  // UHI Engine functions
+  export {
+    mapUHIParamsToTQDividendPolicies,
+    computeRevenueFactor,
+    computeAutomationLevel,
+    computeAutoFromBase,
+    computeGDP,
+    computeWages,
+    computeSocialInsurance,
+    computeSWFDividend,
+    computeUBI,
+    computeESOP,
+    computeBabyBonds,
+    computeDataRoyalty,
+    computeCarbonDividend,
+    computePrivateInvestment,
+    computeDemonetizationGain,
+    simulateUHI,
+    createUHIParams,
+    validateAgainstUHISimulator,
+    UHI_PRESETS,
+  } from './tq-uhi-engine';
