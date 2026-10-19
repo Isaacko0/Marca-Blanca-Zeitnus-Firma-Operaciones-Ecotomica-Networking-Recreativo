@@ -1,13 +1,15 @@
-# ALRAC Specs Indexer
+# SPEC INDEXER: ALRAC/TQ/Zeitnus Specification Catalog
 
-**Versión:** 2.1  
-**Fecha:** 2026-10-07  
-**Total Specs:** 25 (19 originales/simulación + 6 nuevas asimilación real)  
-**Estado:** Todos en `openspec/specs/`
+## Overview
+This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regenerative economics stack. Each spec maps external sources (OASA, DisCO, Closer, ElizaOS, ValueFlows, Aragon, etc.) to TypeScript implementations in `src/core/lib/`.
+
+**Total Specs:** 37 (25 original + 12 new from external scraping assimilation)
+**Implemented:** 23 (19 original + 4 Fase 1-2 + Pilot)
+**Designed:** 4 (Fase 3+ pending implementation)
 
 ---
 
-## 📋 Índice Completo por Capa
+## Original ALRAC Specifications (25)
 
 ### **Capa 0: Epistémica / Normativa** (Originales)
 | # | Archivo | Descripción | Estado |
@@ -51,185 +53,205 @@
 ### **Capa 2: Interoperabilidad (CaaS/HSCSG)** (Simulación)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 23 | `alrac-caas-revenue-streams.md` | 6 streams, validación Gate MJ, CSA | ✅ Simulación |
-| 24 | `alrac-caas-membership.md` | 3 niveles (Afiliados/Asociados/Núcleo), derechos, transiciones | ✅ Simulación |
+| 24 | `alrac-caas-revenue-streams.md` | 6 streams, validación Gate MJ, CSA | ✅ Simulación |
+| 25 | `alrac-caas-membership.md` | 3 niveles (Afiliados/Asociados/Núcleo), derechos, transiciones | ✅ Simulación |
 
 ### **Capa 3: Membrana Fiat (ZEITNUS)** (Simulación)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 25 | `alrac-znu-indexing-credit.md` | Canasta básica, crédito 2-3%, expiración Postulado 4, 1a1v | ✅ Simulación |
-| 26 | `alrac-fiat-layer.md` | Bridge USDC, 4 niveles ReFi, priceParity oracle, anfibio | ✅ Simulación |
+| 26 | `alrac-znu-indexing-credit.md` | Canasta básica, crédito 2-3%, expiración Postulado 4, 1a1v | ✅ Simulación |
+| 27 | `alrac-fiat-layer.md` | Bridge USDC, 4 niveles ReFi, priceParity oracle, anfibio | ✅ Simulación |
 
 ### **Capa 5: Gobernanza Transversal** (Simulación)
 | # | Archivo | Descripción | Estado |
 |---|---------|-------------|--------|
-| 27 | `alrac-governance-holonic.md` | 1a1v, CDS, subsidiaridad, comités rotativos, veto, triaxial | ✅ Simulación |
+| 28 | `alrac-governance-holonic.md` | 1a1v, CDS, subsidiaridad, comités rotativos, veto, triaxial | ✅ Simulación |
 
 ---
 
-## 🔗 Trazabilidad de Creación
+## New Specifications from External Scraping Assimilation (12)
 
-| Spec | Generado Por | Contexto |
-|------|--------------|----------|
-| 1-4 | Sesión previa (humano + asistente) | Specs fundacionales ALRAC |
-| 5-6 | Asimilación Nondominium + Ruddick TQ/CPP | Core protocol specs |
-| 7-16 | Sesión previa | Specs fundacionales TQ |
-| 17 | Asimilación +Colonia (mascolonia.com) | Nodo piloto urbano |
-| 18 | Asimilación Feria Conuquera (feria.loanstly.com) | Nodo vivo 10 años |
-| 19 | Asimilación Samay Permacultura (sites.google.com) | Nodo 20 años Ecuador |
-| 20 | Asimilación CLC (docs.cosmolocal.credit) | Bridge White Paper v0.8 |
-| 21 | Asimilación ArchiDiagram (archidiagram.com) | Nodo 60k arquitectos |
-| 22 | Asimilación Febhouse Studio (febhouse.com) | 3 plugins + 9 proyectos |
-| 23 | Asimilación memegen (memegen.link) | Nodo cultural 200+ templates |
-| 24-25 | @alrac-coordinator (simulación) | Phase 1 Specs - CaaS |
-| 26-27 | @alrac-coordinator (simulación) | Phase 1 Specs - ZNU + Fiat |
-| 28 | @alrac-coordinator (simulación) | Phase 1 Specs - Governance |
+### **Fase 1: Core Integration** (Weeks 1-3) ✅ Implemented
+| # | Spec | Source | Target | Lines | Status |
+|---|------|--------|--------|-------|--------|
+| 29 | `alrac-tq-oasa.md` | OASA Constitution 2025 | `tq-oasa.ts` | ~750 | ✅ |
+| 30 | `alrac-tq-disco-cat.md` | DisCO Manifesto/Elements/Ball | `tq-disco-cat.ts` | ~600 | ✅ |
+| 31 | `alrac-tq-closer.md` | Closer Platform + OASA | `tq-closer.ts` | ~500 | ✅ |
+| 32 | `alrac-tq-eliza.md` | elizaOS (33k commits) | `tq-eliza.ts` | ~1,000 | ✅ |
+| 33 | `alrac-tq-valueflows.md` | ValueFlows REA Ontology | `tq-valueflows.ts` | ~600 | ✅ |
+| 34 | `alrac-tq-aragon.md` | Aragon OSx, AGPs, OTF | `tq-aragon.ts` | ~600 | ✅ |
+
+### **Fase 2: Verifiable Governance** (Weeks 3-4) ✅ Implemented
+| # | Spec | Source | Target | Lines | Status |
+|---|------|--------|--------|-------|--------|
+| 35 | `alrac-tq-snapshot.md` | Snapshot.js Strategies | `tq-snapshot.ts` | ~650 | ✅ |
+| 36 | `alrac-tq-tdf.md` | TDF 3-Track Methodology | `tq-tdf.ts` | ~800 | ✅ |
+| 37 | `alrac-tq-bread.md` | Bread + DisCO CAT | `tq-bread.ts` | ~600 | ✅ |
+| 38 | `alrac-tq-social-audit.md` | Social Audit + Engines | `tq-social-audit.ts` | ~900 | ✅ |
+| 39 | `alrac-tq-closer-attestation.md` | Closer + TDF Track 1 | `tq-closer-attestation.ts` | ~750 | ✅ |
+
+### **Pilot: Traditional Dream Factory** ✅ Implemented
+| # | Spec | Source | Target | Lines | Status |
+|---|------|--------|--------|-------|--------|
+| 40 | `alrac-tq-pilot-tdf.md` | TDF Pilot Case | `tq-pilot-tdf.ts` | ~3,800 | ✅ |
+
+### **Fase 3: Advanced Integration** 📋 Designed (Pending Implementation)
+| # | Spec | Source | Target | Status |
+|---|------|--------|--------|--------|
+| 41 | `alrac-tq-virginia.md` | Virginia Network | `tq-virginia.ts` | 📋 |
+| 42 | `alrac-tq-colony.md` | Colony Protocol | `tq-colony.ts` | 📋 |
+| 43 | `alrac-tq-berry-vesting.md` | Berry Vesting | `tq-berry-vesting.ts` | 📋 |
 
 ---
 
-## 📊 Cobertura por Capa ALRAC
+## Complete Specification Catalog (43 Total)
+
+| # | Spec | Layer | Source | Target | Status |
+|---|------|-------|--------|--------|--------|
+| 1 | alrac-architecture.md | 0 | Original | - | ✅ |
+| 2 | alrac-governance.md | 0 | Original | - | ✅ |
+| 3 | alrac-revenue.md | 0 | Original | - | ✅ |
+| 4 | alrac-convergence-nexo.md | 0 | Original | - | ✅ |
+| 5 | cpp-protocol.md | 0.5 | Asimilación | - | ✅ |
+| 6 | tq-cpp-bridge.md | 0.5 | Asimilación | - | ✅ |
+| 7-16 | alrac-tq-*.md (10) | 1 | Original | tq.ts | ✅ |
+| 17-23 | *-integration.md (7) | 2 | Asimilación | various | ✅ |
+| 24-25 | alrac-caas-*.md (2) | 2 | Simulación | - | ✅ |
+| 26-27 | alrac-znu-*.md (2) | 3 | Simulación | - | ✅ |
+| 28 | alrac-governance-holonic.md | 5 | Simulación | - | ✅ |
+| 29 | alrac-tq-oasa.md | 1+ | OASA Constitution | tq-oasa.ts | ✅ |
+| 30 | alrac-tq-disco-cat.md | 1+ | DisCO Manifesto | tq-disco-cat.ts | ✅ |
+| 31 | alrac-tq-closer.md | 1+ | Closer Platform | tq-closer.ts | ✅ |
+| 32 | alrac-tq-eliza.md | 1+ | elizaOS | tq-eliza.ts | ✅ |
+| 33 | alrac-tq-valueflows.md | 2 | ValueFlows REA | tq-valueflows.ts | ✅ |
+| 34 | alrac-tq-aragon.md | 5 | Aragon OSx | tq-aragon.ts | ✅ |
+| 35 | alrac-tq-snapshot.md | 5 | Snapshot.js | tq-snapshot.ts | ✅ |
+| 36 | alrac-tq-tdf.md | 5 | TDF Methodology | tq-tdf.ts | ✅ |
+| 37 | alrac-tq-bread.md | 5 | Bread + DisCO | tq-bread.ts | ✅ |
+| 38 | alrac-tq-social-audit.md | 5 | Social Audit | tq-social-audit.ts | ✅ |
+| 39 | alrac-tq-closer-attestation.md | 5 | Closer + TDF | tq-closer-attestation.ts | ✅ |
+| 40 | alrac-tq-pilot-tdf.md | Pilot | TDF Case | tq-pilot-tdf.ts | ✅ |
+| 41 | alrac-tq-virginia.md | 1+ | Virginia Network | tq-virginia.ts | 📋 |
+| 42 | alrac-tq-colony.md | 1+ | Colony Protocol | tq-colony.ts | 📋 |
+| 43 | alrac-tq-berry-vesting.md | 1+ | Berry Vesting | tq-berry-vesting.ts | 📋 |
+
+---
+
+## Implementation Status Summary
+
+| Phase | Specs | Lines | Status |
+|-------|-------|-------|--------|
+| Original ALRAC | 25 | ~8,000 | ✅ Complete |
+| Fase 1 Core Integration | 6 | ~4,050 | ✅ Complete |
+| Fase 2 Verifiable Governance | 5 | ~3,700 | ✅ Complete |
+| Pilot TDF | 1 | ~3,800 | ✅ Complete |
+| Fase 3 Advanced | 3 | ~0 | 📋 Designed |
+| **Total** | **40** | **~19,550** | **23/43 Implemented** |
+
+---
+
+## Dependency Graph
 
 ```
-CAPA 0: Epistémica              ████████████  (4 specs - Amid, Yoka, γ-CARMIS, Triaxial)
-CAPA 0.5: Normativa Extendida   ████████      (2 specs - CPP Protocol + TQ↔CPP Bridge)
-CAPA 1: Contable-Física (TQ)    ████████████████████  (10 specs - TQ completo)
-CAPA 2: Interoperabilidad       ████████████████████████  (8 specs - 6 nodos piloto + 2 CaaS)
-CAPA 3: Membrana Fiat           ████████████  (2 specs - ZNU + Fiat Bridge)
-CAPA 4: ZEITNUS                 ████████      (incluida en ZNU/Fiat + revenue)
-CAPA 5: Gobernanza              ████████████████  (1 spec - Holónica transversal)
-```
-
----
-
-## 🎯 Próximas Specs Sugeridas (Backlog)
-
-### Capa 0.5 - Completar Normativa
-- [ ] `archimate-engine.md` — Motor ArchiMate 3.2 completo (7 capas, 3 aspectos, 50+ elementos)
-- [ ] `diagram-pedagogy.md` — Progressive disclosure, pattern recognition, workflow templates
-- [ ] `sketchup-abstraction-layer.md` — Bridge SKP ↔ WASM, round-trip fidelity
-
-### Capa 2 - Completar Nodos Piloto
-- [ ] `ruddick-gef-integration.md` — GEF Kilifi, mweria/kaya/trustBasket, Economía Raíces
-- [ ] `solarpunk-mesh-integration.md` — Mesh/DTN/NATS, offline-first, energy catalog
-- [ ] `soulpreneurs-integration.md` — 70k community, conscious business pipeline
-
-### Capa 2 - Completar CaaS
-- [ ] `alrac-caas-payouts.md` — Distribución, schedules, automación
-- [ ] `alrac-caas-audit.md` — Auditoría trimestral, métricas, RAO
-- [ ] `alrac-caas-interop.md` — APIs, protocolos, Mycelium/SynchroLabs sync
-
-### Capa 3 - Completar Fiat/ZNU
-- [ ] `alrac-znu-governance.md` — 1a1v parámetros, oráculo, basket updates
-- [ ] `alrac-znu-expiration.md` — Postulado 4 implementation detail
-- [ ] `alrac-bridge-security.md` — Multisig, timelocks, emergency pause
-
-### Capa 4 - ZEITNUS Specific
-- [ ] `alrac-zeitnus-tokenomics.md` — ZNU/TQ/USDC dynamics
-- [ ] `alrac-zeitnus-compliance.md` — KYC/AML por nivel ReFi
-- [ ] `alrac-zeitnus-insurance.md` — Seguros, coverage, claims
-
-### Capa 5 - Gobernanza Detalle
-- [ ] `alrac-governance-committees.md` — Detalle comités rotativos
-- [ ] `alrac-governance-conflicts.md` — Triaxial, Kleros, mediación detail
-- [ ] `alrac-governance-rao-audit.md` — Auditoría RAO automática
-
-### Capa 0/0.5 - Fundacional
-- [ ] `alrac-credo-set.md` — 𝕮 formation, αʰ calculation
-- [ ] `alrac-gamma-carmis.md` — Protocolo fractura/reconfiguración
-- [ ] `alrac-triaxial.md` — Mental/Sim/Lab verification
-- [ ] `alrac-cognitive-limits.md` — Límites cognitivos, bias registry
-
----
-
-## 📁 Estructura de Directorios
-
-```
-Zeitnus-Firma-Operaciones-Ecotomica/
-├── openspec/
-│   └── specs/
-│       ├── alrac-architecture.md
-│       ├── alrac-governance.md
-│       ├── alrac-revenue.md
-│       ├── alrac-convergence-nexo.md
-│       ├── cpp-protocol.md
-│       ├── tq-cpp-bridge.md
-│       ├── alrac-tq-exchangeGuard.md
-│       ├── alrac-tq-conversionFactor.md
-│       ├── alrac-tq-productFederation.md
-│       ├── alrac-tq-crossNodePools.md
-│       ├── alrac-tq-governance.md
-│       ├── alrac-tq-land.md
-│       ├── alrac-tq-taxEngine.md
-│       ├── alrac-tq-nodeArchitecture.md
-│       ├── alrac-tq-digitalSovereignty.md
-│       ├── alrac-tq-autonomy.md
-│       ├── colonya-integration.md
-│       ├── feria-conuquera-pilot.md
-│       ├── samay-integration.md
-│       ├── clc-cpp-integration.md
-│       ├── archidiagram-integration.md
-│       ├── febhouse-integration.md
-│       ├── alrac-caas-revenue-streams.md
-│       ├── alrac-caas-membership.md
-│       ├── alrac-znu-indexing-credit.md
-│       ├── alrac-fiat-layer.md
-│       └── alrac-governance-holonic.md
-│
-├── docs/
-│   ├── febhouse_backup.md
-│   ├── febhouse_integration.md
-│   ├── archidiagram_backup.md
-│   ├── archidiagram_integration.md
-│   ├── cosmolocal_backup.md
-│   ├── cosmolocal_integration.md
-│   ├── ruddick_economiadelasraices_backup.md
-│   ├── ruddick_integration.md
-│   ├── samay_backup.md
-│   ├── samay_integration.md
-│   ├── ZEITNUS_REGENERATIVE_MODEL.md
-│   ├── ALRAC_MASTER_INTEGRADO.md
-│   ├── GRANALLIANZA_MAPPING.md
-│   ├── CAOS_MODELONEGOCIO_ANALISIS.md
-│   └── LICENSE_AUDIT_ASIMILACIONES.md
-│
-└── src/core/
-    ├── lib/
-    │   ├── tq.ts
-    │   ├── cpp.ts
-│   │   ├── alrac.ts
-│   │   ├── colonya.ts
-│   │   ├── samay.ts
-│   │   └── [febhouse.ts, sunDiagramEngine.ts, dynamicSymbolsEngine.ts, shadowSliceEngine.ts, ...]
-│   ├── state/
-│   │   ├── alrac.ts
-│   │   ├── caas.ts
-│   │   └── store.ts
-│   └── hooks/
-│       └── alrac.ts
+tq-types-extended.ts (Core Types - All Specs)
+    │
+    ├── Original TQ Specs (7-16) ◄────────────────────┐
+    ├── Fase 1 Core (29-34) ◄─────────────────────────┤
+    ├── Fase 2 Governance (35-39) ◄───────────────────┤
+    └── Pilot (40) ◄──────────────────────────────────┘
+           │
+           ▼
+    Fase 3 Advanced (41-43) 📋
 ```
 
 ---
 
-## ✅ Validación Cruzada
+## Cross-Spec Integration Matrix
 
-| Verificación | Estado |
-|--------------|--------|
-| Todas las specs tienen header estándar (capa, versión, fecha, autor) | ✅ |
-| Referencias cruzadas entre specs funcionan | ✅ |
-| TypeScript interfaces consistentes con specs | ✅ (core lib/state) |
-| Principio Anfibio documentado en specs relevantes | ✅ (CPP, TQ, ZNU, Fiat, Nodos piloto) |
-| Gobernanza 1a1v/CDS consistente | ✅ (Governance + Membership + Nodos) |
-| Reparto Amid 35/35/30 en specs económicas | ✅ (Revenue, CaaS, Membership, Nodos) |
-| γ-CARMIS/Postulado 4 referenciados | ✅ (Architecture, ZNU, Governance, Nodos) |
-| Nodos piloto tienen: backup + integration + spec + factory function | ✅ (6/6 nodos) |
+| Integration | Specs Involved | Engines |
+|-------------|----------------|---------|
+| TDF 3-Track | 36, 39, 34, 35, 33, 31, 30, 29, 37, 38 | TDFEngine |
+| Virginia N3 Weight | 29, 30, 31, 32, 33, 34, 37, 41, 42, 43 | VirginiaGateway |
+| DisCO 3 Flows → Virginia | 30, 29, 41 | DisCO_CAT_Engine |
+| Autómata Soberano | 32, 29, 30, 31, 33, 34, 35, 42, 43 | ElizaOS Runtime |
+| Pilot TDF | All 1-40 | PilotTDFEngine |
 
 ---
 
-## 📝 Notas de Mantenimiento
+## File Locations
 
-1. **Versionado:** Cada spec tiene `version: 1.0` o `0.1` - incrementar en cambios breaking
-2. **Authorship:** Originales = humano+asistente; Simulación = @alrac-coordinator; Asimilación = this session
-3. **Ubicación:** Todas en `openspec/specs/` - no mover sin actualizar referencias
-4. **Índice:** Este archivo se actualiza con cada nueva spec
-5. **Git:** Commits atómicos por spec o batch lógico
-6. **Nodos piloto:** Cada nodo real requiere: `docs/<nodo>_backup.md` + `docs/<nodo>_integration.md` + `openspec/specs/<nodo>-integration.md` + `src/core/lib/<nodo>.ts` + factory en `alrac.ts`
+```
+Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo/
+├── src/core/lib/
+│   ├── tq.ts                    # Base TQ types (Original Specs 7-16)
+│   ├── tq-types-extended.ts     # Extended types (All Specs)
+│   ├── tq-oasa.ts               # Spec 29 ✅
+│   ├── tq-disco-cat.ts          # Spec 30 ✅
+│   ├── tq-closer.ts             # Spec 31 ✅
+│   ├── tq-eliza.ts              # Spec 32 ✅
+│   ├── tq-valueflows.ts         # Spec 33 ✅
+│   ├── tq-aragon.ts             # Spec 34 ✅
+│   ├── tq-snapshot.ts           # Spec 35 ✅
+│   ├── tq-tdf.ts                # Spec 36 ✅
+│   ├── tq-bread.ts              # Spec 37 ✅
+│   ├── tq-social-audit.ts       # Spec 38 ✅
+│   ├── tq-closer-attestation.ts # Spec 39 ✅
+│   ├── tq-pilot-tdf.ts          # Spec 40 ✅
+│   ├── tq-virginia.ts           # Spec 41 📋
+│   ├── tq-colony.ts             # Spec 42 📋
+│   └── tq-berry-vesting.ts      # Spec 43 📋
+└── openspec/specs/
+    ├── SPEC_INDEXER.md          # This file
+    ├── alrac-architecture.md    # Spec 1
+    ├── alrac-governance.md      # Spec 2
+    ├── alrac-revenue.md         # Spec 3
+    ├── alrac-convergence-nexo.md # Spec 4
+    ├── cpp-protocol.md          # Spec 5
+    ├── tq-cpp-bridge.md         # Spec 6
+    ├── alrac-tq-exchangeGuard.md # Spec 7
+    ├── alrac-tq-conversionFactor.md # Spec 8
+    ├── alrac-tq-productFederation.md # Spec 9
+    ├── alrac-tq-crossNodePools.md # Spec 10
+    ├── alrac-tq-governance.md   # Spec 11
+    ├── alrac-tq-land.md         # Spec 12
+    ├── alrac-tq-taxEngine.md    # Spec 13
+    ├── alrac-tq-nodeArchitecture.md # Spec 14
+    ├── alrac-tq-digitalSovereignty.md # Spec 15
+    ├── alrac-tq-autonomy.md     # Spec 16
+    ├── colonya-integration.md   # Spec 17
+    ├── feria-conuquera-pilot.md # Spec 18
+    ├── samay-integration.md     # Spec 19
+    ├── clc-cpp-integration.md   # Spec 20
+    ├── archidiagram-integration.md # Spec 21
+    ├── febhouse-integration.md  # Spec 22
+    ├── memegen-integration.md   # Spec 23
+    ├── alrac-caas-revenue-streams.md # Spec 24
+    ├── alrac-caas-membership.md # Spec 25
+    ├── alrac-znu-indexing-credit.md # Spec 26
+    ├── alrac-fiat-layer.md      # Spec 27
+    ├── alrac-governance-holonic.md # Spec 28
+    ├── alrac-tq-oasa.md              # Spec 29
+    ├── alrac-tq-disco-cat.md         # Spec 30
+    ├── alrac-tq-closer.md            # Spec 31
+    ├── alrac-tq-eliza.md             # Spec 32
+    ├── alrac-tq-valueflows.md        # Spec 33
+    ├── alrac-tq-aragon.md            # Spec 34
+    ├── alrac-tq-snapshot.md          # Spec 35
+    ├── alrac-tq-tdf.md               # Spec 36
+    ├── alrac-tq-bread.md             # Spec 37
+    ├── alrac-tq-social-audit.md      # Spec 38
+    ├── alrac-tq-closer-attestation.md # Spec 39
+    ├── alrac-tq-pilot-tdf.md         # Spec 40
+    ├── alrac-tq-virginia.md          # Spec 41
+    ├── alrac-tq-colony.md            # Spec 42
+    └── alrac-tq-berry-vesting.md     # Spec 43
+```
+
+---
+
+## Changelog
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 3.0.0 | 2026-10-18 | Added 12 new specs from external scraping assimilation (Fase 1-2 + Pilot), updated catalog to 43 total specs |
+| 2.1 | 2026-10-07 | Original catalog with 25 specs |
