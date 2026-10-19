@@ -3,8 +3,8 @@
 ## Overview
 This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regenerative economics stack. Each spec maps external sources (OASA, DisCO, Closer, ElizaOS, ValueFlows, Aragon, etc.) to TypeScript implementations in `src/core/lib/`.
 
-**Total Specs:** 37 (25 original + 12 new from external scraping assimilation)
-**Implemented:** 23 (19 original + 4 Fase 1-2 + Pilot)
+**Total Specs:** 41 (25 original + 12 external scraping + 4 Norberto assimilation)
+**Implemented:** 27 (19 original + 4 Fase 1-2 + Pilot + 4 Norberto)
 **Designed:** 4 (Fase 3+ pending implementation)
 
 ---
@@ -95,16 +95,24 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 |---|------|--------|--------|-------|--------|
 | 40 | `alrac-tq-pilot-tdf.md` | TDF Pilot Case | `tq-pilot-tdf.ts` | ~3,800 | ✅ |
 
+### **Norberto Assimilation (4 New Specs)** ✅ Implemented
+| # | Spec | Source | Target | Lines | Status |
+|---|------|--------|--------|-------|--------|
+| 41 | `alrac-tq-mohenjodaro.md` | Mohenjo-Daro Historical Validation | `tq-pilot-tdf.ts` + types | ~900 | ✅ |
+| 42 | `alrac-tq-ebr-venus.md` | EBR/Proyecto Venus → ALRAC | `tq-eliza.ts` + `tq-uhi-engine.ts` | ~1,500 | ✅ |
+| 43 | `alrac-tq-economic-calculation.md` | IA resuelve Mises-Hayek-Lange | `tq-uhi-engine.ts` + `tq-eliza.ts` | ~1,400 | ✅ |
+| 44 | `alrac-tq-desmercantilizacion.md` | Esping-Andersen → CaaS/ZNU | `tq-valueflows.ts` + types | ~1,700 | ✅ |
+
 ### **Fase 3: Advanced Integration** 📋 Designed (Pending Implementation)
 | # | Spec | Source | Target | Status |
 |---|------|--------|--------|--------|
-| 41 | `alrac-tq-virginia.md` | Virginia Network | `tq-virginia.ts` | 📋 |
-| 42 | `alrac-tq-colony.md` | Colony Protocol | `tq-colony.ts` | 📋 |
-| 43 | `alrac-tq-berry-vesting.md` | Berry Vesting | `tq-berry-vesting.ts` | 📋 |
+| 45 | `alrac-tq-virginia.md` | Virginia Network | `tq-virginia.ts` | 📋 |
+| 46 | `alrac-tq-colony.md` | Colony Protocol | `tq-colony.ts` | 📋 |
+| 47 | `alrac-tq-berry-vesting.md` | Berry Vesting | `tq-berry-vesting.ts` | 📋 |
 
 ---
 
-## Complete Specification Catalog (43 Total)
+## Complete Specification Catalog (48 Total)
 
 | # | Spec | Layer | Source | Target | Status |
 |---|------|-------|--------|--------|--------|
@@ -131,9 +139,13 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 | 38 | alrac-tq-social-audit.md | 5 | Social Audit | tq-social-audit.ts | ✅ |
 | 39 | alrac-tq-closer-attestation.md | 5 | Closer + TDF | tq-closer-attestation.ts | ✅ |
 | 40 | alrac-tq-pilot-tdf.md | Pilot | TDF Case | tq-pilot-tdf.ts | ✅ |
-| 41 | alrac-tq-virginia.md | 1+ | Virginia Network | tq-virginia.ts | 📋 |
-| 42 | alrac-tq-colony.md | 1+ | Colony Protocol | tq-colony.ts | 📋 |
-| 43 | alrac-tq-berry-vesting.md | 1+ | Berry Vesting | tq-berry-vesting.ts | 📋 |
+| 41 | alrac-tq-mohenjodaro.md | 1+ | Mohenjo-Daro Historical | tq-pilot-tdf.ts + types | ✅ |
+| 42 | alrac-tq-ebr-venus.md | 1+ | EBR/Proyecto Venus | tq-eliza.ts + tq-uhi-engine.ts | ✅ |
+| 43 | alrac-tq-economic-calculation.md | 1+ | IA Economic Calculation | tq-uhi-engine.ts + tq-eliza.ts | ✅ |
+| 44 | alrac-tq-desmercantilizacion.md | 2+ | Desmercantilización → CaaS | tq-valueflows.ts + types | ✅ |
+| 45 | alrac-tq-virginia.md | 1+ | Virginia Network | tq-virginia.ts | 📋 |
+| 46 | alrac-tq-colony.md | 1+ | Colony Protocol | tq-colony.ts | 📋 |
+| 47 | alrac-tq-berry-vesting.md | 1+ | Berry Vesting | tq-berry-vesting.ts | 📋 |
 
 ---
 
@@ -145,8 +157,9 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 | Fase 1 Core Integration | 6 | ~4,050 | ✅ Complete |
 | Fase 2 Verifiable Governance | 5 | ~3,700 | ✅ Complete |
 | Pilot TDF | 1 | ~3,800 | ✅ Complete |
+| **Norberto Assimilation** | **4** | **~5,500** | **✅ Complete** |
 | Fase 3 Advanced | 3 | ~0 | 📋 Designed |
-| **Total** | **40** | **~19,550** | **23/43 Implemented** |
+| **Total** | **44** | **~25,050** | **27/48 Implemented** |
 
 ---
 
@@ -197,9 +210,9 @@ Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo/
 │   ├── tq-social-audit.ts       # Spec 38 ✅
 │   ├── tq-closer-attestation.ts # Spec 39 ✅
 │   ├── tq-pilot-tdf.ts          # Spec 40 ✅
-│   ├── tq-virginia.ts           # Spec 41 📋
-│   ├── tq-colony.ts             # Spec 42 📋
-│   └── tq-berry-vesting.ts      # Spec 43 📋
+│   ├── tq-virginia.ts           # Spec 45 📋
+│   ├── tq-colony.ts             # Spec 46 📋
+│   └── tq-berry-vesting.ts      # Spec 47 📋
 └── openspec/specs/
     ├── SPEC_INDEXER.md          # This file
     ├── alrac-architecture.md    # Spec 1
@@ -242,9 +255,13 @@ Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo/
     ├── alrac-tq-social-audit.md      # Spec 38
     ├── alrac-tq-closer-attestation.md # Spec 39
     ├── alrac-tq-pilot-tdf.md         # Spec 40
-    ├── alrac-tq-virginia.md          # Spec 41
-    ├── alrac-tq-colony.md            # Spec 42
-    └── alrac-tq-berry-vesting.md     # Spec 43
+    ├── alrac-tq-mohenjodaro.md       # Spec 41
+    ├── alrac-tq-ebr-venus.md         # Spec 42
+    ├── alrac-tq-economic-calculation.md # Spec 43
+    ├── alrac-tq-desmercantilizacion.md # Spec 44
+    ├── alrac-tq-virginia.md          # Spec 45
+    ├── alrac-tq-colony.md            # Spec 46
+    └── alrac-tq-berry-vesting.md     # Spec 47
 ```
 
 ---
@@ -253,5 +270,6 @@ Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 4.0.0 | 2026-10-19 | Added 4 Norberto assimilation specs (Mohenjo-Daro, EBR/Venus, Economic Calculation, Desmercantilización), total 48 specs |
 | 3.0.0 | 2026-10-18 | Added 12 new specs from external scraping assimilation (Fase 1-2 + Pilot), updated catalog to 43 total specs |
 | 2.1 | 2026-10-07 | Original catalog with 25 specs |
