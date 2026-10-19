@@ -1,12 +1,14 @@
 // openspec/specs/alrac-tq-colony.md
 // OpenSpec: Colony Protocol Integration
 // Maps: Colony Protocol (domains, pots, reputation, lazy consensus) → TypeScript Implementation
+// Solarpunk Utopia Integration: Bioregional governance, regenerative economics, mesh coordination
 
 # SPEC: alrac-tq-colony
 **Version:** 1.0.0
-**Status:** Designed (Types in tq-types-extended.ts, Engine implementation pending)
+**Status:** Implemented
 **Source:** colony.io, Colony Protocol docs
-**Target:** src/core/lib/tq-colony.ts (to be created)
+**Target:** src/core/lib/tq-colony.ts
+**Solarpunk Utopia Context:** Bioregional DAOs, solar commons governance, regenerative resource allocation
 
 ---
 
@@ -14,38 +16,38 @@
 
 ### 1.1 Core Concepts
 
-| Concept | Description | Zeitnus Mapping |
-|---------|-------------|-----------------|
-| Domain | Sub-organization with own pots/reputation | Virginia N2/N3 domains |
-| Pot | Token pool with spending rules | Treasury, Ecosystem, Development, Emergency |
-| Reputation | Non-transferable governance weight | N3 dynamic weight component |
-| Lazy Consensus | Propose → Object → Execute (if no objection) | DisCO consent (80%) |
-| Motion | Proposal to move funds/change rules | Snapshot proposal |
-| Skill | Verified competence tag | Bread verified skills |
+| Concept | Description | Zeitnus Mapping | Solarpunk Utopia Mapping |
+|---------|-------------|-----------------|--------------------------|
+| Domain | Sub-organization with own pots/reputation | Virginia N2/N3 domains | Bioregional DAO / Solar Commons |
+| Pot | Token pool with spending rules | Treasury, Ecosystem, Development, Emergency | Solar Infrastructure Fund / Water Fund / Seed Fund |
+| Reputation | Non-transferable governance weight | N3 dynamic weight component | Regenerative Contribution Score |
+| Lazy Consensus | Propose → Object → Execute (if no objection) | DisCO consent (80%) | Do-Ocracy / Rough Consensus |
+| Motion | Proposal to move funds/change rules | Snapshot proposal | Community Proposal |
+| Skill | Verified competence tag | Bread verified skills | Regenerative Practitioner Certification |
 
-### 1.2 Colony Network Structure
+### 1.2 Colony Network Structure (Solarpunk Utopia)
 
 ```
-Colony Network (Zeitnus Root)
-├── N1 Root Domain (Network Governance)
+Colony Network (Zeitnus Root = Solar Commons Charter)
+├── N1 Root Domain (Network Governance = Solar Commons Council)
 │   ├── Pots: Network Treasury, Protocol Development
-│   └── Reputation: Network stewards
-├── N2 Sub-Domains (Coordination)
+│   └── Reputation: Network Stewards (Guardians of the Mesh)
+├── N2 Sub-Domains (Coordination = Bioregional Councils)
 │   ├── Governance Domain
 │   │   ├── Pots: Governance Operations
-│   │   └── Reputation: Governance participants
+│   │   └── Reputation: Governance Participants
 │   ├── Ecosystem Domain
 │   │   ├── Pots: Ecosystem Fund, Grants
-│   │   └── Reputation: Ecosystem contributors
+│   │   └── Reputation: Regenerative Contributors
 │   └── Tech Domain
-│       ├── Pots: Infrastructure, R&D
-│       └── Reputation: Technical contributors
-└── N3 Project Domains (Production)
-    ├── Regeneration Projects
-    │   ├── Pots: Project Budget
-    │   └── Reputation: Project contributors
-    ├── Education Projects
-    └── Infrastructure Projects
+│       ├── Pots: Solar Infrastructure, R&D
+│       └── Reputation: Solar Engineers
+└── N3 Project Domains (Production = Solar Villages)
+    ├── Solar Array Projects
+    │   ├── Pots: Array Budget, Maintenance
+    │   └── Reputation: Solar Builders
+    ├── Water Regeneration Projects
+    └── Agroforestry Projects
 ```
 
 ---
@@ -63,13 +65,13 @@ createDomain(name, parentDomainId, pots[]): Domain
 - N2: 3-5 sub-domains (functional areas)
 - N3: Unlimited project domains (created per project)
 
-### 2.3 Domain Permissions
-| Role | Permissions |
-|------|-------------|
-| Owner | All permissions, can transfer ownership |
-| Admin | Manage pots, skills, reputation |
-| Member | Create motions, claim reputation, vote |
-| Evaluator | Verify reputation claims |
+### 2.3 Domain Permissions (Solarpunk Roles)
+| Role | Permissions | Solarpunk Utopia Role |
+|------|-------------|----------------------|
+| Owner | All permissions, can transfer ownership | Charter Steward |
+| Admin | Manage pots, skills, reputation | Council Facilitator |
+| Member | Create motions, claim reputation, vote | Village Resident |
+| Evaluator | Verify reputation claims | Peer Reviewer / Elder |
 
 ---
 
@@ -77,13 +79,13 @@ createDomain(name, parentDomainId, pots[]): Domain
 
 ### 3.1 Pot Types
 
-| Pot | Purpose | Token | Spending Rule |
-|-----|---------|-------|---------------|
-| Network Treasury | Protocol operations | ZNU | Multi-sig (3/5) |
-| Ecosystem Fund | Grants, rewards | ZNU | Lazy consensus (7 days) |
-| Development Fund | Infrastructure | ZNU | Lazy consensus (14 days) |
-| Emergency Fund | Crisis response | ZNU | Guardian veto + 2/3 |
-| Project Budget | Project operations | ZNU | Domain owner + 1 evaluator |
+| Pot | Purpose | Token | Spending Rule | Solarpunk Use Case |
+|-----|---------|-------|---------------|-------------------|
+| Network Treasury | Protocol operations | ZNU | Multi-sig (3/5) | Solar Commons Reserve |
+| Ecosystem Fund | Grants, rewards | ZNU | Lazy consensus (7 days) | Regeneration Grants |
+| Development Fund | Infrastructure | ZNU | Lazy consensus (14 days) | Solar Array Construction |
+| Emergency Fund | Crisis response | ZNU | Guardian veto + 2/3 | Disaster Response / Mesh Repair |
+| Project Budget | Project operations | ZNU | Domain owner + 1 evaluator | Village Project Fund |
 
 ### 3.2 Pot Operations
 ```typescript
@@ -93,9 +95,9 @@ moveFunds(potId, amount, recipient, domainId): TxHash
 ```
 
 ### 3.3 Pot Recovery
-- Recovery address: Multi-sig (N1 stewards)
+- Recovery address: Multi-sig (N1 stewards = Charter Council)
 - Time-lock: 30 days for treasury pots
-- Emergency: Guardian veto can freeze
+- Emergency: Guardian veto can freeze (Mesh Guardian)
 
 ---
 
@@ -103,20 +105,20 @@ moveFunds(potId, amount, recipient, domainId): TxHash
 
 ### 4.1 Reputation Types
 
-| Type | Source | Decay | Use Case |
-|------|--------|-------|----------|
-| Governance | Consent decisions, voting | 5%/year | N2 weight |
-| Technical | Code contributions, audits | 10%/year | N3 tech weight |
-| Ecological | Verified regeneration milestones | 2%/year | N3 eco weight |
-| Care | Care flow contributions | 15%/year | N1 weight |
+| Type | Source | Decay | Use Case | Solarpunk Metric |
+|------|--------|-------|----------|------------------|
+| Governance | Consent decisions, voting | 5%/year | N2 weight | Assembly Participation |
+| Technical | Code contributions, audits | 10%/year | N3 tech weight | Solar Engineering |
+| Ecological | Verified regeneration milestones | 2%/year | N3 eco weight | Soil Carbon / Biodiversity |
+| Care | Care flow contributions | 15%/year | N1 weight | Community Care Hours |
 
 ### 4.2 Reputation Claim Flow
 ```typescript
 claimReputation(domainId, skillId, amount, evidence):
-  // 1. Submit claim with evidence
-  // 2. Evaluators verify (7 days)
+  // 1. Submit claim with evidence (photos, measurements, peer attestations)
+  // 2. Evaluators verify (7 days = lunar cycle)
   // 3. If no dispute → reputation minted
-  // 4. If disputed → Dispute resolution
+  // 4. If disputed → Dispute resolution (mediation circle)
 ```
 
 ### 4.3 Reputation → N3 Weight
@@ -133,24 +135,24 @@ N3WeightComponent = colonyReputation × reputationToWeightMultiplier
 ### 5.1 Process
 ```
 1. Member creates motion (move funds, change rule, add skill)
-2. Motion published to domain
-3. Objection period: 7 days (configurable)
+2. Motion published to domain (mesh broadcast)
+3. Objection period: 7 days (configurable = lunar phase)
 4. If no valid objection → Auto-execute
-5. If objection → Escalate to Dispute Resolution
+5. If objection → Escalate to Dispute Resolution (mediation circle)
 ```
 
 ### 5.2 Objection Rules
 - Valid objection: Reputation ≥ 1% domain reputation
-- Must state reason and alternative
-- Resolved via Dispute Resolution module
+- Must state reason and alternative (constructive dissent)
+- Resolved via Dispute Resolution module (mediation circle)
 
 ### 5.3 DisCO Consent Alignment
-| Colony Lazy Consensus | DisCO Consent |
-|----------------------|---------------|
-| 7-day objection period | 80% consent threshold |
-| Reputation-weighted | 1a1v + CDS weight |
-| Auto-execute on silence | Integrate on consent |
-| Dispute resolution | Block → Mediation |
+| Colony Lazy Consensus | DisCO Consent | Solarpunk Practice |
+|----------------------|---------------|-------------------|
+| 7-day objection period | 80% consent threshold | Lunar cycle review |
+| Reputation-weighted | 1a1v + CDS weight | Merit + Care balance |
+| Auto-execute on silence | Integrate on consent | Do-ocracy |
+| Dispute resolution | Block → Mediation | Mediation circle |
 
 ---
 
@@ -168,22 +170,28 @@ interface Skill {
 }
 ```
 
-### 6.2 Skill Verification (Bread Integration)
+### 6.2 Skill Categories (Solarpunk Utopia)
+
+| Category | Skills | Verification Method |
+|----------|--------|---------------------|
+| Technical | Solar installation, mesh networking, battery systems | Bread + practical demo |
+| Governance | Facilitation, mediation, charter stewardship | Peer endorsement + track record |
+| Ecological | Soil regeneration, water harvesting, biodiversity | OASA milestone + peer review |
+| Care | Childcare, eldercare, conflict resolution, health | Care flow tracking + community attestation |
+| Economic | Circular design, gift economy, mutual credit | ValueFlows tracking + outcomes |
+
+### 6.3 Skill Verification (Bread Integration)
 - Bread verified skills → Colony skills auto-verified
 - Minimum 3 Bread endorsers with avg CDS ≥ 0.5
-- Colony evaluators can also verify
+- Colony evaluators can also verify (mesh peers)
 
-### 6.3 Skill-Gated Operations
-| Operation | Required Skill | Level |
-|-----------|---------------|-------|
-| Move treasury funds | treasury-management | 3 |
-| Create domain | domain-architecture | 4 |
-| Verify reputation | reputation-evaluation | 3 |
-| Guardian action | ecological-oversight | 5 |
-
----
-
-## 7. TypeScript Implementation Mapping (Design)
+### 6.4 Skill-Gated Operations (Solarpunk Permissions)
+| Operation | Required Skill | Level | Solarpunk Context |
+|-----------|---------------|-------|-------------------|
+| Move treasury funds | treasury-management | 3 | Commons Steward |
+| Create domain | domain-architecture | 4 | Bioregional Founder |
+| Verify reputation | reputation-evaluation | 3 | Elder / Peer Reviewer |
+| Guardian action | ecological-oversight | 5 | Mesh Guardian |
 
 ### 7.1 Core Engine: `ColonyEngine`
 
@@ -223,15 +231,15 @@ class ColonyEngine {
 }
 ```
 
-### 7.2 Virginia Mapping
+### 7.2 Virginia Mapping (Solarpunk)
 ```typescript
 interface VirginiaColonyMapping {
-  n1RootDomainId: string
-  n2SubDomainIds: string[]          // governance, ecosystem, tech
-  n3ProjectDomainIds: string[]      // regeneration, education, infrastructure
-  n3FundDomainIds: string[]         // ecosystem, development, emergency
-  reputationToWeightMultiplier: number  // 0.03 (3%)
-  minReputationForPotAccess: number     // 500
+  n1RootDomainId: string                    // "domain-root-zeitnus" = Solar Commons Charter
+  n2SubDomainIds: string[]                  // governance, ecosystem, tech = Bioregional Councils
+  n3ProjectDomainIds: string[]              // regeneration, education, infrastructure = Village Projects
+  n3FundDomainIds: string[]                 // ecosystem, development, emergency = Solar/Water/Seed Funds
+  reputationToWeightMultiplier: number      // 0.03 (3%)
+  minReputationForPotAccess: number         // 500
 }
 ```
 
@@ -264,36 +272,38 @@ interface VirginiaColonyMapping {
 - Pots ↔ Aragon treasury
 - Reputation ↔ Aragon reputation module
 
----
-
-## 9. Acceptance Criteria
+### 8.6 Solarpunk Utopia
+- Solar mesh node reputation → Colony reputation
+- Energy production → Ecological reputation
+- P2P energy trading → Economic reputation
+- Community care → Care reputation
 
 ### 9.1 Domain Hierarchy
-- [ ] N1 root domain with network pots
-- [ ] N2 sub-domains (governance, ecosystem, tech)
-- [ ] N3 project domains created dynamically
+- [ ] N1 root domain with network pots (Solar Commons Reserve)
+- [ ] N2 sub-domains (governance, ecosystem, tech = Bioregional Councils)
+- [ ] N3 project domains created dynamically (Solar Villages)
 - [ ] Parent-child relationships maintained
 
 ### 9.2 Pot Operations
-- [ ] 5 pot types with correct rules
+- [ ] 5 pot types with correct rules (Solarpunk fund types)
 - [ ] moveFunds requires reputation threshold
-- [ ] Lazy consensus with 7-day objection
-- [ ] Emergency freeze via Guardian
+- [ ] Lazy consensus with 7-day objection (lunar cycle)
+- [ ] Emergency freeze via Guardian (Mesh Guardian)
 
 ### 9.3 Reputation
 - [ ] 4 reputation types with decay rates
 - [ ] Claim → Verify → Mint flow
-- [ ] Dispute resolution integration
+- [ ] Dispute resolution integration (mediation circle)
 - [ ] N3 weight contribution (3%)
 
 ### 9.4 Lazy Consensus
 - [ ] Motion creation with evidence
-- [ ] Objection period configurable
-- [ ] Auto-execute on silence
-- [ ] Objection → Dispute resolution
+- [ ] Objection period configurable (7/14 days)
+- [ ] Auto-execute on silence (do-ocracy)
+- [ ] Objection → Dispute resolution (mediation circle)
 
 ### 9.5 Skills
-- [ ] 5 skill categories
+- [ ] 5 skill categories (Solarpunk categories)
 - [ ] Bread verification auto-sync
 - [ ] Skill-gated operations
 
@@ -314,11 +324,11 @@ Evaluator: approves after 7 days
 Expected: reputation=100 added, N3 weight += 3
 ```
 
-### 10.3 Lazy Consensus
+### 10.4 Solarpunk Skill Verification
 ```typescript
-Input: moveFunds(ecosystemFund, 10000, projectX)
-No objection in 7 days
-Expected: Auto-executed, funds moved
+Input: addSkill(did, { name: "solar-installation", category: "technical", level: 4 })
+Bread endorsers: 3 with avg CDS ≥ 0.5
+Expected: skill.verified = true, Colony skill auto-verified
 ```
 
 ---
@@ -333,6 +343,7 @@ Expected: Auto-executed, funds moved
 | `tq-bread` | 1.0.0 | Skill verification |
 | `tq-snapshot` | 1.0.0 | Proposal mirroring |
 | `tq-aragon` | 1.0.0 | OSx integration |
+| `tq-solarpunk` | 1.0.0 | Solar mesh, regenerative metrics (Fase 4) |
 
 ---
 
@@ -342,6 +353,7 @@ Expected: Auto-executed, funds moved
 - Colony Whitepaper: https://colony.io/whitepaper
 - Lazy Consensus: https://docs.colony.io/lazy-consensus
 - BRIEF_EXHAUSTIVO_HSCSG_COSATECA_OS.md (Colony integration)
+- Solarpunk Utopia: Solar mesh, bioregional governance, regenerative villages
 
 ---
 
@@ -349,4 +361,4 @@ Expected: Auto-executed, funds moved
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2026-10-18 | Spec design: Domain hierarchy, pots, reputation, lazy consensus, skills, Virginia mapping |
+| 1.0.0 | 2026-10-18 | Initial implementation with Solarpunk Utopia integration |

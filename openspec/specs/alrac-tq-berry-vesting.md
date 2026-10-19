@@ -1,12 +1,14 @@
 // openspec/specs/alrac-tq-berry-vesting.md
 // OpenSpec: Berry Vesting Schedule (ZNU Gradual Release)
 // Maps: Berry vesting methodology → TypeScript Implementation
+// Solarpunk Utopia Integration: Community investment, solar infrastructure funding, regenerative milestones
 
 # SPEC: alrac-tq-berry-vesting
 **Version:** 1.0.0
-**Status:** Designed (Types in tq-types-extended.ts, Engine implementation pending)
+**Status:** Implemented
 **Source:** Berry vesting methodology, BRIEF_EXHAUSTIVO_HSCSG_COSATECA_OS.md
-**Target:** src/core/lib/tq-berry-vesting.ts (to be created)
+**Target:** src/core/lib/tq-berry-vesting.ts
+**Solarpunk Utopia Context:** Community-funded solar infrastructure, regenerative milestone tracking, intergenerational equity
 
 ---
 
@@ -14,13 +16,13 @@
 
 ### 1.1 Vesting Principles
 
-| Principle | Description |
-|-----------|-------------|
-| Gradual Release | ZNU released in tranches over time, not all at once |
-| Milestone-Gated | Each tranche requires verified AUT milestones |
-| Peer Verified | Vesting claims require N2 peer consensus (Bread) |
-| Reputation Linked | Claims grant Colony reputation |
-| Pot Unlocking | Progressive access to Colony pots |
+| Principle | Description | Solarpunk Utopia Context |
+|-----------|-------------|--------------------------|
+| Gradual Release | ZNU released in tranches over time, not all at once | Community investment over quick speculation |
+| Milestone-Gated | Each tranche requires verified AUT milestones | Regenerative capacity proven before capital release |
+| Peer Verified | Vesting claims require N2 peer consensus (Bread) | Bioregional validation of autonomy |
+| Reputation Linked | Claims grant Colony reputation | Contribution recognized in governance |
+| Pot Unlocking | Progressive access to Colony pots | Infrastructure funds unlocked with capacity |
 
 ### 1.2 Vesting State
 
@@ -47,19 +49,19 @@ interface VestingTranche {
 
 ---
 
-## 2. Vesting Schedule Design
+## 2. Vesting Schedule Design (Solarpunk Investment Schedule)
 
-### 2.1 Standard Schedule (4 Years)
+### 2.1 Standard Schedule (42 Months = 3.5 Years)
 
-| Tranche | Timing | Amount | Conditions |
-|---------|--------|--------|------------|
-| 1 | Month 6 | 10% | AUT Milestone 1 + Peer verification |
-| 2 | Month 12 | 15% | AUT Milestone 2 + Peer verification |
-| 3 | Month 18 | 15% | AUT Milestone 3 + Peer verification |
-| 4 | Month 24 | 20% | AUT Milestone 4 + Peer verification |
-| 5 | Month 30 | 15% | AUT Milestone 5 + Peer verification |
-| 6 | Month 36 | 15% | AUT Milestone 6 + Peer verification |
-| 7 | Month 42 | 10% | AUT Milestone 7 + Peer verification |
+| Tranche | Timing | Amount | AUT Milestone | Solarpunk Use Case | Pot Unlocked |
+|---------|--------|--------|---------------|-------------------|--------------|
+| 1 | Month 6 | 10% | 1: Basic infra (5k kWh) | Solar array + battery | Emergency, Operations |
+| 2 | Month 12 | 15% | 2: Regenerative systems (15k) | Water harvesting + compost | Development |
+| 3 | Month 18 | 15% | 3: Energy sovereignty (30k) | Microgrid + storage | Ecosystem |
+| 4 | Month 24 | 20% | 4: Food sovereignty (50k) | Agroforestry + cold storage | Governance |
+| 5 | Month 30 | 15% | 5: Water sovereignty (75k) | Aquifer recharge + wetlands | Strategic |
+| 6 | Month 36 | 15% | 6: Full regenerative (100k) | Bioregional export | Sovereign |
+| 7 | Month 42 | 10% | 7: Intergenerational (150k) | 7-generation trust | Legacy |
 
 **Total:** 100% over 42 months
 
@@ -90,17 +92,17 @@ interface AUTMilestone {
 }
 ```
 
-### 3.2 Standard Milestones
+### 3.2 Standard Milestones (Solarpunk Regenerative Capacity)
 
-| # | Description | Target TQ kWh/year | Verification |
-|---|-------------|-------------------|--------------|
-| 1 | Basic infrastructure operational | 5,000 | TQ Ledger + 3 N2 peers |
-| 2 | Regenerative systems producing | 15,000 | TQ Ledger + 3 N2 peers |
-| 3 | Energy sovereignty achieved | 30,000 | TQ Ledger + 3 N2 peers |
-| 4 | Food sovereignty achieved | 50,000 | TQ Ledger + 3 N2 peers |
-| 5 | Water sovereignty achieved | 75,000 | TQ Ledger + 3 N2 peers |
-| 6 | Full regenerative capacity | 100,000 | TQ Ledger + 3 N2 peers |
-| 7 | Intergenerational resilience | 150,000 | TQ Ledger + 3 N2 peers |
+| # | Description | Target TQ kWh/year | Verification | Solarpunk Meaning |
+|---|-------------|-------------------|--------------|-------------------|
+| 1 | Basic infrastructure operational | 5,000 | TQ Ledger + 3 N2 peers | Solar array + battery installed |
+| 2 | Regenerative systems producing | 15,000 | TQ Ledger + 3 N2 peers | Water harvesting + compost active |
+| 3 | Energy sovereignty achieved | 30,000 | TQ Ledger + 3 N2 peers | Microgrid + storage operational |
+| 4 | Food sovereignty achieved | 50,000 | TQ Ledger + 3 N2 peers | Agroforestry + cold storage |
+| 5 | Water sovereignty achieved | 75,000 | TQ Ledger + 3 N2 peers | Aquifer recharge + wetlands |
+| 6 | Full regenerative capacity | 100,000 | TQ Ledger + 3 N2 peers | Bioregional export capacity |
+| 7 | Intergenerational resilience | 150,000 | TQ Ledger + 3 N2 peers | 7-generation trust fund |
 
 ---
 
@@ -242,6 +244,12 @@ interface AUTMilestoneConfig {
 - Transparency score affects peer verification eligibility
 - Care flow recognition affects governance weight
 
+### 7.6 Solarpunk Utopia
+- Community-funded solar infrastructure
+- Vesting tranches = infrastructure investment rounds
+- AUT milestones = regenerative capacity verification
+- ZNU release = capital deployment for solar/water/food systems
+
 ---
 
 ## 8. Acceptance Criteria
@@ -309,6 +317,7 @@ Expected: { znuReleased=15000, newWeight=1.92, colonyReputationGain=50, potAcces
 | `tq-bread` | 1.0.0 | Peer verification |
 | `tq-virginia` | 1.0.0 | Virginia gateway |
 | `tq-colony` | 1.0.0 | Reputation, pots |
+| `tq-solarpunk` | 1.0.0 | Solar mesh, regenerative metrics (Fase 4) |
 
 ---
 

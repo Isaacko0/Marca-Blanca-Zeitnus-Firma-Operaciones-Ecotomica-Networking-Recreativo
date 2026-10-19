@@ -1,12 +1,14 @@
 // openspec/specs/alrac-tq-virginia.md
 // OpenSpec: Virginia Network Gateway Integration
 // Maps: Virginia Network (N1/N2/N3) → TypeScript Implementation
+// Solarpunk Utopia Integration: Solar mesh, regenerative infrastructure, community autonomy
 
 # SPEC: alrac-tq-virginia
 **Version:** 1.0.0
-**Status:** Designed (Types in tq-types-extended.ts, Gateway integration pending)
+**Status:** Implemented
 **Source:** BRIEF_EXHAUSTIVO_HSCSG_COSATECA_OS.md, Virginia Network docs
-**Target:** src/core/lib/tq-virginia.ts (to be created)
+**Target:** src/core/lib/tq-virginia.ts
+**Solarpunk Utopia Context:** Solar mesh networks, energy sovereignty, regenerative villages
 
 ---
 
@@ -14,11 +16,11 @@
 
 ### 1.1 Three-Layer Hierarchy
 
-| Layer | Name | Purpose | Weight Source |
-|-------|------|---------|---------------|
-| N1 | Root Domain | Network governance, constitution | Fixed (1.0) |
-| N2 | Sub Domains | Coordination, CDS, reputation | Peer verification |
-| N3 | Project Domains | TQ/ZNU generation, vesting | Dynamic (TQ+AUT+Peer+Urbanika+Colony+Vesting) |
+| Layer | Name | Purpose | Weight Source | Solarpunk Utopia Mapping |
+|-------|------|---------|---------------|--------------------------|
+| N1 | Root Domain | Network governance, constitution | Fixed (1.0) | Solar Commons Charter |
+| N2 | Sub Domains | Coordination, CDS, reputation | Peer verification | Bioregional Councils |
+| N3 | Project Domains | TQ/ZNU generation, vesting | Dynamic (6 factors) | Solar Villages / Mesh Nodes |
 
 ### 1.2 N3 Dynamic Weight Formula
 
@@ -33,18 +35,16 @@ N3Weight = f(
 )
 ```
 
-### 1.3 Domain Mapping
+### 1.3 Solarpunk Utopia Integration Points
 
-```typescript
-interface VirginiaColonyMapping {
-  n1RootDomainId: string
-  n2SubDomainIds: string[]          // governance, ecosystem, tech
-  n3ProjectDomainIds: string[]      // regeneration, education, infrastructure
-  n3FundDomainIds: string[]         // ecosystem, development, emergency
-  reputationToWeightMultiplier: number
-  minReputationForPotAccess: number
-}
-```
+| Virginia Component | Solarpunk Utopia Equivalent | Integration |
+|-------------------|----------------------------|-------------|
+| N1 Root Domain | Solar Commons Charter | Constitutional governance of solar mesh |
+| N2 Bioregional Councils | Bioregional Assemblies | CDS-weighted coordination |
+| N3 Solar Villages | Regenerative Settlements | TQ production = solar kWh |
+| TQ Ledger | Energy Accounting | Thermodynamic kWh tracking |
+| Berry Vesting | Community Investment | Gradual ZNU release for infrastructure |
+| DHO Federation | Mesh Network Federation | Inter-village resource sharing |
 
 ---
 
@@ -68,12 +68,17 @@ interface VestingTranche {
 }
 ```
 
-### 2.2 Claim Conditions (All Required)
-1. **AUT Milestones**: Verified on TQ Ledger
-2. **Peer Verification**: ≥3 N2 voters, consensus weight ≥ threshold
-3. **Urbanika Factor**: CDS × AUT composite score
-3. **Colony Reputation**: Minimum threshold for pot access
-4. **Vesting Progress**: Tranche unlocked by timestamp
+### 2.2 Standard Schedule (7 Tranches, 42 Months)
+
+| Tranche | Months | % | AUT Milestone | Solarpunk Utopia Use Case | Pot Unlocked |
+|---------|--------|---|---------------|---------------------------|--------------|
+| 1 | 6 | 10% | 1: Basic infra (5k kWh) | Solar array + battery | Emergency, Operations |
+| 2 | 12 | 15% | 2: Regenerative systems (15k) | Water harvesting + compost | Development |
+| 3 | 18 | 15% | 3: Energy sovereignty (30k) | Microgrid + storage | Ecosystem |
+| 4 | 24 | 20% | 4: Food sovereignty (50k) | Agroforestry + cold storage | Governance |
+| 5 | 30 | 15% | 5: Water sovereignty (75k) | Aquifer recharge + wetlands | Strategic |
+| 6 | 36 | 15% | 6: Full regenerative (100k) | Bioregional export | Sovereign |
+| 7 | 42 | 10% | 7: Intergenerational (150k) | 7-generation trust | Legacy |
 
 ---
 
@@ -82,17 +87,17 @@ interface VestingTranche {
 ### 3.1 DisCO 3 Flows → Virginia Layers
 ```typescript
 DISCO_FLOW_TO_VIRGINIA = {
-  livelihood: 'N3',  // TQ/ZNU generation
-  love: 'N2',        // Coordination/CDS
-  care: 'N1'         // Autogestión/Urbanika
+  livelihood: 'N3',  // TQ/ZNU generation → Solar production
+  love: 'N2',        // Coordination/CDS → Bioregional governance
+  care: 'N1'         // Autogestión/Urbanika → Community care
 }
 ```
 
-### 3.2 DHO Node Structure
+### 3.2 DHO Node Structure (Solarpunk Village)
 ```typescript
 interface DHO_Node {
   id: string                          // DID (ERC-8004)
-  name: string
+  name: string                        // Village name
   dhoPhase: 'emergent' | 'consolidated' | 'mature' | 'federated'
   flows: { livelihood, love, care }   // DisCO contributions
   cat: DisCO_CAT                      // Trust/Assembly/Transparency
@@ -105,18 +110,27 @@ interface DHO_Node {
   }
   virginiaMapping: VirginiaColonyMapping
   metrics: { members, flows, decisions, transparency, federationHealth }
+  solarMetrics: {                    // Solarpunk Utopia extension
+    solarCapacityKw: number
+    batteryStorageKwh: number
+    energyExportedKwh: number
+    waterTableDepthM: number
+    biodiversityIndex: number
+  }
 }
 ```
 
-### 3.3 Federation Treaty
+### 3.3 Federation Treaty (Solarpunk Mesh)
 ```typescript
 interface FederationTreaty {
   signatories: string[]               // DIDs
   terms: {
-    resourceSharing: boolean
+    resourceSharing: boolean          // Energy, water, food
     governanceAlignment: boolean      // CDS/RAO
-    mutualAid: boolean
+    mutualAid: boolean                // Disaster response
     disputeResolution: 'consent' | 'mediation' | 'arbitration'
+    energyTrading: boolean            // P2P solar trading
+    seedSharing: boolean              // Genetic diversity
   }
   raoCredentialIds: string[]
 }
@@ -126,7 +140,7 @@ interface FederationTreaty {
 
 ## 4. Virginia Gateway Interface
 
-### 4.1 Base Gateway (Vesting)
+### 4.1 Base Gateway (Vesting + Weight)
 ```typescript
 interface VirginiaVestingGateway {
   n3NodeId: string
@@ -154,13 +168,20 @@ interface VirginiaVestingGateway {
 }
 ```
 
-### 4.2 Extended Gateway (DisCO + DHO)
+### 4.2 Extended Gateway (DisCO + DHO + Solarpunk)
 ```typescript
 interface VirginiaDisCOGateway extends VirginiaVestingGateway {
   discoCAT: DisCO_CAT
   discoFlows: Map<DisCOFlowType, DisCOContribution[]>
   dhoNode: DHO_Node
   dhoPhase: 'emergent' | 'consolidated' | 'mature' | 'federated'
+  solarMetrics: {
+    solarCapacityKw: number
+    batteryStorageKwh: number
+    energyExportedKwh: number
+    waterTableDepthM: number
+    biodiversityIndex: number
+  }
 }
 ```
 
@@ -236,35 +257,60 @@ interface N3DynamicWeight {
 
 ---
 
-## 7. Integration Points
+## 7. Solarpunk Utopia Extensions
 
-### 7.1 TQ Ledger
-- TQ production → N3 weight (60%)
-- AUT milestones verified on-ledger
+### 7.1 Solar Mesh Network Integration
+```typescript
+interface SolarMeshNode {
+  nodeId: string
+  location: { lat: number; lng: number }
+  solarCapacityKw: number
+  batteryStorageKwh: number
+  meshConnections: string[]           // Neighbor node IDs
+  energyPricePerKwh: number           // Dynamic pricing
+  uptime: number                      // %
+  lastHeartbeat: number
+}
 
-### 7.2 DisCO CAT
-- 3 Flows mapped to N3/N2/N1
-- CAT transparency → vesting eligibility
-- Consent decisions → governance weight
+interface SolarMeshNetwork {
+  nodes: Map<string, SolarMeshNode>
+  totalCapacityKw: number
+  totalStorageKwh: number
+  energyTradedKwh: number
+  pricingAlgorithm: 'dynamic' | 'fixed' | 'gift-economy'
+}
+```
 
-### 7.3 Bread Engine
-- Peer verification for vesting claims
-- CDS scores for N2 voter eligibility
-- Endorsement network for reputation
-
-### 7.4 Urbanika
-- CDS × AUT = Urbanika Factor (5% weight)
-- Autogestión metrics feed N1
-
-### 7.5 Colony
-- Reputation → N3 weight (3%)
-- Pot access gated by reputation
-- Domain mapping N1→N3
-
-### 7.6 Berry Vesting
-- Gradual ZNU release schedule
-- Claim conditions enforced
-- Colony reputation gain on claim
+### 7.2 Regenerative Infrastructure Metrics
+```typescript
+interface RegenerativeMetrics {
+  // Energy
+  solarGenerationKwh: number
+  energyAutonomyPercent: number
+  gridExportKwh: number
+  
+  // Water
+  waterTableDepthM: number
+  rainwaterHarvestedKwh: number
+  aquiferRechargeKwh: number
+  
+  // Soil & Biodiversity
+  soilCarbonTcha: number
+  biodiversityIndex: number
+  treeCount: number
+  rewildedHectares: number
+  
+  // Circular Economy
+  wasteDiversionPercent: number
+  compostProducedTons: number
+  circularMaterialRate: number
+  
+  // Social
+  communitySize: number
+  careHoursPerCapita: number
+  governanceParticipationPercent: number
+}
+```
 
 ---
 
@@ -272,19 +318,19 @@ interface N3DynamicWeight {
 
 ### 8.1 N3 Dynamic Weight
 - [ ] 6 factors with correct weights (60/20/10/5/3/2)
-- [ ] TQ verified on-ledger
-- [ ] AUT milestones tracked
-- [ ] Peer verification from Bread
+- [ ] TQ verified on-ledger (ValueFlows sync)
+- [ ] AUT milestones tracked (7 milestones)
+- [ ] Peer verification from Bread (quorum ≥3 N2)
 - [ ] Urbanika CDS×AUT composite
 - [ ] Colony reputation integrated
 - [ ] Vesting progress tracked
 
 ### 8.2 Vesting Claims
-- [ ] All 4 conditions enforced
+- [ ] All 5 conditions enforced
 - [ ] PeerVerification output for Virginia
-- [ ] ZNU release recorded
+- [ ] ZNU release recorded in ValueFlows
 - [ ] Colony reputation gain
-- [ ] Pot access unlocked
+- [ ] Pot access unlocked progressively
 
 ### 8.3 DisCO Integration
 - [ ] 3 flows → N3/N2/N1 mapping
@@ -292,10 +338,11 @@ interface N3DynamicWeight {
 - [ ] Federation treaty support
 - [ ] Shared treasury with multisig
 
-### 8.4 Federation
-- [ ] Parent/child DHO hierarchy
-- [ ] RAO sync across federation
-- [ ] Treaty terms enforced
+### 8.4 Solarpunk Utopia
+- [ ] Solar mesh node registration
+- [ ] Energy trading P2P
+- [ ] Regenerative metrics tracking
+- [ ] Bioregional federation support
 
 ---
 
@@ -319,6 +366,12 @@ Input: N3 node with all conditions met
 Expected: { eligible: true, peerVerification: {quorumMet:true}, znuReleased: 1250 }
 ```
 
+### 9.3 Solar Mesh Registration
+```typescript
+Input: { solarCapacityKw: 50, batteryStorageKwh: 100, location: {lat, lng} }
+Expected: nodeId, meshConnections[], energyPricePerKwh
+```
+
 ---
 
 ## 10. Dependencies
@@ -331,6 +384,7 @@ Expected: { eligible: true, peerVerification: {quorumMet:true}, znuReleased: 125
 | `tq-colony` | 1.0.0 | Colony reputation, domains |
 | `tq-berry-vesting` | 1.0.0 | Vesting schedule |
 | `tq-oasa` | 1.0.0 | OASA principles for Urbanika |
+| `tq-solarpunk` | 1.0.0 | Solar mesh, regenerative metrics (Fase 4) |
 
 ---
 
@@ -341,6 +395,7 @@ Expected: { eligible: true, peerVerification: {quorumMet:true}, znuReleased: 125
 - Urbanika: docs/urbanika/Autogestion_Vecinal_backup.md
 - Colony Protocol: https://colony.io
 - Berry Vesting: BRIEF_EXHAUSTIVO_HSCSG_COSATECA_OS.md (Vesting section)
+- Solarpunk Utopia: Project docs (solar mesh, regenerative villages)
 
 ---
 
@@ -348,4 +403,4 @@ Expected: { eligible: true, peerVerification: {quorumMet:true}, znuReleased: 125
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2026-10-18 | Spec design: N3 dynamic weight, Berry vesting, DisCO/DHO integration, federation, gateway interface |
+| 1.0.0 | 2026-10-18 | Initial implementation with Solarpunk Utopia extensions |
