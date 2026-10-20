@@ -27,6 +27,7 @@
 **Apotegma 21.4 (La soberanía como cuidado de límites):**
 > *"La verdadera soberanía no consiste en alcanzar un control absoluto de la naturaleza, de las personas o del futuro. Consiste en poder coordinar la vida colectiva sin ocultar los límites de nuestro conocimiento, sin desperdiciar deliberadamente las condiciones que la sostienen y sin convertir los errores presentes en una condena para las generaciones posteriores."*
 
+La autotrofía no es un sueño: es una ingeniería que la naturaleza ya resolvió. Nuestra tarea es copiar, medir, gobernar y compartir." — Matema 21.5 aplicada
 ---
 
 ### Subhashitas Alternativos
