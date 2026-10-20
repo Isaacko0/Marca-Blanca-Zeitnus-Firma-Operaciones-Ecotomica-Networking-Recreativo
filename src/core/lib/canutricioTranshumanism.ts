@@ -54,6 +54,26 @@ export interface MetabolicImpactAssessment {
     net_ecological_impact: number;    // >0 regeneración, <0 degradación
     autonomy_hours: number;           // Horas sin red externa para infraestructura soporte
     unexplained_difference_pct: number; // % diferencia no explicada vs entradas
+    // FOTOSÍNTESIS — Métricas específicas
+    chloroplast_PSII_lifetime_days: number;          // días actividad funcional PSII
+    carbon_fixation_rate_mmol_gDW_h: number;         // fijación CO₂ neta (mmol/gDW/h)
+    chloroplast_storage_stability_days_at_4C: number; // estabilidad almacenamiento
+    O2_production_rate_mmol_L_h: number;             // producción O₂
+    immune_evasion_status: 'none' | 'PEGylated' | 'CD47' | 'encapsulated' | 'low_immunogenic_strain';
+    clinical_trial_phase: 0 | 1 | 2 | 3 | 4;
+    CLEM_monitoring_active: boolean;
+    genomic_integration_offtarget_percent: number;
+    // INFRAESTRUCTURA COGNITIVA — Métricas neuroplasticidad + Edge AI + FL
+    hippocampal_volume_change_pct: number;            // cambio % volumen hipocampal (target ≥+1%)
+    cognitive_decline_reduction_pct: number;          // reducción deterioro cognitivo vs baseline (target ≥20%)
+    edge_autonomy_hours: number;                      // autonomía computacional local (target ≥72h)
+    federated_learning_participation_pct: number;     // % participación rounds FL (target ≥80%)
+    flow_state_achievement_rate: number;              // % sesiones en flow state (target ≥70%)
+    data_locality_compliance_pct: number;             // 100% = full edge, 0% = cloud
+    cultural_adaptation_score: number;                // 0-1 adaptación semántica/narrativa local
+    prevention_coverage_pct: number;                  // % cobertura preventiva base (target ≥80%)
+    accessibility_compliance_pct: number;             // % cumplimiento accesibilidad WCAG 2.1 AA + voz
+    compute_carbon_footprint_kg_co2e_per_year: number; // huella carbono compute (target < cloud)
   };
   
   // Dependencias críticas
@@ -63,6 +83,8 @@ export interface MetabolicImpactAssessment {
     specialized_maintenance: boolean;
     cooling_water: boolean;
     supply_chain_fragility: number;   // 0-1
+    light_dependency: boolean;        // NUEVO: requiere luz para fotosíntesis
+    photobioreactor_dependency: boolean; // NUEVO: infraestructura técnica
   };
   
   // Regeneración
@@ -71,6 +93,8 @@ export interface MetabolicImpactAssessment {
     soil_regeneration_ha_per_year: number;
     water_recharge_m3_per_year: number;
     biodiversity_gain_index: number;  // 0-1
+    algal_biomass_food_kg_per_year: number; // NUEVO: suplemento alimentario
+    oxygen_service_hours_per_year: number;  // NUEVO: servicio oxigenación
   };
   
   // Validación
@@ -242,14 +266,14 @@ export interface DataRightsPlan {
 }
 
 export interface CanutricioTranshumanismScorecard {
-  metabolic_score: number;      // 0-30 (EcologicalImpactScore ≥ 0, autonomy_hours ≥ 72, diff ≤ 5%)
-  cybernetic_score: number;     // 0-15 (ashby_ratio ≥ 1, response_capacity, observability)
-  governance_score: number;     // 0-15 (intergenerational 4 dims, council veto, 1p1v)
-  care_score: number;           // 0-10 (care_team, monitoring, reversibility, prevention_first)
-  memory_score: number;         // 0-5 (off_ledger, consent_revocable, rao_hashes_only)
-  ecological_score: number;     // 0-10 (regeneration_plan, planetary_limits)
+  metabolic_score: number;      // 0-30 (EcologicalImpactScore ≥ 0, autonomy_hours ≥ 72, diff ≤ 5%, hippocampal, cognitive_decline, PSII, carbon_fixation)
+  cybernetic_score: number;     // 0-18 (ashby_ratio ≥ 1, response_capacity, observability, edge_autonomy, FL_participation, flow_state)
+  governance_score: number;     // 0-15 (intergenerational 4 dims, council veto, 1p1v, data_locality, cultural_adaptation)
+  care_score: number;           // 0-12 (care_team, monitoring, reversibility, prevention_first ≥80%, accessibility)
+  memory_score: number;         // 0-6 (off_ledger, consent_revocable, rao_hashes_only, neurodata_granularity)
+  ecological_score: number;     // 0-10 (regeneration_plan, planetary_limits, compute_carbon)
   reversibility_score: number;  // 0-5 (disconnection_protocol, palliative, data_withdrawal)
-  consent_score: number;        // 0-5 (vc_revocable, granular, expiry)
+  consent_score: number;        // 0-4 (vc_revocable, granular, expiry, cultural_scope)
   total_score: number;          // 0-100
   verdict: 'rejected' | 'pilot' | 'scaling';
   evaluated_at: number;
@@ -405,6 +429,67 @@ function evaluateMetabolic(impact: MetabolicImpactAssessment, state: Territorial
     details.push('Secuestro de carbono planificado');
   }
   
+  // FOTOSÍNTESIS — Métricas específicas
+  if (impact.material_balance.chloroplast_PSII_lifetime_days >= 7) {
+    score += 3;
+    details.push(`PSII lifetime ${impact.material_balance.chloroplast_PSII_lifetime_days}d ≥ 7d (target autotrofía)`);
+  } else if (impact.material_balance.chloroplast_PSII_lifetime_days >= 2) {
+    score += 1;
+    details.push(`PSII lifetime ${impact.material_balance.chloroplast_PSII_lifetime_days}d ≥ 2d (mínimo funcional)`);
+  }
+  
+  if (impact.material_balance.carbon_fixation_rate_mmol_gDW_h > 0) {
+    score += 2;
+    details.push(`Fijación CO₂ nuclear ${impact.material_balance.carbon_fixation_rate_mmol_gDW_h} mmol/gDW/h > 0`);
+  }
+  
+  // INFRAESTRUCTURA COGNITIVA — Métricas neuroplasticidad + Edge AI + FL
+  if (impact.material_balance.hippocampal_volume_change_pct >= 1.0) {
+    score += 3;
+    details.push(`Cambio volumen hipocampal +${impact.material_balance.hippocampal_volume_change_pct}% ≥ +1% (PubMed 39012673)`);
+  } else if (impact.material_balance.hippocampal_volume_change_pct >= 0.5) {
+    score += 1;
+    details.push(`Cambio volumen hipocampal +${impact.material_balance.hippocampal_volume_change_pct}% ≥ +0.5%`);
+  }
+  
+  if (impact.material_balance.cognitive_decline_reduction_pct >= 20) {
+    score += 3;
+    details.push(`Reducción deterioro cognitivo ${impact.material_balance.cognitive_decline_reduction_pct}% ≥ 20% (FINGER)`);
+  } else if (impact.material_balance.cognitive_decline_reduction_pct >= 10) {
+    score += 1;
+    details.push(`Reducción deterioro cognitivo ${impact.material_balance.cognitive_decline_reduction_pct}% ≥ 10%`);
+  }
+  
+  if (impact.material_balance.edge_autonomy_hours >= 72) {
+    score += 2;
+    details.push(`Edge autonomy ${impact.material_balance.edge_autonomy_hours}h ≥ 72h (offline-first)`);
+  }
+  
+  if (impact.material_balance.federated_learning_participation_pct >= 80) {
+    score += 2;
+    details.push(`FL participación ${impact.material_balance.federated_learning_participation_pct}% ≥ 80%`);
+  }
+  
+  if (impact.material_balance.flow_state_achievement_rate >= 0.7) {
+    score += 2;
+    details.push(`Flow state ${(impact.material_balance.flow_state_achievement_rate*100).toFixed(0)}% ≥ 70%`);
+  }
+  
+  if (impact.material_balance.data_locality_compliance_pct === 100) {
+    score += 3;
+    details.push('Data locality 100% edge (soberanía neurodatos)');
+  }
+  
+  if (impact.material_balance.cultural_adaptation_score >= 0.8) {
+    score += 2;
+    details.push(`Adaptación cultural ${impact.material_balance.cultural_adaptation_score.toFixed(2)} ≥ 0.80`);
+  }
+  
+  if (impact.material_balance.compute_carbon_footprint_kg_co2e_per_year < 100) {
+    score += 1;
+    details.push(`Compute carbon <100 kg CO₂e/año (vs cloud)`);
+  }
+  
   return { score: Math.min(score, 30), details };
 }
 
@@ -442,6 +527,13 @@ function evaluateCybernetic(impact: CyberneticImpactAssessment): { score: number
   score += obsScore;
   details.push(`Observabilidad: ${obsScore}/3`);
   
+  // INFRAESTRUCTURA COGNITIVA — Métricas cibernéticas Edge AI + FL
+  // Edge autonomy, FL participation, flow state se evalúan en metabólico, aquí verificamos observabilidad específica
+  if (obs.real_time_monitoring && obs.anomaly_detection && obs.audit_trail) {
+    score += 3; // bonus por observabilidad completa (CLEM/FL/neurodata)
+    details.push('Observabilidad completa: tiempo real + anomalía + auditoría');
+  }
+  
   // Perturbaciones introducidas (0-2 pts)
   const pert = impact.introduced_perturbations;
   if (pert.hacking_vulnerability < 0.3 && pert.dependency_on_provider < 0.3 && pert.cascade_failure_risk < 0.3) {
@@ -452,7 +544,7 @@ function evaluateCybernetic(impact: CyberneticImpactAssessment): { score: number
     details.push('Riesgo moderado perturbaciones');
   }
   
-  return { score: Math.min(score, 15), details };
+  return { score: Math.min(score, 18), details };
 }
 
 function evaluateGovernance(gov: TranshumanismGovernance): { score: number; details: string[] } {
@@ -545,7 +637,15 @@ function evaluateCare(care: CareIntegrationPlan, state: TerritorialStateVector):
     details.push('Prevención base < 50% (enhancement prematuro)');
   }
   
-  return { score: Math.min(score, 10), details };
+  // INFRAESTRUCTURA COGNITIVA — Accesibilidad universal
+  // Se evalúa desde state.cognitive_infrastructure.accessibility_compliance_pct
+  // Aquí solo verificamos que el plan de cuidado contemple accesibilidad
+  if (care.monitoring_protocol.vital_signs.some(v => v.includes('voice') || v.includes('gesture') || v.includes('ar'))) {
+    score += 2;
+    details.push('Accesibilidad: voz/gesto/AR contemplados en monitoreo');
+  }
+  
+  return { score: Math.min(score, 12), details };
 }
 
 function evaluateMemory(data: DataRightsPlan): { score: number; details: string[] } {
@@ -572,7 +672,18 @@ function evaluateMemory(data: DataRightsPlan): { score: number; details: string[
     details.push('VIOLACIÓN: datos personales en RAO');
   }
   
-  return { score: Math.min(score, 5), details };
+  // INFRAESTRUCTURA COGNITIVA — Granularidad neurodatos
+  // Verificar que sensitive_data_categories incluya categorías neurocognitivas
+  const neuroCategories = ['neuroimaging', 'behavioral', 'linguistic', 'genomic'];
+  const hasNeuroGranularity = neuroCategories.every(cat => 
+    data.sensitive_data_categories.some(s => s.toLowerCase().includes(cat))
+  );
+  if (hasNeuroGranularity) {
+    score += 1;
+    details.push('Granularidad neurodatos: neuroimaging + behavioral + linguistic + genomic');
+  }
+  
+  return { score: Math.min(score, 6), details };
 }
 
 function evaluateEcological(impact: MetabolicImpactAssessment, state: TerritorialStateVector): { score: number; details: string[] } {
@@ -594,6 +705,15 @@ function evaluateEcological(impact: MetabolicImpactAssessment, state: Territoria
   if (regen.carbon_sequestration_kg_co2e_per_year > 10000) score += 2;
   if (regen.soil_regeneration_ha_per_year > 10) score += 2;
   if (regen.biodiversity_gain_index > 0.1) score += 2;
+  
+  // INFRAESTRUCTURA COGNITIVA — Huella carbono compute
+  if (impact.material_balance.compute_carbon_footprint_kg_co2e_per_year < 100) {
+    score += 2;
+    details.push(`Compute carbon <100 kg CO₂e/año (Edge vs cloud)`);
+  } else if (impact.material_balance.compute_carbon_footprint_kg_co2e_per_year < 500) {
+    score += 1;
+    details.push(`Compute carbon <500 kg CO₂e/año`);
+  }
   
   return { score: Math.min(score, 10), details };
 }
@@ -718,6 +838,21 @@ export function validateTranshumanismMetabolic(
   if (proposal.material_balance.unexplained_difference_pct > 0.10) blockers.push(`Diff no explicada (${(proposal.material_balance.unexplained_difference_pct*100).toFixed(1)}%) > 10%`);
   else if (proposal.material_balance.unexplained_difference_pct > 0.05) warnings.push(`Diff no explicada (${(proposal.material_balance.unexplained_difference_pct*100).toFixed(1)}%) > 5%`);
   
+  // FOTOSÍNTESIS — Validaciones específicas
+  if (proposal.material_balance.chloroplast_PSII_lifetime_days < 2) blockers.push(`PSII lifetime (${proposal.material_balance.chloroplast_PSII_lifetime_days}d) < 2d mínimo funcional`);
+  else if (proposal.material_balance.chloroplast_PSII_lifetime_days < 7) warnings.push(`PSII lifetime (${proposal.material_balance.chloroplast_PSII_lifetime_days}d) < 7d target autotrofía`);
+  
+  if (proposal.material_balance.carbon_fixation_rate_mmol_gDW_h <= 0 && proposal.material_balance.clinical_trial_phase >= 2) blockers.push(`Fijación CO₂ nula en fase clínica ≥2`);
+  else if (proposal.material_balance.carbon_fixation_rate_mmol_gDW_h <= 0) warnings.push(`Fijación CO₂ nula (solo cloroplastos transitorios, sin integración nuclear)`);
+  
+  if (proposal.material_balance.immune_evasion_status === 'none' && proposal.material_balance.clinical_trial_phase >= 1) blockers.push('Sin estrategia evasión inmune en fase clínica');
+  else if (proposal.material_balance.immune_evasion_status === 'none') warnings.push('Sin estrategia evasión inmune (requerida para in vivo)');
+  
+  if (proposal.material_balance.genomic_integration_offtarget_percent > 0.1) blockers.push(`Off-target CRISPR (${proposal.material_balance.genomic_integration_offtarget_percent}%) > 0.1%`);
+  else if (proposal.material_balance.genomic_integration_offtarget_percent > 0.05) warnings.push(`Off-target CRISPR (${proposal.material_balance.genomic_integration_offtarget_percent}%) > 0.05%`);
+  
+  if (!proposal.material_balance.CLEM_monitoring_active && proposal.material_balance.chloroplast_PSII_lifetime_days > 0) warnings.push('Stock cloroplastos >0 sin monitoreo CLEM activo');
+  
   const deps = proposal.critical_dependencies;
   const criticalDeps: string[] = [];
   if (deps.rare_earths) criticalDeps.push('Tierras raras');
@@ -725,11 +860,19 @@ export function validateTranshumanismMetabolic(
   if (deps.specialized_maintenance) criticalDeps.push('Mantenimiento especializado');
   if (deps.cooling_water) criticalDeps.push('Agua refrigeración');
   if (deps.supply_chain_fragility > 0.5) criticalDeps.push('Cadena suministro frágil');
+  if (deps.light_dependency) criticalDeps.push('Dependencia luz (requiere fotobiorreactor/LEDs)');
+  if (deps.photobioreactor_dependency) criticalDeps.push('Dependencia fotobiorreactor (infraestructura técnica)');
   
   if (!state.biosphere.regeneration_net) warnings.push('Territorio no tiene regeneración neta');
   if (state.biosphere.soil_organic_carbon_percent < 3) warnings.push(`Suelo degradado (C orgánico ${state.biosphere.soil_organic_carbon_percent}% < 3%)`);
   if (state.water.availability_m3_per_day < 50) warnings.push(`Estrés hídrico (${state.water.availability_m3_per_day} m³/día/hab < 50)`);
   if (state.energy.net_balance_kwh_per_day < 0) warnings.push(`Balance energético neto negativo (${state.energy.net_balance_kwh_per_day} kWh/día)`);
+  
+  // FOTOSÍNTESIS — Estado territorial
+  if (state.photosynthesis.chloroplast_PSII_lifetime_days < 2) warnings.push(`Territorio: PSII lifetime (${state.photosynthesis.chloroplast_PSII_lifetime_days}d) < 2d`);
+  if (state.photosynthesis.carbon_fixation_rate_mmol_gDW_h <= 0) warnings.push('Territorio: sin fijación CO₂ nuclear funcional');
+  if (state.photosynthesis.immune_evasion_status === 'none') warnings.push('Territorio: sin estrategia evasión inmune validada');
+  if (!state.photosynthesis.CLEM_monitoring_active) warnings.push('Territorio: sin bio-feedback CLEM operativo');
   
   return { passed: blockers.length === 0, ecological_impact_score: ecoScore, autonomy_hours: proposal.material_balance.autonomy_hours, unexplained_difference_pct: proposal.material_balance.unexplained_difference_pct, critical_dependencies: criticalDeps, blockers, warnings };
 }
@@ -750,6 +893,19 @@ export function validateTranshumanismCybernetic(proposal: CyberneticImpactAssess
   if (ashbyRatio < 1.0) blockers.push(`Ashby ratio ${ashbyRatio.toFixed(2)} < 1.0: capacidad respuesta < variedad perturbaciones`);
   else if (ashbyRatio < 1.5) warnings.push(`Ashby ratio ${ashbyRatio.toFixed(2)} < 1.5: margen estrecho`);
   
+  // FOTOSÍNTESIS — Perturbaciones específicas fotosimbióticas
+  const photosyntheticPerturbations = [
+    'PSII_failure', 'photooxidative_stress', 'immune_rejection', 
+    'light_deprivation', 'chloroplast_genomic_instability',
+    'algal_contamination', 'nutrient_competition', 'photobioreactor_failure'
+  ];
+  const hasPhotosyntheticPerturbations = photosyntheticPerturbations.some(p => 
+    proposal.introduced_perturbations.failure_modes.includes(p)
+  );
+  if (hasPhotosyntheticPerturbations) {
+    warnings.push('Perturbaciones fotosimbióticas detectadas: requiere monitoreo CLEM + bio-feedback');
+  }
+  
   const resp = proposal.response_capacity;
   let respScore = 0;
   if (resp.local_repair) respScore++; if (resp.spare_parts_local) respScore++; if (resp.knowledge_distributed) respScore++; if (resp.fallback_mode) respScore++;
@@ -758,6 +914,9 @@ export function validateTranshumanismCybernetic(proposal: CyberneticImpactAssess
   const obs = proposal.observability; let obsScore = 0;
   if (obs.real_time_monitoring) obsScore++; if (obs.anomaly_detection) obsScore++; if (obs.audit_trail) obsScore++;
   if (obsScore < 2) warnings.push(`Observabilidad ${obsScore}/3: limitada`);
+  
+  // FOTOSÍNTESIS — Observabilidad CLEM/imaging-PAM/FLIM
+  if (!obs.real_time_monitoring) warnings.push('Sin monitoreo tiempo real (requerido para CLEM/imaging-PAM/FLIM)');
   
   const pert = proposal.introduced_perturbations;
   const maxRisk = Math.max(pert.hacking_vulnerability, pert.dependency_on_provider, pert.cascade_failure_risk);

@@ -105,7 +105,96 @@ export interface LiquidityMetrics {
 }
 
 // ============================================================================
-// PERTURBACIONES (w_t)
+// FOTOSÍNTESIS / REGENERACIÓN FOTOSIMBIÓTICA (Dimensión 10: P)
+// ============================================================================
+
+export interface PhotosynthesisMetrics {
+  // Estado de cloroplastos/algas
+  chloroplast_PSII_lifetime_days: number;      // días actividad funcional PSII
+  chloroplast_storage_stability_days_at_4C: number; // estabilidad almacenamiento en frío
+  algal_biomass_g_L: number;                   // densidad biomasa en fotobiorreactores
+  
+  // Flujos metabólicos
+  carbon_fixation_rate_mmol_gDW_h: number;     // fijación CO₂ neta (mmol/gDW/h)
+  O2_production_rate_mmol_L_h: number;         // producción O₂ disuelto
+  light_penetration_depth_mm: number;          // profundidad efectiva luz en tejido
+  
+  // Ingeniería y seguridad
+  immune_evasion_status: 'none' | 'PEGylated' | 'CD47' | 'encapsulated' | 'low_immunogenic_strain';
+  genomic_integration_offtarget_percent: number; // % off-target CRISPR
+  clinical_trial_phase: 0 | 1 | 2 | 3 | 4;     // 0 = preclínico
+  
+  // Monitoreo cibernético
+  CLEM_monitoring_active: boolean;             // bio-feedback ultraestructura
+  retrograde_signaling_detected: boolean;      // señalización cloroplasto→núcleo
+  
+  // Recursos disponibles para matchmaking
+  chloroplast_battery_stock_FvFm_days: number;  // stock "baterías biológicas"
+  photosynthetic_scaffold_area_cm2: number;     // andamios listos para implante
+  algal_biomass_food_kg: number;                // biomasa para suplemento alimentario
+}
+
+export interface TerritorialStateVector {
+  // W - Agua
+  water: WaterMetrics;
+  // F - Alimento
+  food: FoodMetrics;
+  // E - Energía
+  energy: EnergyMetrics;
+  // H - Hábitat/Vivienda
+  habitat: HabitatMetrics;
+  // C - Cuidado/Salud
+  care: CareMetrics;
+  // M - Memoria/Conocimiento
+  memory: MemoryMetrics;
+  // B - Suelo/Biodiversidad/Regeneración
+  biosphere: BiosphereMetrics;
+  // G - Gobernanza/Autonomía
+  governance: GovernanceMetrics;
+  // L - Liquidez/Recursos financieros
+  liquidity: LiquidityMetrics;
+  // P - Fotosíntesis/Regeneración Fotosimbiótica
+  photosynthesis: PhotosynthesisMetrics;
+  // I - Infraestructura Cognitiva (Dimensión 11)
+  cognitive_infrastructure: CognitiveInfrastructureMetrics;
+  
+  timestamp: number;
+  nodeId: string;
+}
+
+// ============================================================================
+// INFRAESTRUCTURA COGNITIVA PARA LA VEJEZ EN AMÉRICA LATINA (Dimensión 11: I)
+// ============================================================================
+
+export interface CognitiveInfrastructureMetrics {
+  // Cobertura y acceso
+  cognitive_coverage_pct: number;               // % población >60 con acceso
+  rural_coverage_pct: number;                   // % rural >60 con acceso
+  connectivity_independent_pct: number;         // % usuarios offline-functional
+  
+  // Eficacia clínica (basado en FINGER + neuroplasticidad)
+  cognitive_decline_reduction_pct: number;      // vs baseline (target ≥20%)
+  hippocampal_volume_change_pct: number;        // neuroimaging proxy (target ≥+1%)
+  flow_state_achievement_rate: number;          // % sesiones en flow (target ≥70%)
+  
+  // Infraestructura Edge AI
+  edge_device_density_per_1000: number;         // dispositivos/1000 hab >60
+  model_inference_latency_ms: number;           // <100ms target
+  federated_round_participation_pct: number;    // % nodos participando (target ≥80%)
+  model_freshness_days: number;                 // ≤7
+  
+  // Gobernanza datos
+  data_locality_compliance_pct: number;         // 100% = full edge
+  consent_revocation_rate_pct: number;          // tasa revocación VC
+  cultural_adaptation_score: number;            // 0-1 (semántica/narrativa local)
+  
+  // Economía
+  cost_per_user_year_usd: number;               // target <$10 (B2G)
+  public_health_integration: boolean;           // integrado credencial salud
+}
+
+// ============================================================================
+// PERTURBACIONES (w_t) — Extendido con fotosimbiosis
 // ============================================================================
 
 export type PerturbationType = 
@@ -118,7 +207,24 @@ export type PerturbationType =
   | 'external_shock'
   | 'climate_extreme'
   | 'financial_crisis'
-  | 'governance_failure';
+  | 'governance_failure'
+  // Nuevas perturbaciones fotosimbióticas:
+  | 'PSII_failure'              // Fallo transporte electrónico cloroplástico
+  | 'photooxidative_stress'     // ROS por exceso luz / fototoxicidad
+  | 'immune_rejection'          // Respuesta inmune a algas/cloroplastos
+  | 'light_deprivation'         // Falta luz para fotosíntesis (nubes, profundidad, fallo LEDs)
+  | 'chloroplast_genomic_instability' // Integración genómica inestable / off-target
+  | 'algal_contamination'       // Contaminación bacteriana/hongos en fotobiorreactor
+  | 'nutrient_competition'      // Algas compiten por glucosa/nutrientes huésped
+  | 'photobioreactor_failure'   // Fallo técnico fotobiorreactor (bombas, sensores, LEDs)
+  // Nuevas perturbaciones infraestructura cognitiva:
+  | 'edge_device_failure'       // Fallo hardware Edge AI local
+  | 'federated_learning_dropout' // Nodos dejan de participar en FL
+  | 'model_drift'               // Desviación modelo IA sin actualización
+  | 'neurodata_breach'          // Fuga datos neurocognitivos
+  | 'cultural_misalignment'     // Desajuste semántico/narrativo local
+  | 'connectivity_loss'         // Pérdida conectividad intermitente (rural)
+  | 'consent_revocation_spike'; // Oleada revocaciones VC neurodatos
 
 export interface Perturbation {
   id: string;
@@ -508,23 +614,228 @@ export function detectCyberneticAlerts(
   }
   
   if (state.liquidity.reserve_months < thresholds.liquidity.reserve_months) {
-    alerts.push({
-      dimension: 'liquidity',
-      type: 'threshold_breach',
-      severity: 'warning',
-      message: `Reserva operativa (${state.liquidity.reserve_months} meses) bajo mínimo (${thresholds.liquidity.reserve_months} meses)`,
-      suggested_actions: ['Reducir gastos no esenciales', 'Acelerar cobranzas', 'Buscar subvenciones puente', 'Activar cláusula arranque'],
-    });
+      alerts.push({
+        dimension: 'liquidity',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Reserva operativa (${state.liquidity.reserve_months} meses) bajo mínimo (${thresholds.liquidity.reserve_months} meses)`,
+        suggested_actions: ['Reducir gastos no esenciales', 'Acelerar cobranzas', 'Buscar subvenciones puente', 'Activar cláusula arranque'],
+      });
+    }
+
+    // FOTOSÍNTESIS — Umbrales específicos
+    if (state.photosynthesis.chloroplast_PSII_lifetime_days < 2) {
+      alerts.push({
+        dimension: 'photosynthesis',
+        type: 'threshold_breach',
+        severity: 'critical',
+        message: `PSII lifetime (${state.photosynthesis.chloroplast_PSII_lifetime_days}d) < 2d mínimo funcional`,
+        suggested_actions: ['Revisar aislamiento cloroplastos', 'Optimizar anti-ROS', 'Verificar almacenamiento 4°C'],
+        deadline: Date.now() + 86400000
+      });
+    }
+
+    if (state.photosynthesis.carbon_fixation_rate_mmol_gDW_h <= 0 && state.photosynthesis.clinical_trial_phase >= 2) {
+      alerts.push({
+        dimension: 'photosynthesis',
+        type: 'regeneration_failure',
+        severity: 'warning',
+        message: `Fijación CO₂ nula (${state.photosynthesis.carbon_fixation_rate_mmol_gDW_h}) en fase clínica ≥2`,
+        suggested_actions: ['Ingeniería Rubisco/Prk nuclear', 'Evolución adaptativa', 'Verificar expresión génica'],
+      });
+    }
+
+    if (state.photosynthesis.O2_production_rate_mmol_L_h < 0.1 && state.photosynthesis.photosynthetic_scaffold_area_cm2 > 0) {
+      alerts.push({
+        dimension: 'photosynthesis',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Producción O₂ baja (${state.photosynthesis.O2_production_rate_mmol_L_h}) con andamios activos`,
+        suggested_actions: ['Verificar penetración luz', 'Revisar densidad algal', 'Optimizar espectro LED'],
+      });
+    }
+
+    if (state.photosynthesis.immune_evasion_status === 'none' && state.photosynthesis.clinical_trial_phase >= 1) {
+      alerts.push({
+        dimension: 'photosynthesis',
+        type: 'threshold_breach',
+        severity: 'critical',
+        message: 'Sin estrategia evasión inmune en fase clínica',
+        suggested_actions: ['Implementar PEGilación/CD47', 'Encapsular', 'Usar cepa baja inmunogenicidad (BDH-1)'],
+        deadline: Date.now() + 86400000
+      });
+    }
+
+    if (state.photosynthesis.genomic_integration_offtarget_percent > 0.1) {
+      alerts.push({
+        dimension: 'photosynthesis',
+        type: 'threshold_breach',
+        severity: 'critical',
+        message: `Off-target CRISPR (${state.photosynthesis.genomic_integration_offtarget_percent}%) > 0.1%`,
+        suggested_actions: ['Optimizar gRNAs', 'Validar secuenciación', 'Pausar ingeniería genómica'],
+      });
+    }
+
+    if (!state.photosynthesis.CLEM_monitoring_active && state.photosynthesis.chloroplast_battery_stock_FvFm_days > 0) {
+      alerts.push({
+        dimension: 'photosynthesis',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: 'Stock cloroplastos >0 sin monitoreo CLEM activo',
+        suggested_actions: ['Activar bio-feedback CLEM', 'Programar imaging-PAM/FLIM'],
+      });
+    }
+
+    // INFRAESTRUCTURA COGNITIVA — Umbrales específicos
+    if (state.cognitive_infrastructure.cognitive_coverage_pct < 0.8) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Cobertura cognitiva (${(state.cognitive_infrastructure.cognitive_coverage_pct*100).toFixed(0)}%) < 80% objetivo universal`,
+        suggested_actions: ['Expandir nodos Edge AI', 'Priorizar zonas rurales', 'Integrar credencial salud universal'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.rural_coverage_pct < 0.6) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Cobertura rural (${(state.cognitive_infrastructure.rural_coverage_pct*100).toFixed(0)}%) < 60%`,
+        suggested_actions: ['Desplegar dispositivos offline-first', 'Capacitar promotores comunitarios', 'Federated learning asíncrono'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.connectivity_independent_pct < 0.9) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Usuarios offline-functional (${(state.cognitive_infrastructure.connectivity_independent_pct*100).toFixed(0)}%) < 90%`,
+        suggested_actions: ['Optimizar modelo Edge (<20MB)', 'Pre-cargar contenido cultural', 'Sincronización diferida FL'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.cognitive_decline_reduction_pct < 20) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'regeneration_failure',
+        severity: 'warning',
+        message: `Reducción deterioro cognitivo (${state.cognitive_infrastructure.cognitive_decline_reduction_pct}%) < 20% (FINGER target)`,
+        suggested_actions: ['Revisar fricción productiva', 'Ajustar flow state dinámico', 'Validar multimodalidad (físico+cognitivo+social)'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.hippocampal_volume_change_pct < 1.0) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'info',
+        message: `Cambio volumen hipocampal (${state.cognitive_infrastructure.hippocampal_volume_change_pct}%) < +1% (PubMed 39012673)`,
+        suggested_actions: ['Aumentar intensidad intervención', 'Extender duración', 'Combinar ejercicio aeróbico'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.flow_state_achievement_rate < 0.7) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Flow state achievement (${(state.cognitive_infrastructure.flow_state_achievement_rate*100).toFixed(0)}%) < 70%`,
+        suggested_actions: ['Calibrar dificultad adaptativa', 'Revisar carga cognitiva', 'Validar engagement intrínseco'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.edge_device_density_per_1000 < 5) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Densidad Edge devices (${state.cognitive_infrastructure.edge_device_density_per_1000}/1000 hab>60) < 5`,
+        suggested_actions: ['Reciclar hardware', 'Subvención hardware Fondo Autotrofia', 'Compartir nodos comunitarios'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.model_inference_latency_ms > 100) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Latencia inferencia (${state.cognitive_infrastructure.model_inference_latency_ms}ms) > 100ms`,
+        suggested_actions: ['Cuantizar modelo INT4', 'Podar arquitectura', 'Hardware accelerator (NPU)'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.federated_round_participation_pct < 80) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Participación FL round (${state.cognitive_infrastructure.federated_round_participation_pct}%) < 80%`,
+        suggested_actions: ['Incentivar participación', 'Reducir comunicación round', 'Tolerar dropout asíncrono'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.model_freshness_days > 7) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Modelo sin actualizar (${state.cognitive_infrastructure.model_freshness_days}d) > 7d`,
+        suggested_actions: ['Forzar round FL', 'Verificar conectividad nodos', 'Fallback modelo previo'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.data_locality_compliance_pct < 100) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'critical',
+        message: `Data locality compliance (${state.cognitive_infrastructure.data_locality_compliance_pct}%) < 100% — neurodatos en nube`,
+        suggested_actions: ['Migrar a edge-only', 'Auditar flujos datos', 'Revocar consentimientos cloud'],
+        deadline: Date.now() + 86400000
+      });
+    }
+
+    if (state.cognitive_infrastructure.cultural_adaptation_score < 0.8) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Adaptación cultural (${state.cognitive_infrastructure.cultural_adaptation_score.toFixed(2)}) < 0.80`,
+        suggested_actions: ['Reclutar lingüistas/antropólogos locales', 'Expandir corpus semántico', 'Validar narrativas orales'],
+      });
+    }
+
+    if (state.cognitive_infrastructure.cost_per_user_year_usd > 10) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: `Costo usuario/año ($${state.cognitive_infrastructure.cost_per_user_year_usd}) > $10 target B2G`,
+        suggested_actions: ['Optimizar hardware', 'Compras públicas escala', 'Revisar distribución 3 fondos'],
+      });
+    }
+
+    if (!state.cognitive_infrastructure.public_health_integration) {
+      alerts.push({
+        dimension: 'cognitive_infrastructure',
+        type: 'threshold_breach',
+        severity: 'warning',
+        message: 'Sin integración Credencial Salud Universal / sistema público',
+        suggested_actions: ['API gob.mx/salud', 'Convenio IMSS-Bienestar', 'Piloto municipal'],
+      });
+    }
+
+    // Tendencias (si hay estado previo)
+    if (previous_state) {
+      const trend_alerts = detectTrendDeviations(state, previous_state);
+      alerts.push(...trend_alerts);
+    }
+
+    return alerts;
   }
-  
-  // Tendencias (si hay estado previo)
-  if (previous_state) {
-    const trend_alerts = detectTrendDeviations(state, previous_state);
-    alerts.push(...trend_alerts);
-  }
-  
-  return alerts;
-}
 
 function detectTrendDeviations(current: TerritorialStateVector, previous: TerritorialStateVector): CyberneticAlert[] {
   const alerts: CyberneticAlert[] = [];
@@ -537,6 +848,8 @@ function detectTrendDeviations(current: TerritorialStateVector, previous: Territ
     { key: 'energy', getter: s => s.energy.net_balance_kwh_per_day },
     { key: 'care', getter: s => s.care.preventive_coverage_effective },
     { key: 'biosphere', getter: s => s.biosphere.soil_organic_carbon_percent },
+    { key: 'photosynthesis', getter: s => s.photosynthesis.chloroplast_PSII_lifetime_days },
+    { key: 'cognitive_infrastructure', getter: s => s.cognitive_infrastructure.cognitive_coverage_pct },
   ];
   
   for (const dim of dims) {
@@ -654,6 +967,64 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
     key_risks: ['Pérdida conocimiento crítico', 'Conflictos violentos', 'Extinción local especies'],
     mitigation_options: ['Archivos distribuidos offline', 'Semillas/genética resguardada', 'Protocolos supervivencia', 'Alianzas bioregionales'],
     intergenerational_impact: 'uncertain'
+  },
+  {
+    id: 'photosynthetic_regeneration',
+    name: 'Regeneración fotosimbiótica activa',
+    horizon: 'transgenerational',
+    probability: 0.15,
+    assumptions: ['PSII lifetime ≥ 7 días in vivo', 'Fijación CO₂ nuclear funcional', 'Evasión inmune validada', 'CLEM bio-feedback operativo', 'Ensayo clínico fase 2+'],
+    state_projection: {
+      water: { availability_m3_per_day: 60, scarcity_type: 'none' },
+      food: { self_sufficiency_ratio: 0.6, diversity_index: 0.8 },
+      energy: { renewable_share: 0.95, autonomy_hours: 720, net_balance_kwh_per_day: 100 },
+      food: { self_sufficiency_ratio: 0.7, diversity_index: 0.8 },  // biomasa algal suplemento
+      biosphere: { regeneration_net: true, soil_organic_carbon_percent: 4.0, biodiversity_index: 0.85 },
+      photosynthesis: { 
+        chloroplast_PSII_lifetime_days: 7, 
+        carbon_fixation_rate_mmol_gDW_h: 2.5,
+        O2_production_rate_mmol_L_h: 1.2,
+        clinical_trial_phase: 2,
+        immune_evasion_status: 'PEGylated',
+        CLEM_monitoring_active: true
+      },
+      governance: { participation_rate: 0.85, cds_ics_score: 0.95 }
+    },
+    key_risks: ['Fallo evasión inmune crónica', 'Inestabilidad genómica off-target', 'Dependencia luz artificial', 'Escalabilidad fotobiorreactores'],
+    mitigation_options: ['Redundancia estrategias inmunes', 'Validación genómica continua', 'LEDs implantables + fibra óptica', 'Federación fotobiorreactores'],
+    intergenerational_impact: 'positive'
+  },
+  {
+    id: 'cognitive_infrastructure_sovereignty',
+    name: 'Soberanía Cognitiva Latinoamericana',
+    horizon: 'transgenerational',
+    probability: 0.2,
+    assumptions: ['Edge AI <20MB offline-first universal', 'Federated learning 80%+ participación continua', 'Data locality 100% edge (cero nube neurodatos)', 'Cultural adaptation score ≥0.80 (semántica/narrativa local)', 'B2G <$10/usuario/año via Credencial Salud Universal 2026', 'Prevención cognitiva ≥80% cobertura territorial (FINGER-adaptado)'],
+    state_projection: {
+      cognitive_infrastructure: {
+        cognitive_coverage_pct: 0.95,
+        rural_coverage_pct: 0.85,
+        connectivity_independent_pct: 0.98,
+        cognitive_decline_reduction_pct: 25,
+        hippocampal_volume_change_pct: 1.5,
+        flow_state_achievement_rate: 0.82,
+        edge_device_density_per_1000: 12,
+        model_inference_latency_ms: 45,
+        federated_round_participation_pct: 92,
+        model_freshness_days: 3,
+        data_locality_compliance_pct: 100,
+        consent_revocation_rate_pct: 2,
+        cultural_adaptation_score: 0.88,
+        cost_per_user_year_usd: 8,
+        public_health_integration: true
+      },
+      care: { preventive_coverage_effective: 0.92, equity_gap: 0.05 },
+      governance: { participation_rate: 0.9, cds_ics_score: 0.98 },
+      memory: { active_consents_ratio: 0.98, withdrawal_compliance_rate: 0.99 }
+    },
+    key_risks: ['Resistencia cultural a tecnología', 'Fragmentación lingüística', 'Sostenibilidad financiera B2G', 'Escalabilidad FL asíncrono'],
+    mitigation_options: ['Co-diseño con comunidades', 'Corpus multilingüe abierto', 'Fondo Autotrofía hardware + Fondo Cuidado ops', 'Modelos FL tolerantes a dropout'],
+    intergenerational_impact: 'positive'
   }
 ];
 
@@ -686,20 +1057,17 @@ export function evaluateIntergenerationalImpact(
     assumptions: scenarios.flatMap(s => s.assumptions),
     uncertainties: scenarios.flatMap(s => s.key_risks)
   };
-}// HSCSG v15 OS — Evaluación Canutriciotranshumanista
-// Scorecard, validación metabólica/cibernética/gobernanza para intervenciones transhumanistas
-
-import type { 
-  EcologicalImpactScore, 
-  TerritorialStateVector, 
-  ResourceAllocation,
-  CanutricioTranshumanismScorecard 
-} from './pmcrt';
-import type { EcologicalImpactScore as EcoScore } from './ecologicalIndicators';
+}
 
 // ============================================================================
-// TIPOS PRINCIPALES
+// CANUTRICIOTRANSHUMANISMO — Marco de evaluación transversal
 // ============================================================================
+
+/**
+ * Canutriciotranshumanismo: "La tecnología que extiende la vida no genera privilegio;
+ * solo se legitima si su base material es regenerativa, su gobernanza es 1p1v,
+ * su acceso es solidario, su cuidado es prevención→cura→mejora, y sus datos son revocables."
+ */
 
 export interface TranshumanismProposal {
   id: string;
@@ -930,14 +1298,14 @@ export interface DataRightsPlan {
 }
 
 export interface CanutricioTranshumanismScorecard {
-  metabolic_score: number;      // 0-30 (EcologicalImpactScore ≥ 0, autonomy_hours ≥ 72, diff ≤ 5%)
-  cybernetic_score: number;     // 0-15 (ashby_ratio ≥ 1, response_capacity, observability)
-  governance_score: number;     // 0-15 (intergenerational 4 dims, council veto, 1p1v)
-  care_score: number;           // 0-10 (care_team, monitoring, reversibility, prevention_first)
-  memory_score: number;         // 0-5 (off_ledger, consent_revocable, rao_hashes_only)
-  ecological_score: number;     // 0-10 (regeneration_plan, planetary_limits)
-  reversibility_score: number;  // 0-5 (disconnection_protocol, palliative, data_withdrawal)
-  consent_score: number;        // 0-5 (vc_revocable, granular, expiry)
+  metabolic_score: number;      // 0-30
+  cybernetic_score: number;     // 0-15
+  governance_score: number;     // 0-15
+  care_score: number;           // 0-10
+  memory_score: number;         // 0-5
+  ecological_score: number;     // 0-10
+  reversibility_score: number;  // 0-5
+  consent_score: number;        // 0-5
   total_score: number;          // 0-100
   verdict: 'rejected' | 'pilot' | 'scaling';
   evaluated_at: number;
@@ -946,7 +1314,7 @@ export interface CanutricioTranshumanismScorecard {
 }
 
 // ============================================================================
-// FUNCIÓN PRINCIPAL DE EVALUACIÓN
+// FUNCIÓN DE EVALUACIÓN CANUTRICIOTRANSHUMANISTA
 // ============================================================================
 
 export interface EvaluationResult {
@@ -1268,8 +1636,6 @@ function evaluateEcological(impact: MetabolicImpactAssessment, state: Territoria
   const details: string[] = [];
   
   // Score ecológico del estado actual
-  // Usar ecologicalIndicators.computeEcologicalImpactScore si disponible
-  // Aquí simplificado:
   if (state.biosphere.regeneration_net) score += 3;
   if (state.biosphere.soil_organic_carbon_percent >= 3) score += 2;
   if (state.water.availability_m3_per_day >= 50) score += 2;
@@ -1375,256 +1741,3 @@ export function createTranshumanismProposalDraft(
     submitted_at: Date.now()
   };
 }
-
-// ============================================================================
-// VALIDACIONES ESPECIALIZADAS POR DIMENSIÓN
-// ============================================================================
-
-export interface TranshumanismMetabolicValidation {
-  passed: boolean;
-  ecological_impact_score: number;
-  autonomy_hours: number;
-  unexplained_difference_pct: number;
-  critical_dependencies: string[];
-  blockers: string[];
-  warnings: string[];
-}
-
-export function validateTranshumanismMetabolic(
-  proposal: MetabolicImpactAssessment,
-  state: TerritorialStateVector
-): TranshumanismMetabolicValidation {
-  const blockers: string[] = [];
-  const warnings: string[] = [];
-  
-  const ecoScore = proposal.material_balance.net_ecological_impact;
-  if (ecoScore < 0) blockers.push(`Impacto ecológico NETO NEGATIVO (${ecoScore.toFixed(2)}): deuda metabólica`);
-  
-  if (proposal.material_balance.autonomy_hours < 24) blockers.push(`Autonomía infraestructura (${proposal.material_balance.autonomy_hours}h) < 24h mín`);
-  else if (proposal.material_balance.autonomy_hours < 72) warnings.push(`Autonomía infraestructura (${proposal.material_balance.autonomy_hours}h) < 72h objetivo`);
-  
-  if (proposal.material_balance.unexplained_difference_pct > 0.10) blockers.push(`Diff no explicada (${(proposal.material_balance.unexplained_difference_pct*100).toFixed(1)}%) > 10%`);
-  else if (proposal.material_balance.unexplained_difference_pct > 0.05) warnings.push(`Diff no explicada (${(proposal.material_balance.unexplained_difference_pct*100).toFixed(1)}%) > 5%`);
-  
-  const deps = proposal.critical_dependencies;
-  const criticalDeps: string[] = [];
-  if (deps.rare_earths) criticalDeps.push('Tierras raras');
-  if (deps.continuous_energy) criticalDeps.push('Energía continua');
-  if (deps.specialized_maintenance) criticalDeps.push('Mantenimiento especializado');
-  if (deps.cooling_water) criticalDeps.push('Agua refrigeración');
-  if (deps.supply_chain_fragility > 0.5) criticalDeps.push('Cadena suministro frágil');
-  
-  if (!state.biosphere.regeneration_net) warnings.push('Territorio no tiene regeneración neta');
-  if (state.biosphere.soil_organic_carbon_percent < 3) warnings.push(`Suelo degradado (C orgánico ${state.biosphere.soil_organic_carbon_percent}% < 3%)`);
-  if (state.water.availability_m3_per_day < 50) warnings.push(`Estrés hídrico (${state.water.availability_m3_per_day} m³/día/hab < 50)`);
-  if (state.energy.net_balance_kwh_per_day < 0) warnings.push(`Balance energético neto negativo (${state.energy.net_balance_kwh_per_day} kWh/día)`);
-  
-  return { passed: blockers.length === 0, ecological_impact_score: ecoScore, autonomy_hours: proposal.material_balance.autonomy_hours, unexplained_difference_pct: proposal.material_balance.unexplained_difference_pct, critical_dependencies: criticalDeps, blockers, warnings };
-}
-
-export interface TranshumanismCyberneticValidation {
-  passed: boolean;
-  ashby_variety_ratio: number;
-  response_capacity_score: number;
-  observability_score: number;
-  introduced_perturbation_risk: number;
-  blockers: string[];
-  warnings: string[];
-}
-
-export function validateTranshumanismCybernetic(proposal: CyberneticImpactAssessment): TranshumanismCyberneticValidation {
-  const blockers: string[] = []; const warnings: string[] = [];
-  const ashbyRatio = proposal.ashby_variety_ratio;
-  if (ashbyRatio < 1.0) blockers.push(`Ashby ratio ${ashbyRatio.toFixed(2)} < 1.0: capacidad respuesta < variedad perturbaciones`);
-  else if (ashbyRatio < 1.5) warnings.push(`Ashby ratio ${ashbyRatio.toFixed(2)} < 1.5: margen estrecho`);
-  
-  const resp = proposal.response_capacity;
-  let respScore = 0;
-  if (resp.local_repair) respScore++; if (resp.spare_parts_local) respScore++; if (resp.knowledge_distributed) respScore++; if (resp.fallback_mode) respScore++;
-  if (respScore < 2) blockers.push(`Capacidad respuesta ${respScore}/4: insuficiente (necesita ≥2)`); else if (respScore < 3) warnings.push(`Capacidad respuesta ${respScore}/4: mejorable`);
-  
-  const obs = proposal.observability; let obsScore = 0;
-  if (obs.real_time_monitoring) obsScore++; if (obs.anomaly_detection) obsScore++; if (obs.audit_trail) obsScore++;
-  if (obsScore < 2) warnings.push(`Observabilidad ${obsScore}/3: limitada`);
-  
-  const pert = proposal.introduced_perturbations;
-  const maxRisk = Math.max(pert.hacking_vulnerability, pert.dependency_on_provider, pert.cascade_failure_risk);
-  if (maxRisk > 0.7) blockers.push(`Riesgo perturbación introducida ${maxRisk.toFixed(2)} > 0.7`); else if (maxRisk > 0.4) warnings.push(`Riesgo perturbación introducida ${maxRisk.toFixed(2)} > 0.4`);
-  
-  return { passed: blockers.length === 0, ashby_variety_ratio: ashbyRatio, response_capacity_score: respScore, observability_score: obsScore, introduced_perturbation_risk: maxRisk, blockers, warnings };
-}
-
-export interface TranshumanismGovernanceValidation {
-  passed: boolean;
-  intergenerational_score: number;
-  council_future_veto: boolean;
-  access_equity: 'universal' | 'therapeutic_only' | 'enhancement_by_assembly' | 'exclusionary';
-  one_person_one_vote: boolean;
-  blockers: string[];
-  warnings: string[];
-}
-
-export function validateTranshumanismGovernance(proposal: TranshumanismGovernance): TranshumanismGovernanceValidation {
-  const blockers: string[] = []; const warnings: string[] = [];
-  const p = proposal.power_concentration_checks;
-  const onePersonOneVote = p.one_person_one_vote && !p.token_weighted_voting && !p.stake_weighted_voting && !p.reputation_weighted_voting;
-  if (!onePersonOneVote) blockers.push('INVARIANTE VIOLADO: no es 1p1v (token/stake/reputation weighted voting)');
-  
-  const ig = proposal.intergenerational_assessment;
-  let igScore = 0;
-  if (ig.current_generation === 'positive') igScore++; if (ig.distribution_equity === 'equitable') igScore++; if (ig.territorial_regeneration === 'enhances') igScore++; if (ig.future_generations === 'positive') igScore++;
-  if (igScore < 3) warnings.push(`Evaluación intergeneracional ${igScore}/4: < 3 dimensiones positivas`);
-  
-  const hasCouncilVeto = proposal.council_future_veto.required && proposal.council_future_veto.suspension_period_days <= 90;
-  if (!proposal.council_future_veto.required && proposal.access_rules.population !== 'therapeutic_only') blockers.push('Enhancement_healthy REQUIERE Consejo de Futuros con veto suspensivo');
-  else if (!hasCouncilVeto && proposal.council_future_veto.required) warnings.push('Consejo Futuros período > 90 días');
-  
-  let accessEquity: TranshumanismGovernanceValidation['access_equity'];
-  if (proposal.access_rules.population === 'universal' && proposal.access_rules.cost_sharing === 'solidarity') accessEquity = 'universal';
-  else if (proposal.access_rules.population === 'therapeutic_only') accessEquity = 'therapeutic_only';
-  else if (proposal.access_rules.population === 'enhancement_by_assembly') accessEquity = 'enhancement_by_assembly';
-  else { accessEquity = 'exclusionary'; blockers.push('Acceso excluyente (no universal, no terapéutico, no por asamblea)'); }
-  
-  return { passed: blockers.length === 0, intergenerational_score: igScore, council_future_veto: hasCouncilVeto, access_equity: accessEquity, one_person_one_vote: onePersonOneVote, blockers, warnings };
-}
-
-export interface TranshumanismCareValidation {
-  passed: boolean;
-  care_team_complete: boolean;
-  prevention_baseline: number;
-  reversibility_complete: boolean;
-  blockers: string[];
-  warnings: string[];
-}
-
-export function validateTranshumanismCare(proposal: CareIntegrationPlan, state: TerritorialStateVector): TranshumanismCareValidation {
-  const blockers: string[] = []; const warnings: string[] = [];
-  const team = proposal.care_team;
-  const teamComplete = team.doctor && team.nurse && team.auxiliary.length > 0 && team.community_agents.length >= 4;
-  if (!teamComplete) {
-    if (!team.doctor || !team.nurse) blockers.push('Equipo salud familiar incompleto: falta médico o enfermera');
-    else if (team.auxiliary.length === 0) warnings.push('Equipo sin auxiliar');
-    else if (team.community_agents.length < 4) warnings.push(`Agentes comunitarios: ${team.community_agents.length}/4 mín`);
-  }
-  const preventionBaseline = proposal.prevention_first.preventive_coverage_baseline;
-  if (preventionBaseline < 0.5) blockers.push(`Prevención base ${(preventionBaseline*100).toFixed(0)}% < 50%: enhancement prematuro`); else if (preventionBaseline < 0.8) warnings.push(`Prevención base ${(preventionBaseline*100).toFixed(0)}% < 80% objetivo`);
-  
-  const rev = proposal.reversibility;
-  const reversibilityComplete = rev.disconnection_protocol && rev.palliative_care_guaranteed && rev.data_withdrawal_protocol && rev.max_disconnection_time_hours <= 24;
-  if (!rev.disconnection_protocol) blockers.push('Falta protocolo desconexión');
-  if (!rev.palliative_care_guaranteed) blockers.push('Paliativos no garantizados');
-  if (!rev.data_withdrawal_protocol) blockers.push('Falta protocolo retiro datos biométricos');
-  if (rev.max_disconnection_time_hours > 72) warnings.push(`Tiempo máx desconexión ${rev.max_disconnection_time_hours}h > 72h`); else if (rev.max_disconnection_time_hours > 24) warnings.push(`Tiempo máx desconexión ${rev.max_disconnection_time_hours}h > 24h`);
-  
-  const territoryPrevention = state.care.preventive_coverage_effective;
-  if (territoryPrevention < 0.7) warnings.push(`Cobertura preventiva territorial ${(territoryPrevention*100).toFixed(0)}% < 70%`);
-  
-  return { passed: blockers.length === 0, care_team_complete: teamComplete, prevention_baseline: preventionBaseline, reversibility_complete: reversibilityComplete, blockers, warnings };
-}
-
-export interface TranshumanismMemoryValidation {
-  passed: boolean;
-  off_ledger: boolean;
-  consent_revocable: boolean;
-  consent_granular: boolean;
-  consent_expiry_ok: boolean;
-  rao_only_hashes: boolean;
-  inheritance_correct: boolean;
-  blockers: string[];
-  warnings: string[];
-}
-
-export function validateTranshumanismMemory(proposal: DataRightsPlan): TranshumanismMemoryValidation {
-  const blockers: string[] = []; const warnings: string[] = [];
-  const offLedger = proposal.off_ledger_storage.encryption && proposal.off_ledger_storage.access_log_immutable;
-  if (!offLedger) blockers.push('Almacenamiento off-ledger: falta cifrado o log accesos inmutable');
-  const consent = proposal.consent;
-  if (!consent.revocable) blockers.push('Consentimiento NO revocable (INVARIANTE)');
-  if (!consent.granular) blockers.push('Consentimiento NO granular (INVARIANTE)');
-  if (consent.expiry_days > 365) warnings.push(`Re-consentimiento ${consent.expiry_days}d > 365d`);
-  
-  const raoOnlyHashes = proposal.rao_anchoring.only_hashes && proposal.rao_anchoring.salted;
-  if (!raoOnlyHashes) blockers.push('VIOLACIÓN: datos personales en RAO (solo hashes salted permitidos)');
-  
-  const inh = proposal.inheritance;
-  const inheritanceCorrect = inh.therapeutic_knowledge === 'open_license' && inh.enhancement_protocols === 'no_privilege' && inh.personal_data === 'deleted_on_death' && inh.attribution_historical === true;
-  if (!inheritanceCorrect) blockers.push('Reglas herencia incorrectas: therapeutic≠open_license, enhancement≠no_privilege, personal≠deleted');
-  
-  return { passed: blockers.length === 0, off_ledger: offLedger, consent_revocable: consent.revocable, consent_granular: consent.granular, consent_expiry_ok: consent.expiry_days <= 365, rao_only_hashes: raoOnlyHashes, inheritance_correct: inheritanceCorrect, blockers, warnings };
-}
-
-// ============================================================================
-// EVALUACIÓN COMPLETA CON DESGLOSE
-// ============================================================================
-
-export interface ComprehensiveEvaluationResult {
-  overall: EvaluationResult;
-  metabolic: TranshumanismMetabolicValidation;
-  cybernetic: TranshumanismCyberneticValidation;
-  governance: TranshumanismGovernanceValidation;
-  care: TranshumanismCareValidation;
-  memory: TranshumanismMemoryValidation;
-  summary: { total_blockers: number; total_warnings: number; ready_for: 'rejected' | 'pilot' | 'scaling' | 'needs_revision'; next_steps: string[]; };
-}
-
-export function evaluateCanutricioTranshumanismComprehensive(proposal: TranshumanismProposal, state: TerritorialStateVector, scenarios: any[]): ComprehensiveEvaluationResult {
-  const overall = evaluateCanutricioTranshumanism(proposal, state, scenarios);
-  const metabolic = validateTranshumanismMetabolic(proposal.metabolic_impact, state);
-  const cybernetic = validateTranshumanismCybernetic(proposal.cybernetic_impact);
-  const governance = validateTranshumanismGovernance(proposal.governance);
-  const care = validateTranshumanismCare(proposal.care_integration, state);
-  const memory = validateTranshumanismMemory(proposal.data_rights);
-  
-  const allBlockers = [...overall.blockers, ...metabolic.blockers, ...cybernetic.blockers, ...governance.blockers, ...care.blockers, ...memory.blockers];
-  const allWarnings = [...overall.warnings, ...metabolic.warnings, ...cybernetic.warnings, ...governance.warnings, ...care.warnings, ...memory.warnings];
-  
-  let readyFor: ComprehensiveEvaluationResult['summary']['ready_for'] = 'rejected';
-  if (allBlockers.length === 0) readyFor = overall.scorecard.total_score >= 85 ? 'scaling' : overall.scorecard.total_score >= 70 ? 'pilot' : 'needs_revision';
-  
-  const nextSteps: string[] = [];
-  if (allBlockers.length > 0) { nextSteps.push(`Resolver ${allBlockers.length} bloqueadores antes de re-evaluar`); allBlockers.forEach(b => nextSteps.push(`  - ${b}`)); }
-  if (allWarnings.length > 0 && allBlockers.length === 0) { nextSteps.push(`Atender ${allWarnings.length} advertencias para mejorar score`); allWarnings.slice(0, 3).forEach(w => nextSteps.push(`  - ${w}`)); }
-  if (readyFor === 'pilot') nextSteps.push('Proceder a piloto Fase 1: comité ética + consentimiento + monitoreo');
-  if (readyFor === 'scaling') nextSteps.push('Aprobado para escalamiento: asamblea + Consejo Futuros + implementación federada');
-  
-  return { overall: { ...overall, blockers: allBlockers, warnings: allWarnings }, metabolic, cybernetic, governance, care, memory, summary: { total_blockers: allBlockers.length, total_warnings: allWarnings.length, ready_for: readyFor, next_steps: nextSteps } };
-}
-
-// ============================================================================
-// PROTOCOLO DE PILOTO
-// ============================================================================
-
-export interface PilotProtocol {
-  proposal_id: string; phase: 1 | 2 | 3; duration_months: number; cohort_size: number;
-  inclusion_criteria: string[]; exclusion_criteria: string[]; primary_endpoints: string[];
-  safety_monitoring: { frequency: string; stopping_rules: string[]; data_safety_monitoring_board: string[]; };
-  ethical_oversight: { ethics_committee: string[]; council_future_review: boolean; community_consent: boolean; };
-  metabolic_monitoring: { ecological_impact_tracking: boolean; autonomy_verification: boolean; resource_consumption_tracking: boolean; };
-  data_governance: { off_ledger_confirmed: boolean; consent_management: 'VC_W3C'; withdrawal_protocol_tested: boolean; };
-  rao_credential_id: string;
-}
-
-export function generatePilotProtocol(proposal: TranshumanismProposal, state: TerritorialStateVector, evaluation: EvaluationResult): PilotProtocol {
-  const isScaling = evaluation.scorecard.verdict === 'scaling';
-  const isPilot = evaluation.scorecard.verdict === 'pilot';
-  return {
-    proposal_id: proposal.id, phase: isScaling ? 3 : (isPilot ? 1 : 1), duration_months: isScaling ? 24 : 12, cohort_size: isScaling ? 100 : 30,
-    inclusion_criteria: ['Consentimiento VC firmado y vigente', 'Perfil terapéutico validado por equipo salud familiar', 'No contraindicaciones metabólicas (balance cerrado)', 'Afiliado/a nodo con participación activa'],
-    exclusion_criteria: ['Embarazo/lactancia', 'Enfermedad terminal no relacionada con intervención', 'Incapacidad para consentimiento revocable informado', 'Participación en otro ensayo intervencionista'],
-    primary_endpoints: ['Seguridad: eventos adversos graves, mortalidad, discontinuación', 'Eficacia: endpoint clínico primario según categoría', 'Metabólico: ecologicalImpactScore ≥ 0 mantenido', 'Cibernético: sin incidentes seguridad (hacking, fallo crítico)', 'Cuidado: adherencia monitoreo + satisfacción equipo salud familiar', 'Gobernanza: 1p1v efectivo, Consejo Futuros sin veto no justificado'],
-    safety_monitoring: { frequency: 'continua (vital signs) + semanal (equipo salud) + mensual (comité ética)', stopping_rules: ['Eventos adversos graves > 5% cohorte', 'EcologicalImpactScore < 0 en 2 mediciones consecutivas', 'Fallo reversibilidad > 24h', 'Violación 1p1v o concentración poder detectada'], data_safety_monitoring_board: proposal.care_integration.care_team.escalation_path },
-    ethical_oversight: { ethics_committee: ['Comité ética nodo', 'Representante Consejo Futuros', 'Defensor derechos digitales'], council_future_review: true, community_consent: proposal.governance.access_rules.population === 'universal' },
-    metabolic_monitoring: { ecological_impact_tracking: true, autonomy_verification: true, resource_consumption_tracking: true },
-    data_governance: { off_ledger_confirmed: proposal.data_rights.off_ledger_storage.encryption, consent_management: 'VC_W3C', withdrawal_protocol_tested: true },
-    rao_credential_id: `RAO:canutricio_pilot:${proposal.id}:${Date.now()}`
-  };
-}
-
-// ============================================================================
-// HELPERS
-// ============================================================================
-
-export function categorizeTranshumanism(category: TranshumanismProposal['category']): string { const categories: Record<string, string> = { 'life_extension': 'Extensión de vida / Geroterapia', 'cognitive_enhancement': 'Mejora cognitiva / Nootrópicos / BCI', 'physical_enhancement': 'Mejora física / Prótesis avanzadas / Exoesqueletos', 'sensory_augmentation': 'Aumento sensorial / Implantes sensoriales', 'mind_uploading': 'Carga mental / Inmortalidad digital', 'genetic_modification': 'Modificación genética / Edición germinal', 'other': 'Otra intervención transhumanista' }; return categories[category] || category; }
-export function isTherapeutic(target: TranshumanismProposal['target_population']): boolean { return target === 'therapeutic' || target === 'preventive'; }
-export function requiresCouncilFutureVeto(target: TranshumanismProposal['target_population']): boolean { return target === 'enhancement_healthy'; }
-export function getEnhancementConditionalOn(care: CareIntegrationPlan): string[] { return [`Cobertura preventiva base ≥ 80% (actual: ${(care.prevention_first.preventive_coverage_baseline*100).toFixed(0)}%)`, 'Necesidades no satisfechas < 10%', 'Evaluación intergeneracional ≥ 3/4 positivas', 'EcologicalImpactScore ≥ 0 verificado', 'Consentimiento VC revocable vigente', 'Equipo salud familiar asignado y operativo', 'Protocolo reversibilidad probado ≤ 24h']; }
