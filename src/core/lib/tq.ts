@@ -527,7 +527,7 @@ export interface CommunityFund {
 export interface FundAllocation {
   id: string;
   purpose: 'soil_regeneration' | 'water_infrastructure' | 'energy_sovereignty' 
-         | 'housing_regenerative' | 'health_access' | 'education' | 'emergency';
+         | 'housing_regenerative' | 'health_access' | 'education' | 'emergency' | 'memory' | 'food' | 'preventive_care';
   amount: number;
   status: 'proposed' | 'approved' | 'executing' | 'completed' | 'audited';
   raoCredentialId: string;

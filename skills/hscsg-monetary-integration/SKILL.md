@@ -165,4 +165,30 @@ Verifica integridad del documento post-modificación:
 
 - v1.6: Moneda PAR integrada como tercer referente.
 - v1.x: G1 y Túmin como base de sección 14.
+- **v1.7: Tres Fondos + Seis Tensiones + Métodos Repartición Centralizados (2026-10-20)**
+  - **Referente:** Investigación exhaustiva repo Zeitnus + evidencia externa (Chetty, Brasil, LGSC, LFPDPPP, FDA)
+  - **Principios extraídos:**
+    - **Tres fondos separados** (Memoria, Cuidado, Autotrofia) con capas ontológicas distintas: muerte prematura evitable vs extensión vida sana vs continuidad memorial
+    - **Herencia separada**: obra/memoria/reputación SÍ heredan; hr_vital/ZNU/TQ NO heredan (Matema 18, VITAL_TIME_SPEC)
+    - **Datos sensibles off-ledger**: LFPDPPP 2025 requiere consentimiento expreso revocable, solo hashes en RAO
+    - **Excedente sin unidad**: 4 tipos distintos (kWh termodinámico, TQ β_crit, % autómata, fiat neto) → % fijo solo auditable sobre unidad declarada
+    - **No-miembros**: alternativa a prohibición = permiso a costo real + 100% excedente a fondos (modelo cooperativo España/Uruguay)
+    - **OAD ≠ licencia**: conocimiento=abierto, datos personales=nunca abiertos, materiales=no publicados
+  - **Métodos de repartición centralizados en `hscsg-asamblea-gobernanza/templates/asamblea-parametros.json`:**
+    - Fondo Solarpunk (25% excedentes autómata, PGS≥1.5)
+    - Commonomics Gaia (50/30/10/5 + facilitador)
+    - Gaia Commons 33/33/33
+    - ALRAC β_crit + Fondo Comunitario (threshold 30%, rate 50%, gobernanza 5%/60%/20%)
+    - CaaS Revenue Share (AUT×CDS pesos 0.5/0.5, demurrage 300 ZNU/5%)
+    - Virginia Network (N3 dinámico = kWh/1000, demurrage dinámico mediana×CDS)
+    - Tripartita 50/30/10/5/5 (nuevo 5% fondo tierra)
+    - FRNE Ecoaldea (15% fondo comunitario + restitución no especulativa)
+    - Ecosystem 4 Círculos (15/20/35/30 + peso unificado AUT/CDS/trazable)
+    - LDFV Alrac (½·θ·(1+ι)·φʰ, φʰ=0.95ᵏ·(1+αʰ/10), PPE + β_crit)
+  - **Secciones modificadas/creadas:**
+    - Nueva skill `hscsg-asamblea-gobernanza` (decisión soberana + parámetros mutables)
+    - `src/core/lib/assemblyConfig.ts` + `types/asamblea.ts` (runtime configurable)
+    - `templates/asamblea-parametros.json` (single source of truth)
+    - `scripts/simulate_assembly_decision.py` + `validate_legal_compliance.py`
+    - Extensión `FundAllocation.purpose` con `memory`, `food`, `preventive_care`
 - Próximo: Bitcoin/Lightning, Stablecoins soberanas, Bancos de tiempo regionales.

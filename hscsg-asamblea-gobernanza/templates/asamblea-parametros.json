@@ -1,0 +1,135 @@
+{
+  "version": "1.0.0",
+  "lastAssemblyDecision": "2026-10-20T00:00:00Z",
+  "decidedBy": "asamblea-soberana-001",
+  "raoAnchor": "RAO:asamblea:20261020:001",
+  "tresFondos": {
+    "porcentajeFijoExcedenteFiat": 0.10,
+    "sueloEstatutario": 0.05,
+    "unidadExcedente": "fiat_neto",
+    "clausulaArranque": {
+      "activa": false,
+      "triggerContratoId": null,
+      "primerContratoReal": null
+    },
+    "pesosInternos": {
+      "memoria": 0.30,
+      "cuidado": 0.40,
+      "autotrofia": 0.30
+    }
+  },
+  "miembro": {
+    "stakeZNUMinimo": 20,
+    "autMinimo": 0.2,
+    "cdsMinimo": 0.2,
+    "requiereVerificacionTriaxial": true
+  },
+  "herencia": {
+    "hereda": ["obra", "memoria", "reputacion_erc8004", "complete_data_package"],
+    "noHereda": ["hr_vital", "znu", "tq"],
+    "mecanismo": "clausula_estatutos_cooperativa"
+  },
+  "datosSensibles": {
+    "consentimientoRevocable": true,
+    "datosPersonalesOffLedger": true,
+    "soloHashesEnRAO": true,
+    "lfpddppCompliance": true,
+    "datosFallecidos": "requiere_asesoria_legal"
+  },
+  "noMiembros": {
+    "politica": "permiso_costo_real",
+    "definicionServicioLongevidad": "intervencion_biomedica_con_claim_extension_vida",
+    "definicionLucro": "margen_maximo_costo_real_mas_reinversion_fondos",
+    "excedenteGeneradoAFondos": 1.0
+  },
+  "metodosReparticion": {
+    "fondoSolarpunk": {
+      "activo": true,
+      "porcentaje": 0.25,
+      "pgsThreshold": 1.5,
+      "destino": "subvenciones_nodos"
+    },
+    "commonomicsGaia": {
+      "activo": false,
+      "platformPct": 0.50,
+      "marketingPct": 0.30,
+      "referralPct": 0.10,
+      "contingencyPct": 0.05,
+      "facilitador": "caso_a_caso"
+    },
+    "gaiaCommons33": {
+      "activo": false,
+      "localPct": 0.333,
+      "nationalPct": 0.333,
+      "globalPct": 0.333
+    },
+    "alracBetaCrit": {
+      "activo": true,
+      "betaThreshold": 0.30,
+      "betaRate": 0.50,
+      "proposalThreshold": 0.05,
+      "approvalQuorum": 0.60,
+      "maxAllocationPerProposal": 0.20
+    },
+    "caasRevenueShare": {
+      "activo": true,
+      "autWeight": 0.5,
+      "cdsWeight": 0.5,
+      "demurrageThreshold": 300,
+      "demurrageRate": 0.05
+    },
+    "virginiaNetwork": {
+      "activo": false,
+      "n3Divisor": 1000,
+      "demurrageBase": 0.02,
+      "demurrageProgressive": 0.03
+    },
+    "tripartita50301055": {
+      "activo": false,
+      "nodosPct": 0.50,
+      "tierraPct": 0.30,
+      "educacionPct": 0.10,
+      "infraPct": 0.05,
+      "reservaPct": 0.05
+    },
+    "frneEcoaldea": {
+      "activo": false,
+      "fondoComunitarioPct": 0.15,
+      "penalizacionEspeculacion": "formula_frne"
+    },
+    "ecosystem4Circulos": {
+      "activo": false,
+      "circlePcts": [0.15, 0.20, 0.35, 0.30],
+      "autCoeff": 0.35,
+      "cdsCoeff": 0.35,
+      "baseCoeff": 0.3,
+      "bonusCap": 1.0
+    },
+    "ldfvAlrac": {
+      "activo": false,
+      "halfShare": 0.5,
+      "decayFactor": 0.95,
+      "harmonyDivisor": 10,
+      "ppeThreshold": "mitad_theta",
+      "betaCritFormula": "custom"
+    }
+  },
+  "fondoComunitarioGobernanza": {
+    "proposalThreshold": 0.05,
+    "approvalQuorum": 0.60,
+    "auditRequired": true,
+    "maxAllocationPerProposal": 0.20,
+    "propositosPermitidos": [
+      "soil_regeneration",
+      "water_infrastructure",
+      "energy_sovereignty",
+      "housing_regenerative",
+      "health_access",
+      "education",
+      "emergency",
+      "memory",
+      "food",
+      "preventive_care"
+    ]
+  }
+}
