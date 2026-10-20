@@ -160,7 +160,7 @@ describe('Límite Epistémico Kernel (BT213)', () => {
 ### **Pilar 4: Infraestructura Política + Humildad (Matemas 18-21)**
 18. La Reversibilidad
 19. Memética Soberana — Rituales Reemplazan Predicación
-20. La Muerte del Dinero como Fin
+20. La jubilacion del dinero disociativo. La iteracion sobre la liminalidad -Difuntus- del derrotero "Dinero" como Clouster (tambien llamada Anidacion Fractal del dinero mediante blindaje de redefinicion operativa de la vivida vida glorificada intimatibilizable o "la muerte de la muerte-el dinero del dinero o el Plasma del Plasma")
 21. **La Humildad Metabólica** ← *NUEVO*
 
 ---
