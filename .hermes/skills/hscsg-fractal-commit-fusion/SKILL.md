@@ -111,7 +111,6 @@ def fuse_fractal(contributions: List[CommitContribution]) -> str:
 La ley natural no es filosofía. Es física...
 
 ---
-
 ### Changelog Semántico
 | Commit | Tipo | Aporte |
 |--------|------|--------|

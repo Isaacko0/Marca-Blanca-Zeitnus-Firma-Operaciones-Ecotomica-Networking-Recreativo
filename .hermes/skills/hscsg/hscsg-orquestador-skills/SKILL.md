@@ -24,6 +24,7 @@ metadata:
       - hscsg-multi-framework-integration
       - Sistema-Alraico-loop-engineering-skill
       - gaia-alrac-assimilation
+      - hscsg-fractal-commit-fusion
 ---
 
 # HSCSG v15 OS — Orquestador de Skills (Router + Vasos Comunicantes)
@@ -52,6 +53,7 @@ cruzada evidencia → decisión → código → test → skill → paper).
 | 9 | `Sistema-Alraico-loop-engineering-skill` (`loop-engineering-canvas`) | Canvas epistémico universal (20 límites, ECROx, triaxial) | "diagnosticar problema estancado", "canvas de bucles" |
 | 10 | `hscsg-asamblea-gobernanza` | Decisiones soberanas Asamblea: tres fondos, reparto excedentes, parámetros mutables, herencia, datos sensibles | "decidir tres fondos", "reparto excedentes asamblea", "parámetros mutables", "gobernanza asamblearia", "validar legal LGSC LFPDPPP" |
 | 11 | `gaia-alrac-assimilation` | Asimilar documentos Gaia / Mycelium a ALRAC+HSCSG | "asimilar gaia", "integrar documento maestro regenerativo", "mapping capa ALRAC" |
+| 12 | `hscsg-fractal-commit-fusion` | Fusionar commits en documento con filosofía fractal HSCSG | "fusionar commits", "documento fractal", "historial vivo", "fusión semántica" |
 
 ---
 
@@ -72,6 +74,7 @@ INTENCIÓN DEL USUARIO
        ├─ "integrar marco (DisCO/Integral/8 Cap)" ────────► hscsg-multi-framework-integration
        ├─ "problema estancado / diagnosticar bucles" ─────► Sistema-Alraico-loop-engineering-skill
        ├─ "asimilar documento Gaia / plataforma regenerativa" ─► gaia-alrac-assimilation
+       ├─ "fusionar commits / documento fractal" ─► hscsg-fractal-commit-fusion
        └─ tarea mixta / ambigua ──────────────────────────► hscsg-unified-assimilation-science
                                                             (que a su vez invoca las específicas)
 ```
