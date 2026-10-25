@@ -1,0 +1,28 @@
+name: review-ecc
+version: 1.0.0
+description: Flujo de revisión tipo AgentShield para cambios en el repo hscsg-v15-OS
+pasos:
+  1. mostrar_diff:
+      accion: "Mostrar diff de cambios pendientes"
+      salida: "Diff para revisión del miembro"
+  2. escaneo_secretos:
+      accion: "Escanear secretos expuestos (API keys, tokens, PAT)"
+      salida: "Resultado del escaneo de secretos"
+  3. escaneo_licencias:
+      accion: "Verificar licencias incompatibles en código nuevo"
+      salida: "Resultado del escaneo de licencias"
+  4. escaneo_commits:
+      accion: "Verificar convencional commits en español"
+      salida: "Resultado del escaneo de commits"
+  5. verificacion_rama:
+      accion: "Confirmar que no hay push directo a main"
+      salida: "Confirmación de rama válida"
+  6. decision:
+      accion: "Miembro aprueba o rechaza el commit"
+      entrada: "aprobar / rechazar / modificar"
+      salida: "Decisión registrada en memoria"
+reglas:
+  - agentshield_fail_closed
+  - no_secretos_expuesos
+  - no_licencias_failOn_sin_aislamiento
+  - convencional_commits_espanol

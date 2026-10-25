@@ -1,0 +1,34 @@
+name: contribute-ecc
+version: 1.0.0
+description: Flujo de contribución al repo hscsg-v15-OS desde Hermes agent con ciclo completo ECC
+pasos:
+  1. plan:
+      accion: "Leer specs OpenSpec relevantes y entender el alcance"
+      entrada: "Especs o área de cambio"
+      salida: "Plan de cambios presentado al miembro"
+  2. test:
+      accion: "Ejecutar license:check, typecheck, lint, test antes de cambios"
+      salida: "Estado verde confirmado o bloqueo reportado"
+  3. implement:
+      accion: "Editar, crear o eliminar archivos en rama de sesión"
+      entrada: "Rutas y contenidos"
+      salida: "Archivos modificados"
+  4. review:
+      accion: "Mostrar diff y ejecutar escaneo AgentShield-like"
+      salida: "Diff aprobado o rechazado por el miembro"
+  5. verify:
+      accion: "Ejecutar verificaciones finales tras cambios"
+      salida: "Estado verde final"
+  6. remember:
+      accion: "Registrar operación en memory/MEMORY.md"
+      salida: "Memoria persistente actualizada"
+  7. improve:
+      accion: "Sugerir mejoras al flujo basado en historial"
+      salida: "Propuestas de mejora"
+reglas:
+  - no_push_directo_a_main
+  - confirmar_cambios_destructivos
+  - mensaje_en_espanol
+  - verificar_license_check
+  - agentshield_escaneo_antes_de_commit
+  - idioma_espanol

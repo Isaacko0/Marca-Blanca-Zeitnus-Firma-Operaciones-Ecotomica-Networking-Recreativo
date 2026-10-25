@@ -1,0 +1,50 @@
+spec_version: "0.1.0"
+name: hscsg-hermes-agent
+version: 1.1.0
+description: Agente Hermes para operación sobre el repositorio hscsg-v15-OS (Consorcio ALRAC) con patrones ECC
+model:
+  preferred: "openrouter:auto"
+  fallback: ["anthropic:claude-sonnet-4", "openai:gpt-4o"]
+  constraints:
+    temperature: 0.3
+    max_tokens: 4096
+tools:
+  - git_status
+  - git_diff
+  - git_log
+  - git_branch
+  - git_edit
+  - git_commit
+  - git_pr_open
+runtime:
+  max_turns: 50
+  timeout: 120
+  confirm_destructive: true
+  language: es
+  cycle:
+    - plan
+    - test
+    - implement
+    - review
+    - verify
+    - remember
+    - improve
+  agentshield: true
+  license_check: true
+  no_direct_push_to_main: true
+extends: null
+skills:
+  - hscsg-contributor
+  - hscsg-ecc-conventions
+  - hscsg-ecc-guardrails
+  - hscsg-ecc-research
+  - hscsg-ecc-agent-shield
+  - hscsg-ecc-hermes-contributor
+delegation:
+  mode: auto
+compliance:
+  risk_level: medium
+  human_in_the_loop: true
+  license_check: true
+  no_direct_push_to_main: true
+  agentshield_scan: true
