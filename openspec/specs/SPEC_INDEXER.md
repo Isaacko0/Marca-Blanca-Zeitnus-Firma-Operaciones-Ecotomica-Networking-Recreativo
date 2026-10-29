@@ -146,6 +146,7 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 | 45 | alrac-tq-virginia.md | 1+ | Virginia Network | tq-virginia.ts | 📋 |
 | 46 | alrac-tq-colony.md | 1+ | Colony Protocol | tq-colony.ts | 📋 |
 | 47 | alrac-tq-berry-vesting.md | 1+ | Berry Vesting | tq-berry-vesting.ts | 📋 |
+| 48 | alrac-virginia-pmcrt-fractal-nesting.md | 0-5 | Virginia × PMCRT Fractal Nesting | virginia-pmcrt-fractal-pipeline.ts | 🛠️ |
 
 ---
 
@@ -158,8 +159,8 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 | Fase 2 Verifiable Governance | 5 | ~3,700 | ✅ Complete |
 | Pilot TDF | 1 | ~3,800 | ✅ Complete |
 | **Norberto Assimilation** | **4** | **~5,500** | **✅ Complete** |
-| Fase 3 Advanced | 3 | ~0 | 📋 Designed |
-| **Total** | **44** | **~25,050** | **27/48 Implemented** |
+| Fase 3 Advanced | 4 | ~0 | 📋 Designed |
+| **Total** | **45** | **~25,050** | **27/48 Implemented** |
 
 ---
 
