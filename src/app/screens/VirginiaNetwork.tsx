@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Users, TreePine, Calculator, ShieldCheck, ShieldAlert, ArrowRightLeft } from 'lucide-react'
+import { Users, TreePine, Calculator, ShieldCheck, AlertTriangle, ArrowRightLeft } from 'lucide-react'
 import { useAppStore } from '@core/state/store'
 import { 
   buildVirginiaTree, 
@@ -377,10 +377,10 @@ export function VirginiaNetwork() {
               <div className={`p-4 rounded-xl border ${mj.law2.passed ? 'border-emerald-400/30 bg-emerald-400/10' : 'border-red-400/30 bg-red-400/10'}`}>
                 <div className="flex items-center gap-2 mb-2">
                   {mj.law2.passed ? (
-                    <ShieldCheck className="w-5 h-5 text-emerald-400"
-                  ) : (
-                    <ShieldAlert className="w-5 h-5 text-red-400"
-                  )}
+                                      <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                                    ) : (
+                                      <AlertTriangle className="w-5 h-5 text-red-400" />
+                                    )}
                   <span className="font-manrope font-medium">Ley II — ROI Colectivo ≥ 1</span>
                 </div>
                 <p className="text-sm text-[var(--mut)]">{mj.law2.reason}</p>
@@ -393,10 +393,10 @@ export function VirginiaNetwork() {
               <div className={`p-4 rounded-xl border ${mj.law3.passed ? 'border-emerald-400/30 bg-emerald-400/10' : 'border-red-400/30 bg-red-400/10'}`}>
                 <div className="flex items-center gap-2 mb-2">
                   {mj.law3.passed ? (
-                    <ShieldCheck className="w-5 h-5 text-emerald-400"
-                  ) : (
-                    <ShieldAlert className="w-5 h-5 text-red-400"
-                  )}
+                                      <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                                    ) : (
+                                      <AlertTriangle className="w-5 h-5 text-red-400" />
+                                    )}
                   <span className="font-manrope font-medium">Ley III — PGS Real (Lucidez Material)</span>
                 </div>
                 <p className="text-sm text-[var(--mut)]">{mj.law3.reason}</p>

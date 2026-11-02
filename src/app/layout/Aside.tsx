@@ -2,7 +2,7 @@ import {
   Mountain, Database, Eye, Users, Cpu, Coins, LayoutDashboard, Network, Radio, Gauge, SlidersHorizontal, Users2, Bot, Leaf, MessagesSquare, ListChecks, Unlock, Link2, Briefcase, ShieldHalf, RefreshCw, Globe, LifeBuoy, Compass, Scale, Award, Landmark, GraduationCap, HelpCircle, Workflow, Dna, Waypoints, Boxes, PenLine,
   ChevronsLeft, ChevronsRight,
   GitBranch, ShieldCheck, Library, Brain, Cloud,
-  BookOpen, Palette, Film, Scissors, User, GitBranch as GitBranchIcon, TreePine} from 'lucide-react'
+  BookOpen, Palette, Film, Scissors, User, GitBranch as GitBranchIcon, TreePine, Gift} from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAppStore } from '@core/state/store'
 import { clsx } from 'clsx'
@@ -15,6 +15,8 @@ const NAV_ITEMS = [
   { key: 'colectivo', navKey: 'nav.colectivo', icon: Users, color: 'text-purple-400', path: '/colectivo' },
   { key: 'justicia', navKey: 'nav.justicia', icon: Scale, color: 'text-rose-400', path: '/justicia' },
   { key: 'agencia', navKey: 'nav.agencia', icon: Briefcase, color: 'text-fuchsia-400', path: '/agencia' },
+  { key: 'zeitnusCooperative', navKey: 'nav.zeitnusCooperative', icon: Users, color: 'text-emerald-400', path: '/zeitnus-cooperative' },
+  { key: 'offerDesignerOffer', navKey: 'nav.offerDesignerOffer', icon: Gift, color: 'text-lime-400', path: '/oferta' },
   { key: 'circulos', navKey: 'nav.circulos', icon: Network, color: 'text-emerald-400', path: '/circulos' },
   { key: 'credibilidad', navKey: 'nav.credibilidad', icon: Award, color: 'text-emerald-400', path: '/credibilidad' },
   { key: 'democracia', navKey: 'nav.democracia', icon: Landmark, color: 'text-emerald-400', path: '/democracia' },
@@ -66,7 +68,9 @@ const NAV_ITEMS = [
   { key: 'highligt', navKey: 'nav.highlight', icon: Scissors, color: 'text-orange-400', path: '/highlight' },
     { key: 'ev', navKey: 'nav.ev', icon: Scale, color: 'text-emerald-400', path: '/ev' },
       { key: 'alrac', navKey: 'nav.alrac', icon: GitBranchIcon, color: 'text-amber-400', path: '/alrac' },
-  { key: 'virginia', navKey: 'nav.virginia', icon: TreePine, color: 'text-emerald-400', path: '/virginia' },
+        { key: 'rbe', navKey: 'nav.rbe', icon: Layers, color: 'text-emerald-400', path: '/rbe' },
+  { key: 'agingControl', navKey: 'nav.agingControl', icon: Brain, color: 'text-emerald-400', path: '/aging-control' },
+        { key: 'virginia', navKey: 'nav.virginia', icon: TreePine, color: 'text-emerald-400', path: '/virginia' },
 ] as const
 
 interface AsideProps {

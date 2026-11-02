@@ -1,0 +1,179 @@
+import sys
+
+# Read the corrupted file
+with open('src/core/lib/i18n.ts', 'r', encoding='utf-8', newline='') as f:
+    content = f.read()
+
+# The file is corrupted with duplicated entries at the top
+# We need to completely rewrite it with the correct content
+
+new_content = """// HSCSG v15 OS — Diccionario i18n (ES / EN / PT-BR)
+// Traduce el shell: navegación, Header, títulos de módulos y etiquetas comunes.
+// El contenido asimilado (datos de cada módulo) se deja en su idioma original.
+
+export type Lang = 'es' | 'en' | 'pt'
+
+export const LANG_LABELS: Record<Lang, string> = {
+  es: 'Español',
+  en: 'English',
+  pt: 'Português (BR)',
+}
+
+// Diccionario de claves de UI. Cada clave tiene las 3 variantes.
+type Dict = Record<string, Record<Lang, string>>
+
+export const I18N: Dict = {
+  // Brand / Header
+  'app.name': { es: 'HSCSG v15 OS', en: 'HSCSG v15 OS', pt: 'HSCSG v15 OS' },
+  'app.subtitle': {
+    es: 'Nodo Cosateca · Sistema operativo comunitario postmonetario',
+    en: 'Cosateca Node · Post-monetary community operating system',
+    pt: 'Nó Cosateca · Sistema operacional comunitário pós-monetário',
+  },
+  'lang.change': { es: 'Idioma', en: 'Language', pt: 'Idioma' },
+  'lucidez.on': { es: 'Modo Lucidez', en: 'Lucidity Mode', pt: 'Modo Lucidez' },
+  'lucidez.off': { es: 'Modo claro', en: 'Light mode', pt: 'Modo claro' },
+
+  // Navegación (labels de Aside)
+  'nav.home': { es: 'Inicio', en: 'Home', pt: 'Início' },
+  'nav.base': { es: 'Base Material', en: 'Material Base', pt: 'Base Material' },
+  'nav.lucidez': { es: 'Lucidez', en: 'Lucidity', pt: 'Lucidez' },
+  'nav.fuentes': { es: 'Fuentes', en: 'Sources', pt: 'Fontes' },
+  'nav.story': { es: 'Story Engine', en: 'Story Engine', pt: 'Story Engine' },
+  'nav.visual': { es: 'Visual Gen', en: 'Visual Gen', pt: 'Visual Gen' },
+  'nav.avatar': { es: 'Avatar', en: 'Avatar', pt: 'Avatar' },
+  'nav.canvas': { es: 'Agent Canvas', en: 'Agent Canvas', pt: 'Agent Canvas' },
+  'nav.video': { es: 'Video Studio', en: 'Video Studio', pt: 'Video Studio' },
+  'nav.highlight': { es: 'Highlights', en: 'Highlights', pt: 'Highlights' },
+  'nav.boundaries': { es: 'Boundaries', en: 'Boundaries', pt: 'Fronteiras' },
+  'nav.coworkers': { es: 'Coworkers', en: 'Coworkers', pt: 'Coworkers' },
+  'nav.metaCrisis': { es: 'Meta-Crisis', en: 'Meta-Crisis', pt: 'Meta-Crise' },
+  'nav.nextcloud': { es: 'Nextcloud', en: 'Nextcloud', pt: 'Nextcloud' },
+  'nav.colectivo': { es: 'Colectivo', en: 'Collective', pt: 'Coletivo' },
+  'nav.automata': { es: 'Autómata Soberano', en: 'Sovereign Automaton', pt: 'Autômato Soberano' },
+  'nav.znu': { es: 'ZNU', en: 'ZNU', pt: 'ZNU' },
+  'nav.verificacionPor': { es: 'Verificación', en: 'Verification', pt: 'Verificação' },
+  'nav.simulador': { es: 'Simulador', en: 'Simulator', pt: 'Simulador' },
+  'nav.automat': { es: 'Automat', en: 'Automat', pt: 'Automat' },
+  'nav.orquestacion': { es: 'Orquestación', en: 'Orchestration', pt: 'Orquestração' },
+  'nav.caas': { es: 'CaaS · Comunidad', en: 'CaaS · Community', pt: 'CaaS · Comunidade' },
+  'nav.solarpunk': { es: 'Solarpunk · Don', en: 'Solarpunk · Gift', pt: 'Solarpunk · Dom' },
+  'nav.colaberry': { es: 'Colaberry · Agente', en: 'Colaberry · Agent', pt: 'Colaberry · Agente' },
+  'nav.priorizar': { es: 'Priorizar · Colectivo', en: 'Prioritize · Collective', pt: 'Priorizar · Coletivo' },
+  'nav.vesting': { es: 'Vesting · ZNU', en: 'Vesting · ZNU', pt: 'Vesting · ZNU' },
+  'nav.trustlines': { es: 'Trustlines · Crédito', en: 'Trustlines · Credit', pt: 'Trustlines · Crédito' },
+  'nav.tekitl': { es: 'Tekitl · Proyectos', en: 'Tekitl · Projects', pt: 'Tekitl · Projetos' },
+  'nav.soberania': { es: 'Soberanía · 13 Pilares', en: 'Sovereignty · 13 Pillars', pt: 'Soberania · 13 Pilares' },
+  'nav.integral': { es: 'Integral · Loop', en: 'Integral · Loop', pt: 'Integral · Loop' },
+  'nav.mundus': { es: 'Mundus · Unidad', en: 'Mundus · Unity', pt: 'Mundus · Unidade' },
+  'nav.life': { es: 'Life · Organizador', en: 'Life · Organizer', pt: 'Life · Organizador' },
+  'nav.civilizaciones': { es: 'Civilizaciones', en: 'Civilizations', pt: 'Civilizações' },
+  'nav.celulas': { es: 'Células · Tejido', en: 'Cells · Tissue', pt: 'Células · Tecido' },
+  'nav.delegacion': { es: 'Delegación', en: 'Delegation', pt: 'Delegação' },
+  'nav.capacidades': { es: 'Capabilities', en: 'Capabilities', pt: 'Capabilities' },
+  'nav.educacion': { es: 'Educación', en: 'Education', pt: 'Educação' },
+  'nav.soberania-credito': { es: 'Soberanía Crédito', en: 'Credit Sovereignty', pt: 'Soberania Crédito' },
+  'nav.regen': { es: 'Regen', en: 'Regen', pt: 'Regen' },
+  'nav.vecinal': { es: 'Vecinal', en: 'Neighborhood', pt: 'Vecinal' },
+  'nav.nostr': { es: 'Nostr', en: 'Nostr', pt: 'Nostr' },
+  'nav.agentes': { es: 'Agentes', en: 'Agents', pt: 'Agentes' },
+  'nav.ev': { es: 'E→V · Energía→Eficiencia', en: 'E→V · Energy→Efficiency', pt: 'E→V · Energia→Eficiência' },
+  'nav.alrac': { es: 'ALRAC · Consorcio Transducción', en: 'ALRAC · Transduction Consortium', pt: 'ALRAC · Consórcio Transdução' },
+  'nav.rbe': { es: 'RBE · Renta Básica Exponencial', en: 'RBE · Exponential Basic Income', pt: 'RBE · Renda Básica Exponencial' },
+  'nav.agingControl': { es: 'Control Envejecimiento', en: 'Aging Control', pt: 'Controle Envelhecimento' },
+  'nav.virginia': { es: 'Virginia Network', en: 'Virginia Network', pt: 'Virginia Network' },
+  'nav.offerDesigner': { es: 'Diseñador Ofertas', en: 'Offer Designer', pt: 'Designer de Ofertas' },
+
+  // Títulos de módulos (h1)
+  'title.base': { es: 'Base Material', en: 'Material Base', pt: 'Base Material' },
+  'title.lucidez': { es: 'Lucidez', en: 'Lucidity', pt: 'Lucidez' },
+  'title.colectivo': { es: 'Colectivo', en: 'Collective', pt: 'Coletivo' },
+  'title.automata': { es: 'Autómata Soberano', en: 'Sovereign Automaton', pt: 'Autômato Soberano' },
+  'title.znu': { es: 'ZNU', en: 'ZNU', pt: 'ZNU' },
+  'title.verificacion': { es: 'Verificación', en: 'Verification', pt: 'Verificação' },
+  'title.automat': { es: 'Automat', en: 'Automat', pt: 'Automat' },
+  'title.orquestacion': { es: 'Orquestación', en: 'Orchestration', pt: 'Orquestração' },
+  'title.caas': { es: 'CaaS · Comunidad como Servicio', en: 'CaaS · Community as a Service', pt: 'CaaS · Comunidade como Serviço' },
+  'title.solarpunk': { es: 'Solarpunk · Economía del Don', en: 'Solarpunk · Gift Economy', pt: 'Solarpunk · Economia do Dom' },
+  'title.colaberry': { es: 'Colaberry · Agente Soberano', en: 'Colaberry · Sovereign Agent', pt: 'Colaberry · Agente Soberano' },
+  'title.priorizar': { es: 'Priorizar · Colectivo', en: 'Prioritize · Collective', pt: 'Priorizar · Coletivo' },
+  'title.vesting': { es: 'Vesting · ZNU', en: 'Vesting · ZNU', pt: 'Vesting · ZNU' },
+  'title.trustlines': { es: 'Trustlines · Crédito Mutuo', en: 'Trustlines · Mutual Credit', pt: 'Trustlines · Crédito Mútuo' },
+  'title.tekitl': { es: 'Tekitl · Proyectos', en: 'Tekitl · Projects', pt: 'Tekitl · Projetos' },
+  'title.soberania': { es: 'Soberanía · 13 Pilares', en: 'Sovereignty · 13 Pillars', pt: 'Soberania · 13 Pilares' },
+  'title.integral': { es: 'Integral · Loop', en: 'Integral · Loop', pt: 'Integral · Loop' },
+  'title.mundus': { es: 'Mundus · Unidad', en: 'Mundus · Unity', pt: 'Mundus · Unidade' },
+  'title.life': { es: 'Life · Organizador', en: 'Life · Organizer', pt: 'Life · Organizador' },
+  'title.civilizaciones': { es: 'Civilizaciones', en: 'Civilizations', pt: 'Civilizações' },
+  'title.celulas': { es: 'Células · Tejido', en: 'Cells · Tissue', pt: 'Células · Tecido' },
+  'title.fuentes': { es: 'Fuentes de Asimilación', en: 'Assimilation Sources', pt: 'Fontes de Assimilação' },
+  'title.boundaries': { es: 'Boundaries · Gateway de acciones', en: 'Boundaries · Action Gateway', pt: 'Boundaries · Gateway de ações' },
+  'title.agingControl': { es: 'Control Envejecimiento', en: 'Aging Control', pt: 'Controle Envelhecimento' },
+  'title.virginia': { es: 'Virginia Network', en: 'Virginia Network', pt: 'Virginia Network' },
+  'title.offerDesigner': { es: 'Diseñador de Ofertas', en: 'Offer Designer', pt: 'Designer de Ofertas' },
+
+  // Offer Designer (8 niveles)
+  'offerDesigner.power': { es: 'Poder de la oferta', en: 'Offer Power', pt: 'Poder da oferta' },
+  'offerDesigner.power.draft': { es: 'Borrador', en: 'Draft', pt: 'Rascunho' },
+  'offerDesigner.power.progress': { es: 'En progreso', en: 'In Progress', pt: 'Em Progresso' },
+  'offerDesigner.power.solid': { es: 'Sólida', en: 'Solid', pt: 'Sólida' },
+  'offerDesigner.power.ready': { es: 'Lista para lanzar', en: 'Ready to Launch', pt: 'Pronta para Lançar' },
+  'offerDesigner.carta.title': { es: 'Tu Carta de Venta', en: 'Your Sales Letter', pt: 'Sua Carta de Venda' },
+  'offerDesigner.carta.copy': { es: 'Copiar al portapapeles', en: 'Copy to Clipboard', pt: 'Copiar para Área de Transferência' },
+  'offerDesigner.carta.download': { es: 'Descargar Markdown', en: 'Download Markdown', pt: 'Baixar Markdown' },
+  'offerDesigner.carta.exportJson': { es: 'Exportar JSON', en: 'Export JSON', pt: 'Exportar JSON' },
+  'offerDesigner.carta.warning': { es: 'Tu oferta necesita más trabajo. Completa los niveles pendientes.', en: 'Your offer needs more work. Complete pending levels.', pt: 'Sua oferta precisa de mais trabalho. Complete os níveis pendentes.' },
+  'offerDesigner.evaluator.title': { es: 'Evaluador IA de Ofertas', en: 'AI Offer Evaluator', pt: 'Avaliador IA de Ofertas' },
+  'offerDesigner.evaluator.config': { es: 'Configuración del Evaluador', en: 'Evaluator Configuration', pt: 'Configuração do Avaliador' },
+  'offerDesigner.evaluator.mode': { es: 'Modo de evaluación', en: 'Evaluation Mode', pt: 'Modo de Avaliação' },
+  'offerDesigner.evaluator.mock': { es: 'Mock (Offline - Sin API key)', en: 'Mock (Offline - No API key)', pt: 'Mock (Offline - Sem API key)' },
+  'offerDesigner.evaluator.claude': { es: 'Claude (Requiere API key)', en: 'Claude (Requires API key)', pt: 'Claude (Requer API key)' },
+  'offerDesigner.evaluator.openai': { es: 'OpenAI GPT-4o (Requiere API key)', en: 'OpenAI GPT-4o (Requires API key)', pt: 'OpenAI GPT-4o (Requer API key)' },
+  'offerDesigner.evaluator.local': { es: 'Local LLM (Ollama/LM Studio)', en: 'Local LLM (Ollama/LM Studio)', pt: 'Local LLM (Ollama/LM Studio)' },
+  'offerDesigner.evaluator.apiKey': { es: 'API Key', en: 'API Key', pt: 'API Key' },
+  'offerDesigner.evaluator.showKey': { es: 'Ocultar', en: 'Hide', pt: 'Ocultar' },
+  'offerDesigner.evaluator.hideKey': { es: 'Mostrar', en: 'Show', pt: 'Mostrar' },
+  'offerDesigner.evaluator.hint': { es: 'La key se guarda en localStorage (solo en este navegador).', en: 'Key stored in localStorage (this browser only).', pt: 'Key salva no localStorage (apenas este navegador).' },
+  'offerDesigner.evaluator.monetaryMode': { es: 'Modo monetario de la oferta', en: 'Offer Monetary Mode', pt: 'Modo Monetário da Oferta' },
+  'offerDesigner.evaluator.postmonetario': { es: 'Postmonetario (ZNU/CaaS)', en: 'Postmonetary (ZNU/CaaS)', pt: 'Pós-monetário (ZNU/CaaS)' },
+  'offerDesigner.evaluator.conectado': { es: 'Conectado (USD/USDC vía priceParity)', en: 'Connected (USD/USDC via priceParity)', pt: 'Conectado (USD/USDC via priceParity)' },
+  'offerDesigner.evaluator.run': { es: 'Evaluar Oferta', en: 'Evaluate Offer', pt: 'Avaliar Oferta' },
+  'offerDesigner.evaluator.running': { es: 'Evaluando...', en: 'Evaluating...', pt: 'Avaliando...' },
+  'offerDesigner.evaluator.error': { es: 'Error:', en: 'Error:', pt: 'Erro:' },
+  'offerDesigner.export.title': { es: 'Exportar Carta de Venta', en: 'Export Sales Letter', pt: 'Exportar Carta de Venda' },
+  'offerDesigner.export.format': { es: 'Formato de exportación', en: 'Export Format', pt: 'Formato de Exportação' },
+  'offerDesigner.export.markdown': { es: 'Markdown (recomendado para IA)', en: 'Markdown (recommended for AI)', pt: 'Markdown (recomendado para IA)' },
+  'offerDesigner.export.text': { es: 'Texto plano', en: 'Plain Text', pt: 'Texto Simples' },
+  'offerDesigner.export.json': { es: 'JSON (para importar)', en: 'JSON (for import)', pt: 'JSON (para importar)' },
+  'offerDesigner.export.preview': { es: 'Vista previa', en: 'Preview', pt: 'Visualização' },
+  'offerDesigner.export.close': { es: 'Cerrar', en: 'Close', pt: 'Fechar' },
+  'offerDesigner.export.copy': { es: 'Copiar al portapapeles', en: 'Copy to Clipboard', pt: 'Copiar para Área de Transferência' },
+  'offerDesigner.migration.title': { es: 'Migración v1 → v2', en: 'Migration v1 → v2', pt: 'Migração v1 → v2' },
+  'offerDesigner.migration.desc': { es: 'Se detectó una oferta guardada en la versión 1. Ingresa tu ID de usuario para migrarla a la versión 2:', en: 'A v1 offer was detected. Enter your user ID to migrate to v2:', pt: 'Uma oferta v1 foi detectada. Insira seu user ID para migrar para v2:' },
+  'offerDesigner.migration.userId': { es: 'Tu user ID (ej: isaacko0)', en: 'Your user ID (e.g. isaacko0)', pt: 'Seu user ID (ex: isaacko0)' },
+  'offerDesigner.migration.dismiss': { es: 'Descartar migración', en: 'Dismiss Migration', pt: 'Descartar Migração' },
+  'offerDesigner.migration.cancel': { es: 'Cancelar', en: 'Cancel', pt: 'Cancelar' },
+  'offerDesigner.migration.migrate': { es: 'Migrar a v2', en: 'Migrate to v2', pt: 'Migrar para v2' },
+  'offerDesigner.migration.running': { es: 'Migrando...', en: 'Migrating...', pt: 'Migrando...' },
+  'offerDesigner.toast.success': { es: 'Éxito', en: 'Success', pt: 'Sucesso' },
+  'offerDesigner.toast.error': { es: 'Error', en: 'Error', pt: 'Erro' },
+  'offerDesigner.toast.info': { es: 'Info', en: 'Info', pt: 'Info' },
+  'offerDesigner.toast.achievement': { es: 'Logro desbloqueado', en: 'Achievement Unlocked', pt: 'Conquista Desbloqueada' },
+  'offerDesigner.toast.close': { es: 'Cerrar', en: 'Close', pt: 'Fechar' },
+  'offerDesigner.achievement.first_level': { es: 'Primer Paso', en: 'First Step', pt: 'Primeiro Passo' },
+  'offerDesigner.achievement.half_way': { es: 'A Mitad de Camino', en: 'Halfway There', pt: 'Meio do Caminho' },
+  'offerDesigner.achievement.all_levels': { es: 'Arquitecto de Ofertas', en: 'Offer Architect', pt: 'Arquiteto de Ofertas' },
+  'offerDesigner.achievement.power_50': { es: 'Potencia Media', en: 'Medium Power', pt: 'Potência Média' },
+  'offerDesigner.achievement.power_85': { es: 'Oferta Sólida', en: 'Solid Offer', pt: 'Oferta Sólida' },
+  'offerDesigner.achievement.power_100': { es: 'Lista para Lanzar', en: 'Ready to Launch', pt: 'Pronta para Lançar' },
+  'offerDesigner.achievement.first_export': { es: 'Primera Exportación', en: 'First Export', pt: 'Primeira Exportação' },
+  'offerDesigner.achievement.first_evaluation': { es: 'Evaluada por IA', en: 'Evaluated by AI', pt: 'Avaliada por IA' },
+  'offerDesigner.achievement.evaluation_a': { es: 'Calificación A', en: 'Grade A', pt: 'Nota A' },
+  'offerDesigner.achievement.migrated_v1': { es: 'Migrante V1', en: 'V1 Migrant', pt: 'Migrante V1' },
+  'offerDesigner.achievement.mode_connected': { es: 'Modo Conectado', en: 'Connected Mode', pt: 'Modo Conectado' },
+}
+"""
+
+with open('src/core/lib/i18n.ts', 'w', encoding='utf-8', newline='') as f:
+    f.write(new_content)
+print('i18n.ts completely rewritten!')

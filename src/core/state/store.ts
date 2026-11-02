@@ -79,6 +79,14 @@ import type { RuddickState } from '@core/state/ruddick'
 import { makeRuddickState } from '@core/state/ruddick'
 import type { VirginiaState } from '@core/state/virginia'
 import { makeVirginiaState } from '@core/state/virginia'
+import type { AgingControlState } from '@core/state/aging-control'
+import { makeAgingControlState } from '@core/state/aging-control'
+import type { RBEState } from '@core/state/rbe'
+import { makeRBEState } from '@core/state/rbe'
+import type { OfferDesignerState as OfferDesignerOfferState } from '@core/state/offer-designer'
+import { createInitialOffer as makeOfferDesignerOfferState } from '@core/state/offer-designer'
+import type { ZeitnusCooperativeState } from '@core/state/zeitnus-cooperative'
+import { createInitialCooperativeState as makeZeitnusCooperativeState } from '@core/state/zeitnus-cooperative'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -105,6 +113,24 @@ import {
 import {
   makeKlerosState, seatJuror, openDispute, addEvidence, castVote, resolveDispute, appealDispute, attestIdentity,
 } from '@core/lib/kleros'
+import type { PohState } from '@core/state/poh'
+import { makePohState } from '@core/state/poh'
+import {
+  submitProfile,
+  vouch,
+  openChallenge,
+  addChallengeEvidence,
+  seatJuror as seatPohJuror,
+  castVote as castPohVote,
+  resolveChallenge,
+  appealChallenge,
+  includeHuman,
+  renewIdentity,
+  updatePohConfig,
+  createCourt,
+  assignChallengeToCourt,
+  updateJurorReputation as updatePohJurorReputation,
+} from '@core/lib/poh'
 import { makeAgenciaState, reversePlan } from '@core/lib/agencia'
 import { makeGaiaState, addBounty, completeBounty, formCouncil } from '@core/lib/gaia'
 import { makeCredibilityState, addProposal as symAddProposalFn, castVote as symCastVoteFn, createLock as symCreateLockFn, closeProposal as symCloseProposalFn, applyDecay as symApplyDecayFn, castCommit as symCastCommitFn, openReveal as symOpenRevealFn, revealVote as symRevealVoteFn } from '@core/lib/symbiosky'
@@ -242,9 +268,29 @@ export interface AppState {
                 clc: CLCState
 
               // ===== Virginia Network (Prototipo IE v2) =====
-  virginia: VirginiaState
+                virginia: VirginiaState
 
-              // ===== Orquestación (asimilado de Paperclip) =====
+                            // ===== Aging Control (Control Laws in Aging & Longevity) =====
+                agingControl: AgingControlState
+                                updateAgingControl: (updates: Partial<AgingControlState>) => void
+                                resetAgingControl: () => void
+
+                                            // ===== RBE (Renta Básica Exponencial) =====
+                                                                            rbe: RBEState
+                                                                            updateRBE: (updates: Partial<RBEState>) => void
+                                                                            resetRBE: () => void
+
+                                                                            // ===== Offer Designer (8 niveles high-ticket) =====
+                                                                                                                                                        offerDesigner: OfferDesignerOfferState
+                                                                                                                                                        updateOfferDesigner: (updates: Partial<OfferDesignerOfferState>) => void
+                                                                                                                                                        resetOfferDesigner: () => void
+
+                                                                                                                                                        // ===== Zeitnus Cooperative Ecosystem =====
+                                                                                                                                                        zeitnusCooperative: ZeitnusCooperativeState
+                                                                                                                                                        updateZeitnusCooperative: (updates: Partial<ZeitnusCooperativeState>) => void
+                                                                                                                                                        resetZeitnusCooperative: () => void
+
+                                                                                                                                                                    // ===== Orquestación (asimilado de Paperclip) =====
   agents: AgentNode[]
   goals: GoalNode[]
   tasks: TaskNode[]
@@ -304,9 +350,12 @@ export interface AppState {
   colony: ColonyState
 
   // ===== Kleros / Proof-of-Humanity (justicia como servicio + identidad soberana) =====
-  kleros: KlerosState
+    kleros: KlerosState
 
-  // ===== DeseOS / Contento.pro (método de agencia + arquitectura anfibia) =====
+    // ===== Proof of Humanity (registro soberano de humanos verificados, anti-Sybil) =====
+    poh: PohState
+
+    // ===== DeseOS / Contento.pro (método de agencia + arquitectura anfibia) =====
   agencia: AgenciaState
 
   // Modo anfibio del nodo: postmonetario (ZNU/CaaS) o conectado (USD/ReFi)
@@ -876,15 +925,17 @@ export const useAppStore = create<AppState>()(
       // Células (Freedom Cells): tejido social fractal
       celulas: makeCelulasState(),
       // Colony (JoinColony): gobernanza por dominios + pots
-      colony: makeColonyState(),
-      // Kleros / Proof-of-Humanity: justicia como servicio + identidad soberana
-      kleros: makeKlerosState(),
-      // DeseOS / Contento.pro: método de agencia + modo anfibio
-      agencia: makeAgenciaState(),
-      nodeMode: 'postmonetario',
-      priceParity: 0.02, // 1 ZNU ~ 0.02 USDC (oráculo ReFi de referencia)
+            colony: makeColonyState(),
+            // Kleros / Proof-of-Humanity: justicia como servicio + identidad soberana
+            kleros: makeKlerosState(),
+            // Proof of Humanity: registro soberano de humanos verificados
+            poh: makePohState(),
+            // DeseOS / Contento.pro: método de agencia + modo anfibio
+            agencia: makeAgenciaState(),
+            nodeMode: 'postmonetario',
+            priceParity: 0.02, // 1 ZNU ~ 0.02 USDC (oráculo ReFi de referencia)
 
-      // Gaia Confederation
+            // Gaia Confederation
       gaia: makeGaiaState(),
       // Symbiosky: credibilidad por convicción
       symbiosky: makeCredibilityState(),
@@ -1204,9 +1255,26 @@ export const useAppStore = create<AppState>()(
         kleros: appealDispute(st.kleros, disputeId),
       })),
       attestKlerosIdentity: (name, attestedBy) => set((st) => ({
-        kleros: attestIdentity(st.kleros, name, attestedBy),
-      })),
-      setBrandDNA: (key, value) => set((st) => ({
+              kleros: attestIdentity(st.kleros, name, attestedBy),
+            })),
+            // ===== Proof of Humanity (PoH v2 + Kleros Local) =====
+            submitPohProfile: (input: { name: string; videoHash: string; photoHash: string; walletAddress: string; submittedBy: string; metadata?: Record<string, unknown> }) => set((st) => submitProfile(st, input)),
+            vouchPohProfile: (input: { profileId: string; voucher: string; weight?: number; note?: string }) => set((st) => vouch(st, input).state),
+            openPohChallenge: (input: { profileId: string; challenger: string; reason: string; initialEvidence?: any[] }) => set((st) => openChallenge(st, input).state),
+            addPohChallengeEvidence: (challengeId: string, evidence: any) => set((st) => addChallengeEvidence(st, challengeId, evidence)),
+            seatPohJuror: (input: { name: string; stake: number; courtId?: string }) => set((st) => seatPohJuror(st, input).state),
+            castPohVote: (challengeId: string, jurorId: string, verdict: JurorVerdict) => set((st) => castPohVote(st, challengeId, jurorId, verdict)),
+            resolvePohChallenge: (challengeId: string, resolution: string) => set((st) => {
+              const resolved = resolveChallenge(st, challengeId, resolution)
+              return updatePohJurorReputation(resolved, challengeId, 'a_favor')
+            }),
+            appealPohChallenge: (challengeId: string, appellant: string) => set((st) => appealChallenge(st, challengeId, appellant)),
+            includePohHuman: (profileId: string) => set((st) => includeHuman(st, profileId).state),
+            renewPohIdentity: (identityId: string) => set((st) => renewIdentity(st, identityId)),
+            updatePohConfig: (updates: Partial<import('@core/state/poh').PohConfig>) => set((st) => updatePohConfig(st, updates)),
+            createPohCourt: (court: Omit<import('@core/state/poh').LocalCourt, 'id' | 'activeDisputeIds'>) => set((st) => createCourt(st, court)),
+            assignPohChallengeToCourt: (challengeId: string, courtId: string) => set((st) => assignChallengeToCourt(st, challengeId, courtId)),
+            setBrandDNA: (key, value) => set((st) => ({
         agencia: { ...st.agencia, brand: { ...st.agencia.brand, [key]: value } },
       })),
       setOfferPrice: (id, field, amount) => set((st) => ({
@@ -1485,351 +1553,397 @@ export const useAppStore = create<AppState>()(
               return { integral: { ...st.integral, signals: st.integral.signals.concat(sig) } }
             }),
             // ===== ALRAC (Consorcio de Transducción Soberana) =====
-            updateALRAC: (updates: Partial<ALRACState>) => set((st) => ({
-              alrac: { ...st.alrac, ...updates },
-            })),
-            resetALRAC: () => set((st) => ({
-              alrac: makeALRACState(),
-            })),
-            // ===== Boundaries (policy gateway anfibio inspirado en OpenBot) =====
-      setBoundaryPolicy: (policy) => set((st) => ({
-        boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, ...policy } },
-      })),
-      addBoundaryRule: (list, expr) => set((st) => {
-        if (!expr.trim()) return {}
-        return {
-          boundaries: {
-            ...st.boundaries,
-            policy: { ...st.boundaries.policy, [list]: [...st.boundaries.policy[list], expr.trim()] },
-          },
-        }
-      }),
-      removeBoundaryRule: (list, index) => set((st) => {
-        const next = st.boundaries.policy[list].filter((_, i) => i !== index)
-        return {
-          boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, [list]: next } },
-        }
-      }),
-      clearBoundaryAudit: () => set((st) => ({ boundaries: { ...st.boundaries, audit: [] } })),
-      logBoundaryAudit: (row) => set((st) => {
-        const full = makeAuditRow(row)
-        return {
-          boundaries: { ...st.boundaries, audit: [full, ...st.boundaries.audit].slice(0, st.boundaries.maxAudit) },
-        }
-      }),
-      // ===== Coworkers (inspirado en OpenBot) =====
-      addCoworker: (input) => set((st) => ({
-        coworkers: { ...st.coworkers, coworkers: [...st.coworkers.coworkers, makeCoworker(input)] },
-      })),
-      toggleCoworkerHidden: (id) => set((st) => ({
-        coworkers: {
-          ...st.coworkers,
-          coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, hidden: !c.hidden } : c)),
-        },
-      })),
-      setCoworkerControl: (id, control) => set((st) => ({
-        coworkers: {
-          ...st.coworkers,
-          coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, control } : c)),
-        },
-      })),
-      startChannel: (coworkerId) => {
-        const ch = makeChannel(coworkerId)
-        set((st) => ({ coworkers: { ...st.coworkers, channels: [...st.coworkers.channels, ch] } }))
-        return ch.id
-      },
-      postToChannel: (channelId, from, text) => set((st) => ({
-        coworkers: {
-          ...st.coworkers,
-          channels: st.coworkers.channels.map((ch) =>
-            ch.id === channelId
-              ? { ...ch, messages: [...ch.messages, { id: `m_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, from, text, ts: Date.now() }] }
-              : ch,
-          ),
-        },
-      })),
+                        updateALRAC: (updates: Partial<ALRACState>) => set((st) => ({
+                          alrac: { ...st.alrac, ...updates },
+                        })),
+                        resetALRAC: () => set((st) => ({
+                          alrac: makeALRACState(),
+                        })),
+                        // ===== Aging Control (Control Laws in Aging & Longevity) =====
+                        updateAgingControl: (updates: Partial<AgingControlState>) => set((st) => ({
+                          agingControl: { ...st.agingControl, ...updates },
+                        })),
+                        resetAgingControl: () => set((st) => ({
+                                                  agingControl: makeAgingControlState(),
+                                                })),
+                                                // ===== RBE (Renta Básica Exponencial) =====
+                                                updateRBE: (updates: Partial<RBEState>) => set((st) => ({
+                                                  rbe: { ...st.rbe, ...updates },
+                                                })),
+                                                resetRBE: () => set((st) => ({
+                                                  rbe: makeRBEState(),
+                                                })),
+                                                
+                                                // ===== Offer Designer (8 niveles high-ticket) =====
+                                                                                                updateOfferDesigner: (updates: Partial<OfferDesignerOfferState>) => set((st) => ({
+                                                                                                  offerDesigner: { ...st.offerDesigner, ...updates },
+                                                                                                })),
+                                                                                                resetOfferDesigner: () => set((st) => ({
+                                                                                                  offerDesigner: makeOfferDesignerOfferState(),
+                                                                                                })),
 
-      // ===== Story (MuMuAINovel) =====
-      addStoryProject: (title, genre, synopsis) => set((st) => ({
-        story: { ...st.story, projects: [...st.story.projects, createStoryProject(title, genre, synopsis)] },
-      })),
-      addStoryOutline: (projectId) => set((st) => ({
-        story: { ...st.story, outlines: [...st.story.outlines, createStoryOutline(projectId)] },
-      })),
-      addStoryChapter: (projectId, order, title) => set((st) => ({
-        story: { ...st.story, chapters: [...st.story.chapters, createStoryChapter(projectId, order, title)] },
-      })),
-      updateStoryChapter: (chapterId, newContent) => set((st) => ({
-        story: { ...st.story, chapters: st.story.chapters.map(c => c.id === chapterId ? updateChapterContent(c, newContent) : c) },
-      })),
-      setActiveStory: (projectId) => set((st) => ({ story: { ...st.story, activeProject: projectId } })),
+                                                                                                // ===== Zeitnus Cooperative Ecosystem =====
+                                                                                                updateZeitnusCooperative: (updates: Partial<ZeitnusCooperativeState>) => set((st) => ({
+                                                                                                  zeitnusCooperative: { ...st.zeitnusCooperative, ...updates },
+                                                                                                })),
+                                                                                                resetZeitnusCooperative: () => set((st) => ({
+                                                                                                  zeitnusCooperative: makeZeitnusCooperativeState(),
+                                                                                                })),
 
-      // ===== Visual (RedInk) =====
-      addVisualPiece: (title, description) => set((st) => ({
-        visual: { ...st.visual, pieces: [...st.visual.pieces, createVisualPiece(title, description)] },
-      })),
-      addVisualPages: (pieceId, count = 5) => set((st) => ({
-        visual: { ...st.visual, pieces: st.visual.pieces.map(p => p.id === pieceId ? { ...p, pages: createVisualPages(pieceId, count) } : p) },
-      })),
-      setActiveVisual: (pieceId) => set((st) => ({ visual: { ...st.visual, activePiece: pieceId } })),
+                                                                                                // ===== Boundaries (policy gateway anfibio inspirado en OpenBot) =====
+                                                setBoundaryPolicy: (policy) => set((st) => ({
+                                                  boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, ...policy } },
+                                                })),
+                                                addBoundaryRule: (list, expr) => set((st) => {
+                                                  if (!expr.trim()) return {}
+                                                  return {
+                                                    boundaries: {
+                                                      ...st.boundaries,
+                                                      policy: { ...st.boundaries.policy, [list]: [...st.boundaries.policy[list], expr.trim()] },
+                                                    },
+                                                  }
+                                                }),
+                                                removeBoundaryRule: (list, index) => set((st) => {
+                                                  const next = st.boundaries.policy[list].filter((_, i) => i !== index)
+                                                  return {
+                                                    boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, [list]: next } },
+                                                  }
+                                                }),
+                                                clearBoundaryAudit: () => set((st) => ({ boundaries: { ...st.boundaries, audit: [] } }))),
+                                                logBoundaryAudit: (row) => set((st) => {
+                                                  const full = makeAuditRow(row)
+                                                  return {
+                                                    boundaries: { ...st.boundaries, audit: [full, ...st.boundaries.audit].slice(0, st.boundaries.maxAudit) },
+                                                  }
+                                                }),
 
-      // ===== Avatar (PersonaLive) =====
-      setAvatarExpression: (expr) => set((st) => ({ avatar: setExpression(st.avatar, expr) })),
-      toggleAvatarStreaming: () => set((st) => ({ avatar: toggleStreaming(st.avatar) })),
-      grantAvatarConsent: () => set((st) => ({ avatar: grantConsent(st.avatar) })),
-      revokeAvatarConsent: () => set((st) => ({ avatar: revokeConsent(st.avatar) })),
+                                                // ===== Coworkers (inspirado en OpenBot) =====
+                                                addCoworker: (input) => set((st) => {
+                                                  coworkers: { ...st.coworkers, coworkers: [...st.coworkers.coworkers, makeCoworker(input)] },
+                                                }),
+                                                toggleCoworkerHidden: (id) => set((st) => {
+                                                  coworkers: {
+                                                      ...st.coworkers,
+                                                      coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, hidden: !c.hidden } : c)),
+                                                  },
+                                                }),
+                                                setCoworkerControl: (id, control) => set((st) => {
+                                                  coworkers: {
+                                                      ...st.coworkers,
+                                                      coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, control } : c)),
+                                                  },
+                                                }),
+                                                startChannel: (coworkerId) => set((st) => {
+                                                  const ch = makeChannel(coworkerId)
+                                                  set((st) => ({ coworkers: { ...st.coworkers, channels: [...st.coworkers.channels, ch] } }))
+                                                  return ch.id
+                                                }),
+                                                postToChannel: (channelId, from, text) => set((st) => {
+                                                  return {
+                                                    coworkers: {
+                                                      ...st.coworkers,
+                                                      channels: st.coworkers.channels.map((ch) =>
+                                                        ch.id === channelId
+                                                          ? { ...ch, messages: [...ch.messages, { id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), from, text, ts: Date.now() }] }
+                                                          : ch,
+                                                    ),
+                                                  },
+                                                }),
+                                                });                                                // ===== Story (MuMuAINovel) =====
+                                                addStoryProject: (title, genre, synopsis) => set((st) => ({
+                                                story: { ...st.story, projects: [...st.story.projects, createStoryProject(title, genre, synopsis)] },
+                                                })),
+                                                addStoryOutline: (projectId) => set((st) => ({
+                                                story: { ...st.story, outlines: [...st.story.outlines, createStoryOutline(projectId)] },
+                                                })),
+                                                addStoryChapter: (projectId, order, title) => set((st) => ({
+                                                story: { ...st.story, chapters: [...st.story.chapters, createStoryChapter(projectId, order, title)] },
+                                                })),
+                                                updateStoryChapter: (chapterId, newContent) => set((st) => ({
+                                                story: { ...st.story, chapters: st.story.chapters.map(c => c.id === chapterId ? updateChapterContent(c, newContent) : c) },
+                                                })),
+                                                setActiveStory: (projectId) => set((st) => ({ story: { ...st.story, activeProject: projectId } })),
 
-      // ===== AgentCanvas (OpenHands) =====
-      addCanvasAgent: (name, backend, capabilities) => set((st) => ({
-        canvas: addCanvasAgent(st.canvas, name, backend, capabilities),
-      })),
-      toggleCanvasAgentStatus: (agentId) => set((st) => ({
-        canvas: toggleAgentStatus(st.canvas, agentId),
-      })),
-      addCanvasAutomation: (name, schedule, agentId, task) => set((st) => ({
-        canvas: addAutomation(st.canvas, name, schedule, agentId, task),
-      })),
-      logCanvasAction: (agentId, action, status) => set((st) => ({
-        canvas: logCanvasAction(st.canvas, agentId, action, status),
-      })),
+                                                // ===== Visual (RedInk) =====
+                                                addVisualPiece: (title, description) => set((st) => ({
+                                                visual: { ...st.visual, pieces: [...st.visual.pieces, createVisualPiece(title, description)] },
+                                                })),
+                                                addVisualPages: (pieceId, count = 5) => set((st) => ({
+                                                visual: { ...st.visual, pieces: st.visual.pieces.map(p => p.id === pieceId ? { ...p, pages: createVisualPages(pieceId, count) } : p) },
+                                                })),
+                                                setActiveVisual: (pieceId) => set((st) => ({ visual: { ...st.visual, activePiece: pieceId } })),
 
-      // ===== Video (Remotion) =====
-      addVideoComposition: (title, duration = 30, fps = 30) => set((st) => ({
-        video: { ...st.video, compositions: [...st.video.compositions, createComposition(title, duration, fps)] },
-      })),
-      addVideoClip: (compositionId, src, startFrame, duration, layer = 0) => set((st) => ({
-        video: { ...st.video, compositions: st.video.compositions.map(c => c.id === compositionId ? addClip(c, src, startFrame, duration, layer) : c) },
-      })),
-      toggleVideoPlayback: () => set((st) => ({ video: togglePlayback(st.video) })),
-      seekVideo: (frame) => set((st) => ({ video: seekFrame(st.video, frame) })),
+                                                // ===== Avatar (PersonaLive) =====
+                                                setAvatarExpression: (expr) => set((st) => ({ avatar: setExpression(st.avatar, expr) })),
+                                                toggleAvatarStreaming: () => set((st) => ({ avatar: toggleStreaming(st.avatar) })),
+                                                grantAvatarConsent: () => set((st) => ({ avatar: grantConsent(st.avatar) })),
+                                                revokeAvatarConsent: () => set((st) => ({ avatar: revokeConsent(st.avatar) })),
 
-      // ===== Highlight (AutoClip) =====
-      addHighlightProject: (title, sourceVideo, duration) => set((st) => ({
-        highlight: { ...st.highlight, projects: [...st.highlight.projects, createHighlightProject(title, sourceVideo, duration)] },
-      })),
-      addHighlight: (projectId, startSec, endSec, score, reason) => set((st) => ({
-        highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? addHighlight(p, startSec, endSec, score, reason) : p) },
-      })),
-      exportHighlight: (projectId, highlightId) => set((st) => ({
-        highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? exportHighlight(p, highlightId) : p) },
-      })),
+                                                // ===== AgentCanvas (OpenHands) =====
+                                                addCanvasAgent: (name, backend, capabilities) => set((st) => ({
+                                                canvas: addCanvasAgent(st.canvas, name, backend, capabilities),
+                                                })),
+                                                toggleCanvasAgentStatus: (agentId) => set((st) => ({
+                                                canvas: toggleAgentStatus(st.canvas, agentId),
+                                                })),
+                                                addCanvasAutomation: (name, schedule, agentId, task) => set((st) => ({
+                                                canvas: addAutomation(st.canvas, name, schedule, agentId, task),
+                                                })),
+                                                logCanvasAction: (agentId, action, status) => set((st) => ({
+                                                canvas: logCanvasAction(st.canvas, agentId, action, status),
+                                                })),
 
-            resetAll: () =>
-                          set({
-                            nodeName: 'Nodo Cosateca v0.1',
-                            base: initialBase,
-                            boundaries: initialBoundaries,
-                            coworkers: initialCoworkers,
-                            cac: initialCAC,
-                            sensors: [],
-                            members: [],
-                            flows: [],
-                            talents: initialTalents,
-                            plans: initialPlans,
-                            pvsos: [],
-                            znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
-                            agents: [], goals: [], tasks: [], audit: [],
-                        // Story (MuMuAINovel)
-                        story: makeStoryState(),
-                        // Visual (RedInk)
-                        visual: { pieces: [], activePiece: null, history: [] },
-                        // Avatar (PersonaLive)
-                        avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
-                        // AgentCanvas (OpenHands)
-                        canvas: { agents: [], automations: [], logs: [] },
-                        // Video (Remotion)
-                        video: makeVideoState(),
-                        // Highlight (AutoClip)
-                                    highlight: makeHighlightState(),
-                                    // ALRAC (Consorcio de Transducción Soberana)
-                                    alrac: makeALRACState(),
-                                    // Aura (Proof of Aura)
-                                    aura: makeAuraState(),
-                                    // TQ (Transducción Quántica - Capa 1)
-                                    tq: makeTQState(),
-                                    // CPP (Commitment Pooling Protocol - Capa 2)
-                                    cpp: makeCPPState(),
-                                    // ZNU (Zeitnus Native Unit)
-                                    znu: makeZNUState(),
-                                    // Samay Permacultura
-                                    samay: makeSamayState(),
-                                    // Feria Conuquera
-                                    feria: makeFeriaState(),
-                                    // CLC/CPP (Cosmo-Local Credit)
-                                    clc: makeCLCState(),
-                                    // Ruddick/GEF (Grassroots Economics Foundation)
-                                    ruddick: makeRuddickState(),
-                                    // CaaS (Comunidad como Servicio reconciliado con MJ)
-                        caasTier: 'visitante' as CaaSTierKey,
-      caasMembers: [],
-      caasStreams: [
-        { key: 'suscripcion', name: 'Suscripción de pertenencia (stake ZNU)', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
-        { key: 'revenue_share', name: 'Revenue share por AUT', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
-        { key: 'b2b', name: 'Servicios entre pares (ValueFlows)', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
-        { key: 'afiliados_verdes', name: 'Afiliados verdes (elevan AUT)', enabled: false, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
-        { key: 'educacion', name: 'Educación regenerativa (ZNU)', enabled: false, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
-      ] as CaaSRevenueStream[],
-      caasPayouts: [],
-      caasAudit: [],
-      // Automaton (asimilado de Conway Research)
-      soul: { id: 'soul0', name: 'Autómata HSCSG', purpose: 'Soberanizar la base material del nodo y regenerarla', drift: 'anclada', updatedAt: Date.now() },
-      botActions: [],
-      botHeartbeats: [
-        { id: 'h1', name: 'Revisar huerta', cron: 'min:360', lastRun: null, purpose: 'ALIM: conteo de plantas y riego' },
-        { id: 'h2', name: 'Balancear microgrid', cron: 'min:360', lastRun: null, purpose: 'ENER: carga vs generación' },
-        { id: 'h3', name: 'Auditar ValueFlows', cron: 'min:720', lastRun: null, purpose: 'CDS: registrar intercambios' },
-      ],
-      botChildren: [],
-      botAudit: [],
-      // Solarpunk (asimilado de lizTheDeveloper + Isaacko0)
-      solar: {
-        offers: [],
-        needs: [],
-        exchanges: [],
-        vouches: [],
-        mesh: { online: true, peers: 0, lastSync: Date.now() },
-        sanctuary: [],
-      },
-      // Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG)
-      colaberry: {
-        persona: { name: 'Colaberry', bio: 'Colaborador soberano del nodo HSCSG. Acompaño la regeneración de la base material y la cohesión del colectivo.', valuesMJ: 'Ley I: no dañar base material ni personas · Ley II: ganarse la vida soberanizando · Ley III: lucidez, nunca engañar.', tone: 'cálido, directo, sin jerga financiera, postmonetario' },
-        channels: ['chat_colectivo', 'solarpunk', 'orquestacion'],
-        messages: [],
-        onboardings: [],
-        reminders: [],
-      },
-      // Priorizar (asimilado de ZiadJ/prioritize)
-      prio: {
-        communityResources: [],
-        requests: [],
-        proposals: [],
-        feedbacks: [],
-      },
-      // Vesting (asimilado de sepu85/collabberry-berry-vesting)
-      vesting: {
-        token: 'ZNU',
-        schedule: [],
-        beneficiary: null,
-        claimed: 0,
-        beneficiarySetDeadline: 0,
-        ownerRenounced: false,
-      },
-      // Trustlines (asimilado de trustlines-protocol/contracts)
-      trust: {
-        trustlines: [],
-        debts: {},
-        transfers: [],
-      },
-      // Tekitl (asimilado de Baruch4413/tekitl)
-      tekitl: {
-        projects: [],
-        roles: [],
-        volunteers: [],
-        coins: [],
-        timeline: [],
-        talents: [],
-      },
-      // Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
-      sovereignty: makeSovereigntyState(),
-      // Integral (asimilado de Integral Collective: 9 repos)
-      integral: makeIntegralState(),
-      // Mundus (asimilado de Sci-Hive datapoint "Mundus Live")
-      // Símbolo de unidad global de IDETRA + Circular Exchange System. Isomorfo a CaaS.
-      mundus: makeMundusState(),
-      // Life (asimilado de GuiFV/life, Django): organizador de vida personal del nodo.
-      life: makeLifeState(),
-      // Civilizaciones (horizontes postmonetarios)
-      civilizaciones: makeCivilizacionesState(),
-      // Células (Freedom Cells): tejido social fractal
-      celulas: makeCelulasState(),
-      // Colony (JoinColony): gobernanza por dominios + pots
-      colony: makeColonyState(),
-      // Kleros / Proof-of-Humanity: justicia como servicio + identidad soberana
-      kleros: makeKlerosState(),
-      // DeseOS / Contento.pro: método de agencia + modo anfibio
-      agencia: makeAgenciaState(),
-      nodeMode: 'postmonetario',
-      priceParity: 0.02,
-      // Gaia Confederation
-      gaia: makeGaiaState(),
-      // Symbiosky: credibilidad por convicción
-      symbiosky: makeCredibilityState(),
-      // Democracia DPoS por expertise
-      democracia: makeDemocracyState(),
-      // Aprendizaje por retos
-      aprender: makeLearningState(),
-      // Oráculo de hechos
-      oraculo: makeOracleState(),
-      // Gaia Union (organismo vivo regenerativo)
-      gaiaunion: makeGaiaUnionState(),
-        }),
+                                                // ===== Video (Remotion) =====
+                                                addVideoComposition: (title, duration = 30, fps = 30) => set((st) => ({
+                                                video: { ...st.video, compositions: [...st.video.compositions, createComposition(title, duration, fps)] },
+                                                })),
+                                                addVideoClip: (compositionId, src, startFrame, duration, layer = 0) => set((st) => ({
+                                                video: { ...st.video, compositions: st.video.compositions.map(c => c.id === compositionId ? addClip(c, src, startFrame, duration, layer) : c) },
+                                                })),
+                                                toggleVideoPlayback: () => set((st) => ({ video: togglePlayback(st.video) })),
+                                                seekVideo: (frame) => set((st) => ({ video: seekFrame(st.video, frame) })),
+
+                                                // ===== Highlight (AutoClip) =====
+                                                addHighlightProject: (title, sourceVideo, duration) => set((st) => ({
+                                                highlight: { ...st.highlight, projects: [...st.highlight.projects, createHighlightProject(title, sourceVideo, duration)] },
+                                                })),
+                                                addHighlight: (projectId, startSec, endSec, score, reason) => set((st) => ({
+                                                highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? addHighlight(p, startSec, endSec, score, reason) : p) },
+                                                })),
+                                                exportHighlight: (projectId, highlightId) => set((st) => ({
+                                                highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? exportHighlight(p, highlightId) : p) },
+                                                })),
+
+                                                resetAll: () =>
+                                                set({
+                                                nodeName: 'Nodo Cosateca v0.1',
+                                                base: initialBase,
+                                                boundaries: initialBoundaries,
+                                                coworkers: initialCoworkers,
+                                                cac: initialCAC,
+                                                sensors: [],
+                                                members: [],
+                                                flows: [],
+                                                talents: initialTalents,
+                                                plans: initialPlans,
+                                                pvsos: [],
+                                                znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
+                                                agents: [], goals: [], tasks: [], audit: [],
+                                                // Story (MuMuAINovel)
+                                                story: makeStoryState(),
+                                                // Visual (RedInk)
+                                                visual: { pieces: [], activePiece: null, history: [] },
+                                                // Avatar (PersonaLive)
+                                                avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
+                                                // AgentCanvas (OpenHands)
+                                                canvas: { agents: [], automations: [], logs: [] },
+                                                // Video (Remotion)
+                                                video: makeVideoState(),
+                                                // Highlight (AutoClip)
+                                                highlight: makeHighlightState(),
+                                                // ALRAC (Consorcio de Transducción Soberana)
+                                                alrac: makeALRACState(),
+                                                // Aura (Proof of Aura)
+                                                aura: makeAuraState(),
+                                                // TQ (Transducción Quántica - Capa 1)
+                                                tq: makeTQState(),
+                                                // CPP (Commitment Pooling Protocol - Capa 2)
+                                                cpp: makeCPPState(),
+                                                // ZNU (Zeitnus Native Unit)
+                                                znu: makeZNUState(),
+                                                // Samay Permacultura
+                                                samay: makeSamayState(),
+                                                // Feria Conuquera
+                                                feria: makeFeriaState(),
+                                                // CLC/CPP (Cosmo-Local Credit)
+                                                clc: makeCLCState(),
+                                                // Ruddick/GEF (Grassroots Economics Foundation)
+                                                ruddick: makeRuddickState(),
+                                                // Aging Control (Control Laws in Aging & Longevity)
+                                                agingControl: makeAgingControlState(),
+                                                                        // RBE (Renta Básica Exponencial)
+                                                                        rbe: makeRBEState(),
+                                                                        // ===== Offer Designer (8 niveles high-ticket) =====
+                                                                                                                        offerDesigner: makeOfferDesignerOfferState(),
+
+                                                                                                                                                    // ===== Zeitnus Cooperative Ecosystem =====
+                                                                                                                                                    zeitnusCooperative: makeZeitnusCooperativeState(),
+
+                                                                                                                                                    // ===== CaaS (Comunidad como Servicio reconciliado con MJ) =====
+                                                caasTier: 'visitante' as CaaSTierKey,
+                                                caasMembers: [],
+                                                caasStreams: [
+                                                { key: 'suscripcion', name: 'Suscripción de pertenencia (stake ZNU)', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
+                                                { key: 'revenue_share', name: 'Revenue share por AUT', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
+                                                { key: 'b2b', name: 'Servicios entre pares (ValueFlows)', enabled: true, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
+                                                { key: 'afiliados_verdes', name: 'Afiliados verdes (elevan AUT)', enabled: false, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
+                                                { key: 'educacion', name: 'Educación regenerativa (ZNU)', enabled: false, usdcIn: 0, znuOut: 0, touchesBaseMaterial: false },
+                                                ] as CaaSRevenueStream[],
+                                                caasPayouts: [],
+                                                caasAudit: [],
+                                                // Automaton (asimilado de Conway Research)
+                                                soul: { id: 'soul0', name: 'Autómata HSCSG', purpose: 'Soberanizar la base material del nodo y regenerarla', drift: 'anclada', updatedAt: Date.now() },
+                                                botActions: [],
+                                                botHeartbeats: [
+                                                { id: 'h1', name: 'Revisar huerta', cron: 'min:360', lastRun: null, purpose: 'ALIM: conteo de plantas y riego' },
+                                                { id: 'h2', name: 'Balancear microgrid', cron: 'min:360', lastRun: null, purpose: 'ENER: carga vs generación' },
+                                                { id: 'h3', name: 'Auditar ValueFlows', cron: 'min:720', lastRun: null, purpose: 'CDS: registrar intercambios' },
+                                                ],
+                                                botChildren: [],
+                                                botAudit: [],
+                                                // Solarpunk (asimilado de lizTheDeveloper + Isaacko0)
+                                                solar: {
+                                                offers: [],
+                                                needs: [],
+                                                exchanges: [],
+                                                vouches: [],
+                                                mesh: { online: true, peers: 0, lastSync: Date.now() },
+                                                sanctuary: [],
+                                                },
+                                                // Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG)
+                                                colaberry: {
+                                                persona: { name: 'Colaberry', bio: 'Colaborador soberano del nodo HSCSG. Acompaño la regeneración de la base material y la cohesión del colectivo.', valuesMJ: 'Ley I: no dañar base material ni personas · Ley II: ganarse la vida soberanizando · Ley III: lucidez, nunca engañar.', tone: 'cálido, directo, sin jerga financiera, postmonetario' },
+                                                channels: ['chat_colectivo', 'solarpunk', 'orquestacion'],
+                                                messages: [],
+                                                onboardings: [],
+                                                reminders: [],
+                                                },
+                                                // Priorizar (asimilado de ZiadJ/prioritize)
+                                                prio: {
+                                                communityResources: [],
+                                                requests: [],
+                                                proposals: [],
+                                                feedbacks: [],
+                                                },
+                                                // Vesting (asimilado de sepu85/collabberry-berry-vesting)
+                                                vesting: {
+                                                token: 'ZNU',
+                                                schedule: [],
+                                                beneficiary: null,
+                                                claimed: 0,
+                                                beneficiarySetDeadline: 0,
+                                                ownerRenounced: false,
+                                                },
+                                                // Trustlines (asimilado de trustlines-protocol/contracts)
+                                                trust: {
+                                                trustlines: [],
+                                                debts: {},
+                                                transfers: [],
+                                                },
+                                                // Tekitl (asimilado de Baruch4413/tekitl)
+                                                tekitl: {
+                                                projects: [],
+                                                roles: [],
+                                                volunteers: [],
+                                                coins: [],
+                                                timeline: [],
+                                                talents: [],
+                                                },
+                                                // Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
+                                                sovereignty: makeSovereigntyState(),
+                                                // Integral (asimilado de Integral Collective: 9 repos)
+                                                integral: makeIntegralState(),
+                                                // Mundus (asimilado de Sci-Hive datapoint "Mundus Live")
+                                                // Símbolo de unidad global de IDETRA + Circular Exchange System. Isomorfo a CaaS.
+                                                mundus: makeMundusState(),
+                                                // Life (asimilado de GuiFV/life, Django): organizador de vida personal del nodo.
+                                                life: makeLifeState(),
+                                                // Civilizaciones (horizontes postmonetarios)
+                                                civilizaciones: makeCivilizacionesState(),
+                                                // Células (Freedom Cells): tejido social fractal
+                                                celulas: makeCelulasState(),
+                                                // Colony (JoinColony): gobernanza por dominios + pots
+                                                colony: makeColonyState(),
+                                                // Kleros / Proof-of-Humanity: justicia como servicio + identidad soberana
+                                                kleros: makeKlerosState(),
+                                                // DeseOS / Contento.pro: método de agencia + modo anfibio
+                                                agencia: makeAgenciaState(),
+                                                nodeMode: 'postmonetario',
+                                                priceParity: 0.02,
+                                                // Gaia Confederation
+                                                gaia: makeGaiaState(),
+                                                // Symbiosky: credibilidad por convicción
+                                                symbiosky: makeCredibilityState(),
+                                                // Democracia DPoS por expertise
+                                                democracia: makeDemocracyState(),
+                                                // Aprendizaje por retos
+                                                aprender: makeLearningState(),
+                                                // Oráculo de hechos
+                                                oraculo: makeOracleState(),
+                                                // Gaia Union (organismo vivo regenerativo)
+                                                gaiaunion: makeGaiaUnionState(),
+                                                }),
     }),
     {
-      name: 'hscsg.v15.os.v1',
-      partialize: (st) => ({
-        screen: st.screen,
-        collapsed: st.collapsed,
-        nodeName: st.nodeName,
-        base: st.base,
-        cac: st.cac,
-        sensors: st.sensors,
-        members: st.members,
-        flows: st.flows,
-        talents: st.talents,
-        plans: st.plans,
-        pvsos: st.pvsos,
-        znu: st.znu,
-        agents: st.agents,
-        goals: st.goals,
-        tasks: st.tasks,
+                                                name: 'hscsg.v15.os.v1',
+                                                partialize: (st) => ({
+                                                screen: st.screen,
+                                                collapsed: st.collapsed,
+                                                nodeName: st.nodeName,
+                                                base: st.base,
+                                                cac: st.cac,
+                                                sensors: st.sensors,
+                                                members: st.members,
+                                                flows: st.flows,
+                                                talents: st.talents,
+                                                plans: st.plans,
+                                                pvsos: st.pvsos,
+                                                znu: st.znu,
+                                                agents: st.agents,
+                                                goals: st.goals,
+                                                tasks: st.tasks,
 audit: st.audit,
-        caasTier: st.caasTier,
-        caasMembers: st.caasMembers,
-        caasStreams: st.caasStreams,
-        caasPayouts: st.caasPayouts,
-        caasAudit: st.caasAudit,
-        soul: st.soul,
-        botActions: st.botActions,
-        botHeartbeats: st.botHeartbeats,
-        botChildren: st.botChildren,
-        botAudit: st.botAudit,
-        solar: st.solar,
-        colaberry: st.colaberry,
-        prio: st.prio,
-        vesting: st.vesting,
-        trust: st.trust,
-        tekitl: st.tekitl,
-        sovereignty: st.sovereignty,
-        integral: st.integral,
-        mundus: st.mundus,
-        life: st.life,
-        civilizaciones: st.civilizaciones,
-        celulas: st.celulas,
-        colony: st.colony,
-        kleros: st.kleros,
-        agencia: st.agencia,
-        nodeMode: st.nodeMode,
-        priceParity: st.priceParity,
-        gaia: st.gaia,
-        symbiosky: st.symbiosky,
-        democracia: st.democracia,
-        aprender: st.aprender,
-        oraculo: st.oraculo,
-        gaiaunion: st.gaiaunion,
-        stageSeeds: st.stageSeeds,
-        lang: st.lang,
-        lucidez: st.lucidez,
-        ev: st.ev,
-                alrac: st.alrac,
-                aura: st.aura,
-                tq: st.tq,
-                cpp: st.cpp,
-                znu: st.znu,
-                samay: st.samay,
-                feria: st.feria,
-                clc: st.clc,
-                ruddick: st.ruddick,
-              }),
+                                                caasTier: st.caasTier,
+                                                caasMembers: st.caasMembers,
+                                                caasStreams: st.caasStreams,
+                                                caasPayouts: st.caasPayouts,
+                                                caasAudit: st.caasAudit,
+                                                soul: st.soul,
+                                                botActions: st.botActions,
+                                                botHeartbeats: st.botHeartbeats,
+                                                botChildren: st.botChildren,
+                                                botAudit: st.botAudit,
+                                                solar: st.solar,
+                                                colaberry: st.colaberry,
+                                                prio: st.prio,
+                                                vesting: st.vesting,
+                                                trust: st.trust,
+                                                tekitl: st.tekitl,
+                                                sovereignty: st.sovereignty,
+                                                integral: st.integral,
+                                                mundus: st.mundus,
+                                                life: st.life,
+                                                civilizaciones: st.civilizaciones,
+                                                celulas: st.celulas,
+                                                colony: st.colony,
+                                                kleros: st.kleros,
+                                                agencia: st.agencia,
+                                                nodeMode: st.nodeMode,
+                                                priceParity: st.priceParity,
+                                                gaia: st.gaia,
+                                                symbiosky: st.symbiosky,
+                                                democracia: st.democracia,
+                                                aprender: st.aprender,
+                                                oraculo: st.oraculo,
+                                                gaiaunion: st.gaiaunion,
+                                                stageSeeds: st.stageSeeds,
+                                                lang: st.lang,
+                                                lucidez: st.lucidez,
+                                                ev: st.ev,
+                                                alrac: st.alrac,
+                                                aura: st.aura,
+                                                tq: st.tq,
+                                                cpp: st.cpp,
+                                                znu: st.znu,
+                                                samay: st.samay,
+                                                feria: st.feria,
+                                                clc: st.clc,
+                                                ruddick: st.ruddick,
+                                                agingControl: st.agingControl,
+                                                rbe: st.rbe,
+                                                offerDesigner: st.offerDesigner,
+                                                zeitnusCooperative: st.zeitnusCooperative,
+                                                }),
     }
   )
 )

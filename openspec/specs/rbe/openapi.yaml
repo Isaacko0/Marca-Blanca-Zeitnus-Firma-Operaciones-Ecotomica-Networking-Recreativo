@@ -1,0 +1,713 @@
+openapi: 3.0.3
+info:
+  title: RBE (Renta Básica Exponencial) API
+  version: 1.0.0
+  description: |
+    Universal dividend with 5 layers, 3-budget accounting, growth controller, and TQ Ledger.
+    Based on Renta Básica Exponencial (RBE) for Zeitnus/ALRAC.
+    Amphibious mode: postmonetario (ZNU) ↔ conectado (USD via priceParity oracle).
+  contact:
+    name: HSCSG v15 OS
+    url: https://github.com/Isaacko0/Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:3000/api/rbe
+    description: Local development server
+  - url: https://api.hscsg.org/rbe
+    description: Production server (when deployed)
+
+paths:
+  /dividend/{memberId}:
+    get:
+      summary: Calculate total dividend for member
+      description: |
+        Computes dividend breakdown across 5 layers (A-E) for a verified member.
+        Requires PoH verification (Capa A gate).
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema: { type: string }
+          description: Member identifier
+        - name: pohVerified
+          in: query
+          schema: { type: boolean, default: false }
+          description: Whether member has PoH verification
+      responses:
+        '200':
+          description: Dividend breakdown
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                    description: Total dividend in ZNU
+                  breakdown:
+                    $ref: '#/components/schemas/DividendBreakdown'
+        '404':
+          description: Member not found
+        '403':
+          description: PoH verification required for Capa A
+
+  /payout/monthly:
+    post:
+      summary: Process monthly payout for all members
+      description: |
+        Executes monthly dividend distribution for all PoH-verified members.
+        Updates TQ ledger balances and records payout transactions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [members]
+              properties:
+                members:
+                  type: array
+                  items: { type: string }
+                  description: List of member IDs to process
+                pohVerified:
+                  type: object
+                  additionalProperties: { type: boolean }
+                  description: Map of memberId -> PoH verification status
+      responses:
+        '200':
+          description: Payout results per member
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payouts:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/PayoutResult'
+                  totalDistributed:
+                    type: number
+                    description: Total ZNU distributed
+                  timestamp:
+                    type: number
+
+  /growth/update:
+    post:
+      summary: Update growth controller with regenerative capacity index
+      description: |
+        Adjusts exponential growth rate based on regenerative capacity index.
+        Rate accelerates above threshold (0.6), decays below critical level (0.3).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [capacityIndex]
+              properties:
+                capacityIndex:
+                  type: number
+                  minimum: 0
+                  maximum: 1
+                  description: Regenerative capacity index [0,1]
+      responses:
+        '200':
+          description: Updated growth state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrowthState'
+
+  /layer/B/contribution:
+    post:
+      summary: Add regenerative capacity contribution (Layer B)
+      description: |
+        Records a verified contribution to regenerative capacity (ecological, energy, productive, cooperative, knowledge).
+        Updates capacity index and multiplier for Layer B dividend.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CapacityContribution'
+      responses:
+        '200':
+          description: Updated Layer B state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerBState'
+
+  /layer/C/contribution:
+    post:
+      summary: Add verified contribution (Layer C)
+      description: |
+        Records a verified contribution (labor, capital, knowledge, care, governance).
+        Updates contribution index for Layer C dividend eligibility.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifiedContribution'
+      responses:
+        '200':
+          description: Updated Layer C state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerCState'
+
+  /layer/D/activity:
+    post:
+      summary: Add governance activity (Layer D)
+      description: |
+        Records governance participation (vote, proposal, jury, delegation, audit).
+        Updates participation score for Layer D dividend eligibility.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GovernanceActivity'
+      responses:
+        '200':
+          description: Updated Layer D state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerDState'
+
+  /layer/E/project:
+    post:
+      summary: Propose innovation project (Layer E)
+      description: |
+        Submits a high-risk/high-reward innovation project for quadratic funding.
+        Project enters 'proposed' status awaiting funding.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InnovationProjectInput'
+      responses:
+        '200':
+          description: Created project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnovationProject'
+
+  /layer/E/fund:
+    post:
+      summary: Fund innovation project (Layer E)
+      description: |
+        Allocates ZNU from Layer E pool to a proposed project using quadratic funding logic.
+        Updates project status and contributor list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [projectId, amount, contributor]
+              properties:
+                projectId:
+                  type: string
+                amount:
+                  type: number
+                  minimum: 1
+                contributor:
+                  type: string
+      responses:
+        '200':
+          description: Updated project and pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnovationProject'
+
+  /budgets/transfer:
+    post:
+      summary: Transfer between three budgets (monetary/real/ecological)
+      description: |
+        Moves value between the three accounting budgets.
+        Source budget determined by layer (A/C/D→monetary, B→real, E→ecological).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fromLayer, toBudget, amount, description]
+              properties:
+                fromLayer:
+                  type: string
+                  enum: [A, B, C, D, E]
+                  description: Source layer
+                toBudget:
+                  type: string
+                  enum: [monetary, real, ecological]
+                  description: Target budget
+                amount:
+                  type: number
+                  minimum: 0.01
+                description:
+                  type: string
+                  maxLength: 200
+      responses:
+        '200':
+          description: Updated budgets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreeBudgetsState'
+        '400':
+          description: Insufficient funds in source budget
+
+  /tq/demurrage:
+    post:
+      summary: Apply demurrage to TQ balances
+      description: |
+        Applies daily demurrage rate (5% annual / 365) to balances above threshold (30 ZNU).
+        Creates demurrage transactions and updates balances.
+      responses:
+        '200':
+          description: Updated TQ state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TQState'
+
+  /tq/balance/{memberId}:
+    get:
+      summary: Get TQ balance for member
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Balance info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  memberId: { type: string }
+                  balanceZNU: { type: number }
+                  balanceUSD: { type: number }
+                  lastUpdated: { type: number }
+
+  /convert:
+    post:
+      summary: Convert amount between amphibious modes
+      description: |
+        Converts between postmonetario (ZNU) and conectado (USD) using priceParity oracle.
+        Price parity sourced from ReFi Level 3 oracle (USDC/ZNU).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, fromMode, toMode, priceParity]
+              properties:
+                amount:
+                  type: number
+                  minimum: 0
+                fromMode:
+                  type: string
+                  enum: [postmonetario, conectado]
+                toMode:
+                  type: string
+                  enum: [postmonetario, conectado]
+                priceParity:
+                  type: number
+                  minimum: 1
+                  description: ZNU per USD (ReFi Level 3 oracle)
+      responses:
+        '200':
+          description: Converted amount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  originalAmount: { type: number }
+                  originalMode: { type: string }
+                  convertedAmount: { type: number }
+                  convertedMode: { type: string }
+                  priceParity: { type: number }
+                  timestamp: { type: number }
+
+components:
+  schemas:
+    DividendBreakdown:
+      type: object
+      description: Dividend breakdown across 5 layers
+      properties:
+        A:
+          type: number
+          description: "Capa A: Piso universal fijo (ZNU)"
+        B:
+          type: number
+          description: "Capa B: Capacidad regenerativa variable (ZNU)"
+        C:
+          type: number
+          description: "Capa C: Contribución verificada (ZNU)"
+        D:
+          type: number
+          description: "Capa D: Participación gobernanza (ZNU)"
+        E:
+          type: number
+          description: "Capa E: Innovación/especulativo (ZNU)"
+      required: [A, B, C, D, E]
+
+    PayoutResult:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Total dividend for this member
+        breakdown:
+          $ref: '#/components/schemas/DividendBreakdown'
+
+    LayerAState:
+      type: object
+      properties:
+        floor:
+          type: number
+          description: Fixed universal floor (ZNU/month)
+        eligibility:
+          type: string
+          enum: [all_verified_humans]
+        frequency:
+          type: string
+          enum: [monthly]
+        lastPayout:
+          type: number
+          description: Unix timestamp of last payout
+        distributed:
+          type: number
+          description: Total distributed this period
+      required: [floor, eligibility, frequency, lastPayout, distributed]
+
+    LayerBState:
+      type: object
+      properties:
+        baseAmount:
+          type: number
+          description: Base dividend amount (ZNU)
+        capacityMultiplier:
+          type: number
+          description: Multiplier from capacity index
+        capacityIndex:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Regenerative capacity index [0,1]
+        contributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapacityContribution'
+        lastCalculation:
+          type: number
+      required: [baseAmount, capacityMultiplier, capacityIndex, contributions, lastCalculation]
+
+    LayerCState:
+      type: object
+      properties:
+        baseAmount:
+          type: number
+        contributionIndex:
+          type: number
+        contributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerifiedContribution'
+        minThreshold:
+          type: number
+      required: [baseAmount, contributionIndex, contributions, minThreshold]
+
+    LayerDState:
+      type: object
+      properties:
+        baseAmount:
+          type: number
+        participationScore:
+          type: number
+          minimum: 0
+          maximum: 1
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/GovernanceActivity'
+        minParticipation:
+          type: number
+      required: [baseAmount, participationScore, activities, minParticipation]
+
+    LayerEState:
+      type: object
+      properties:
+        pool:
+          type: number
+          description: Available ZNU pool for innovation funding
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/InnovationProject'
+        allocation:
+          type: string
+          enum: [quadratic, conviction, hybrid]
+      required: [pool, projects, allocation]
+
+    ThreeBudgetsState:
+      type: object
+      properties:
+        monetary:
+          $ref: '#/components/schemas/BudgetState'
+        real:
+          $ref: '#/components/schemas/BudgetState'
+        ecological:
+          $ref: '#/components/schemas/BudgetState'
+      required: [monetary, real, ecological]
+
+    BudgetState:
+      type: object
+      properties:
+        allocated:
+          type: number
+        spent:
+          type: number
+        remaining:
+          type: number
+        unit:
+          type: string
+          enum: [ZNU, kWh, ha, kgCO2, species]
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetTransaction'
+      required: [allocated, spent, remaining, unit, transactions]
+
+    BudgetTransaction:
+      type: object
+      properties:
+        id: { type: string }
+        fromLayer: { type: string }
+        toBudget: { type: string }
+        amount: { type: number }
+        description: { type: string }
+        timestamp: { type: number }
+      required: [id, fromLayer, toBudget, amount, description, timestamp]
+
+    GrowthState:
+      type: object
+      properties:
+        currentRate:
+          type: number
+          description: Current annual growth rate
+        targetRate:
+          type: number
+          description: Target annual growth rate
+        capacityIndex:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Regenerative capacity index
+        verified:
+          type: boolean
+        lastAdjustment:
+          type: number
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrowthHistoryEntry'
+      required: [currentRate, targetRate, capacityIndex, verified, lastAdjustment, history]
+
+    GrowthHistoryEntry:
+      type: object
+      properties:
+        timestamp: { type: number }
+        previousRate: { type: number }
+        newRate: { type: number }
+        reason:
+          type: string
+          enum: [capacity_excess, capacity_deficit]
+        capacityIndex: { type: number }
+      required: [timestamp, previousRate, newRate, reason, capacityIndex]
+
+    TQState:
+      type: object
+      properties:
+        balances:
+          type: object
+          additionalProperties: { type: number }
+          description: Member ID -> ZNU balance
+        demurrageSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/DemurrageEntry'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TQTransaction'
+        iceCache:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ICEEntry'
+      required: [balances, demurrageSchedule, transactions]
+
+    DemurrageEntry:
+      type: object
+      properties:
+        memberId: { type: string }
+        amount: { type: number }
+        dueDate: { type: number }
+        applied: { type: boolean }
+      required: [memberId, amount, dueDate, applied]
+
+    TQTransaction:
+      type: object
+      properties:
+        id: { type: string }
+        from: { type: string }
+        to: { type: string }
+        amount: { type: number }
+        type:
+          type: string
+          enum: [transfer, payout, demurrage, mint, burn]
+        layer:
+          type: string
+          enum: [A, B, C, D, E]
+        timestamp: { type: number }
+        proofHash: { type: string }
+      required: [id, from, to, amount, type, timestamp]
+
+    ICEEntry:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        category: { type: string }
+        co2ePerUnit: { type: number }
+        unit: { type: string }
+        source:
+          type: string
+          enum: [ICE, Ecoinvent]
+        lastUpdated: { type: number }
+      required: [id, name, category, co2ePerUnit, unit, source, lastUpdated]
+
+    CapacityContribution:
+      type: object
+      required: [id, memberId, type, amount, verified, timestamp]
+      properties:
+        id: { type: string }
+        memberId: { type: string }
+        type:
+          type: string
+          enum: [ecological, energy, productive, cooperative, knowledge]
+        amount:
+          type: number
+          description: ZNU equivalent value
+        verified:
+          type: boolean
+        verificationProof:
+          type: string
+        timestamp:
+          type: number
+
+    VerifiedContribution:
+      type: object
+      required: [id, memberId, type, valueZNU, verifiedBy, proofHash, timestamp]
+      properties:
+        id: { type: string }
+        memberId: { type: string }
+        type:
+          type: string
+          enum: [labor, capital, knowledge, care, governance]
+        hours:
+          type: number
+        valueZNU:
+          type: number
+        verifiedBy:
+          type: string
+        proofHash:
+          type: string
+        timestamp:
+          type: number
+
+    GovernanceActivity:
+      type: object
+      required: [id, memberId, type, weight, timestamp]
+      properties:
+        id: { type: string }
+        memberId: { type: string }
+        type:
+          type: string
+          enum: [vote, proposal, jury, delegation, audit]
+        weight:
+          type: number
+        timestamp:
+          type: number
+
+    InnovationProject:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        requestedAmount: { type: number }
+        allocatedAmount: { type: number }
+        contributors:
+          type: array
+          items: { type: string }
+        status:
+          type: string
+          enum: [proposed, funded, active, completed, failed]
+        expectedReturn:
+          type: number
+        actualReturn:
+          type: number
+      required: [id, name, description, requestedAmount, allocatedAmount, contributors, status]
+
+    InnovationProjectInput:
+      type: object
+      required: [name, description, requestedAmount, contributors]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        requestedAmount: { type: number }
+        contributors:
+          type: array
+          items: { type: string }
+        allocation:
+          type: string
+          enum: [quadratic, conviction, hybrid]
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: dividend
+    description: Dividend calculation and payout
+  - name: growth
+    description: Growth controller (exponential with bio-physical limits)
+  - name: layers
+    description: 5 dividend layers (A-E)
+  - name: budgets
+    description: Three-budget accounting (monetary/real/ecological)
+  - name: tq
+    description: TQ Ledger (Transducción Quántica - Capa 1 ALRAC)
+  - name: convert
+    description: Amphibious mode conversion

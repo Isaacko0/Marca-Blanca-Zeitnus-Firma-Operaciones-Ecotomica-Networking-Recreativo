@@ -1,0 +1,464 @@
+openapi: 3.0.3
+info:
+  title: Aging Control Laws API
+  version: 1.0.0
+  description: |
+    Control-theoretic aging interventions based on Zhavoronkov & Mishra (2025).
+    5D physiological state control with Lie bracket analysis, optimal control via PMP,
+    and amphibious cost computation (postmonetario ↔ conectado via priceParity).
+  contact:
+    name: HSCSG v15 OS
+    url: https://github.com/Isaacko0/Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:3000/api/aging-control
+    description: Local development server
+  - url: https://api.hscsg.org/aging-control
+    description: Production server (when deployed)
+
+paths:
+  /viability:
+    get:
+      summary: Check physiological state viability
+      description: |
+        Determines if a 5D state vector [age, bioAge, healthCapital, damageLoad, interventionCapacity]
+        lies within the viability kernel (safe operating envelope).
+      parameters:
+        - name: age
+          in: query
+          required: true
+          schema: { type: number, minimum: 0, maximum: 120 }
+          description: Chronological age (years)
+        - name: bioAge
+          in: query
+          required: true
+          schema: { type: number, minimum: 0, maximum: 150 }
+          description: Biological age (years)
+        - name: healthCapital
+          in: query
+          required: true
+          schema: { type: number, minimum: 0, maximum: 1 }
+          description: Health capital index [0,1]
+        - name: damageLoad
+          in: query
+          required: true
+          schema: { type: number, minimum: 0, maximum: 100 }
+          description: Damage load (arbitrary units)
+        - name: interventionCapacity
+          in: query
+          required: true
+          schema: { type: number, minimum: 0, maximum: 1 }
+          description: Intervention capacity [0,1]
+        - name: tolerance
+          in: query
+          schema: { type: number, default: 0.01 }
+          description: Viability kernel tolerance
+      responses:
+        '200':
+          description: Viability result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  viable: { type: boolean }
+                  state: { type: array, items: { type: number }, minItems: 5, maxItems: 5 }
+                  violations: { type: array, items: { type: string } }
+                  bounds: { type: object }
+        '400':
+          description: Invalid state vector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: { type: string }
+
+  /trajectory:
+    post:
+      summary: Simulate controlled aging trajectory
+      description: |
+        Forward Euler simulation of dx/dt = f(x) + Σ u_i·g_i(x) over time horizon.
+        Returns full state + control trajectory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [initialState, controls, horizon]
+              properties:
+                initialState:
+                  type: array
+                  items: { type: number }
+                  minItems: 5
+                  maxItems: 5
+                  description: "[age, bioAge, healthCapital, damageLoad, interventionCapacity]"
+                  example: [40, 38, 0.85, 10, 0.9]
+                controls:
+                  type: array
+                  items:
+                    type: array
+                    items: { type: number }
+                  description: "Control intensities per timestep [nSteps × nInterventions]"
+                interventions:
+                  type: array
+                  items: { type: string }
+                  description: "Intervention IDs (default: canonical 7)"
+                  example: ["metformin", "exercise", "caloric_restriction"]
+                horizon:
+                  type: number
+                  minimum: 1
+                  maximum: 60
+                  default: 30
+                  description: Time horizon (years)
+                dt:
+                  type: number
+                  minimum: 0.01
+                  maximum: 1
+                  default: 0.1
+                  description: Integration timestep (years)
+      responses:
+        '200':
+          description: Simulated trajectory
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trajectory:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        state:
+                          type: array
+                          items: { type: number }
+                          minItems: 5
+                          maxItems: 5
+                        controls:
+                          type: array
+                          items: { type: number }
+                  lifespanMetrics:
+                    type: object
+                    properties:
+                      lifespan: { type: number }
+                      healthspan: { type: number }
+                      lifespanGain: { type: number }
+                      healthspanGain: { type: number }
+                  cost:
+                    $ref: '#/components/schemas/ControlCost'
+        '400':
+          description: Invalid input
+
+  /optimize:
+    post:
+      summary: Compute optimal control via Pontryagin's Maximum Principle
+      description: |
+        Solves optimal control problem: minimize ∫ L(x,u) dt subject to dx/dt = f(x) + Σ u_i·g_i(x),
+        x(0) = x0, with state constraints (viability kernel).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [initialState]
+              properties:
+                initialState:
+                  type: array
+                  items: { type: number }
+                  minItems: 5
+                  maxItems: 5
+                interventions:
+                  type: array
+                  items: { type: string }
+                  default: ["combo_standard"]
+                config:
+                  type: object
+                  properties:
+                    horizon: { type: number, default: 30 }
+                    discountRate: { type: number, default: 0.04 }
+                    viabilityTol: { type: number, default: 0.01 }
+                    liePrecision: { type: number, default: 1e-5 }
+                    mode: { type: string, enum: [postmonetario, conectado], default: postmonetario }
+                    priceParity: { type: number, default: 100 }
+      responses:
+        '200':
+          description: Optimal control solution
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  optimalControls:
+                    type: array
+                    items:
+                      type: array
+                      items: { type: number }
+                  trajectory:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        state:
+                          type: array
+                          items: { type: number }
+                          minItems: 5
+                          maxItems: 5
+                        controls:
+                          type: array
+                          items: { type: number }
+                  cost:
+                    $ref: '#/components/schemas/ControlCost'
+                  lifespanMetrics:
+                    $ref: '#/components/schemas/LifespanMetrics'
+                  feasibility:
+                    type: object
+                    properties:
+                      economic: { type: boolean }
+                      biological: { type: boolean }
+                      entropic: { type: boolean }
+        '400':
+          description: Optimization failed or invalid input
+
+  /case-studies:
+    get:
+      summary: Run canonical case studies from the paper
+      description: |
+        Executes the 3 canonical case studies:
+        1. Healthy 40yo — Standard Combo (metformin + exercise + CR)
+        2. Pre-frail 60yo — Aggressive Combo (rapamycin + senolytic + exercise + CR)
+        3. Preventive 30yo — Lifestyle Only (exercise + CR)
+      parameters:
+        - name: mode
+          in: query
+          schema: { type: string, enum: [postmonetario, conectado], default: postmonetario }
+        - name: priceParity
+          in: query
+          schema: { type: number, default: 100 }
+      responses:
+        '200':
+          description: Case study results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseStudyResult'
+
+  /cost:
+    post:
+      summary: Compute control cost (amphibious)
+      description: |
+        Computes total control cost for a trajectory, with amphibious mode conversion.
+        In 'conectado' mode, economic cost is converted to ZNU via priceParity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [trajectory]
+              properties:
+                trajectory:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      state:
+                        type: array
+                        items: { type: number }
+                        minItems: 5
+                        maxItems: 5
+                      controls:
+                        type: array
+                        items: { type: number }
+                interventions:
+                  type: array
+                  items: { type: string }
+                  default: ["metformin", "rapamycin", "senolytic", "exercise", "caloric_restriction", "combo_standard", "combo_aggressive"]
+                mode:
+                  type: string
+                  enum: [postmonetario, conectado]
+                  default: postmonetario
+                priceParity:
+                  type: number
+                  default: 100
+      responses:
+        '200':
+          description: Control cost breakdown
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ControlCost'
+
+  /lie-bracket:
+    post:
+      summary: Compute Lie bracket [f, g] for intervention commutation
+      description: |
+        Computes [f, g]_ij = Σ_k (∂g_i/∂x_k · f_k - ∂f_i/∂x_k · g_k)
+        Used to analyze intervention ordering and non-commutativity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [state, interventionId]
+              properties:
+                state:
+                  type: array
+                  items: { type: number }
+                  minItems: 5
+                  maxItems: 5
+                interventionId:
+                  type: string
+                  enum: [metformin, rapamycin, senolytic, exercise, caloric_restriction, combo_standard, combo_aggressive]
+                epsilon:
+                  type: number
+                  default: 1e-6
+      responses:
+        '200':
+          description: Lie bracket matrix
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bracket:
+                    type: array
+                    items:
+                      type: array
+                      items: { type: number }
+                  intervention: { type: string }
+                  state: { type: array, items: { type: number } }
+
+components:
+  schemas:
+    ControlCost:
+      type: object
+      description: Amphibious cost breakdown
+      properties:
+        economic:
+          type: number
+          description: "Economic cost (USD in conectado mode, abstract units in postmonetario)"
+        biological:
+          type: number
+          description: "Biological cost: side effects, resource diversion"
+        entropic:
+          type: number
+          description: "Entropic cost: information/coordination overhead"
+        total:
+          type: number
+          description: "Total cost = economic + biological + entropic"
+      required: [economic, biological, entropic, total]
+
+    LifespanMetrics:
+      type: object
+      properties:
+        lifespan:
+          type: number
+          description: Total simulated lifespan (years)
+        healthspan:
+          type: number
+          description: Healthy lifespan (healthCapital > 0.5)
+        lifespanGain:
+          type: number
+          description: Gain vs uncontrolled aging
+        healthspanGain:
+          type: number
+          description: Healthspan gain vs uncontrolled
+      required: [lifespan, healthspan, lifespanGain, healthspanGain]
+
+    CaseStudyResult:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        x0:
+          type: array
+          items: { type: number }
+          minItems: 5
+          maxItems: 5
+        optimalControls:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+        stateTrajectory:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+        totalCost: { type: number }
+        lifespanGain: { type: number }
+        healthspanGain: { type: number }
+        feasible:
+          type: object
+          properties:
+            economic: { type: boolean }
+            biological: { type: boolean }
+            entropic: { type: boolean }
+          required: [economic, biological, entropic]
+      required: [id, name, x0, optimalControls, stateTrajectory, totalCost, lifespanGain, healthspanGain, feasible]
+
+    Intervention:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        type: { type: string, enum: [pharmacological, lifestyle, gene, senolytic, metabolic, combination] }
+        controlVector:
+          type: array
+          items: { type: number }
+          minItems: 5
+          maxItems: 5
+        costParams:
+          type: object
+          properties:
+            economicWeight: { type: number }
+            biologicalWeight: { type: number }
+            entropicWeight: { type: number }
+            scalingExponent: { type: number }
+          required: [economicWeight, biologicalWeight, entropicWeight, scalingExponent]
+        decayRate: { type: number }
+        minIntensity: { type: number }
+        maxIntensity: { type: number }
+      required: [id, name, type, controlVector, costParams, decayRate, minIntensity, maxIntensity]
+
+    AgingControlConfig:
+      type: object
+      properties:
+        horizon: { type: number, default: 30 }
+        discountRate: { type: number, default: 0.04 }
+        viabilityTol: { type: number, default: 0.01 }
+        liePrecision: { type: number, default: 1e-5 }
+        mode: { type: string, enum: [postmonetario, conectado], default: postmonetario }
+        priceParity: { type: number, default: 100 }
+      required: [horizon, discountRate, viabilityTol, liePrecision, mode]
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: viability
+    description: Viability kernel checks
+  - name: trajectory
+    description: Trajectory simulation
+  - name: optimization
+    description: Optimal control (PMP)
+  - name: case-studies
+    description: Canonical paper case studies
+  - name: cost
+    description: Amphibious cost computation
+  - name: lie-bracket
+    description: Intervention commutation analysis
