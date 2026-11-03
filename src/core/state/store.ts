@@ -87,6 +87,12 @@ import type { OfferDesignerState as OfferDesignerOfferState } from '@core/state/
 import { createInitialOffer as makeOfferDesignerOfferState } from '@core/state/offer-designer'
 import type { ZeitnusCooperativeState } from '@core/state/zeitnus-cooperative'
 import { createInitialCooperativeState as makeZeitnusCooperativeState } from '@core/state/zeitnus-cooperative'
+import type { IlargiakaosState } from '@core/state/ilargiakaos'
+import { createInitialIlargiakaosState as makeIlargiakaosState } from '@core/state/ilargiakaos'
+import type { UrbanGreenState } from '@core/state/urban-green-governance'
+import { createInitialUrbanGreenState as makeUrbanGreenState } from '@core/state/urban-green-governance'
+import type { IEProtocolState } from '@core/state/ie-protocol'
+import { createInitialIEProtocolState as makeIEProtocolState } from '@core/state/ie-protocol'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -201,13 +207,26 @@ export interface AppState {
   brands: { id: string; name: string; handle: string; ini: string; logo?: string; accent?: string }[]
   brandsOff: number[]
   extraBrands: { id: string; name: string; handle: string; ini: string }[]
-  // Life (asimilado de GuiFV/life)
+  // Life (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+                                                ieProtocol: st.ieProtocol,
+    },
+  )
+do de GuiFV/life)
   addLifeGoal: (input: { name: string; description?: string; type: GoalType; effort: Effort; area: Area; important: number; urgent: number; znu?: number; start?: string; end?: string }) => void
   toggleLifeNext: (id: string) => void
   toggleLifeCompleted: (id: string) => void
   removeLifeGoal: (id: string) => void
   setLifeNotes: (notes: string) => void
-  // Mundus (asimilado de Sci-Hive datapoint "Mundus Live")
+  // Mundus (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+                                                                                                                                                                    // ===== IE Protocol (Inteligencia Exponencial) =====
+                                                                                                                                                                    ieProtocol: IEProtocolState
+                                                                                                                                                                    // Actions via hooks store directly
+
+  )
+do de Sci-Hive datapoint "Mundus Live")
   setMundusManifesto: (text: string) => void
   setCelulas: (u: Partial<{ miembros: number; celdasInternas: number; grupoIntermedio: number; nota: string }>) => void
   // Idioma de la UI (ES / EN / PT-BR)
@@ -290,7 +309,27 @@ export interface AppState {
                                                                                                                                                         updateZeitnusCooperative: (updates: Partial<ZeitnusCooperativeState>) => void
                                                                                                                                                         resetZeitnusCooperative: () => void
 
-                                                                                                                                                                    // ===== Orquestación (asimilado de Paperclip) =====
+                                                                                                                                                                    // ===== Ilargiakaos Cyberpunk Theory =====
+                                                                                                                                                                    ilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+rgiakaos: IlargiakaosState
+                                                                                                                                                                    // No direct actions - use hooks store directly
+
+                                                                                                                                                                    // ===== Urban Green Governance (SBN + Gobernanza Suelo) =====
+                                                                                                                                                                    urbanGreen: UrbanGreenState
+                                                                                                                                                                    // Actions via hooks store directly
+
+                                                                                                                                                                                                                                                                                                                            // ===== Ilargiakaos Cyberpunk Theory =====
+                                                                                                                                                        ilargiakaos: IlargiakaosState
+                                                                                                                                                        // No direct actions - use hooks store directly
+
+// ===== Orquestación (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Paperclip) =====
   agents: AgentNode[]
   goals: GoalNode[]
   tasks: TaskNode[]
@@ -303,41 +342,85 @@ export interface AppState {
   caasPayouts: CaaSPayout[]
   caasAudit: CaaSAuditEntry[]
 
-  // ===== Automaton (asimilado de Conway Research) =====
+  // ===== Automaton (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Conway Research) =====
   soul: SoulState
   botActions: BotAction[]
   botHeartbeats: HeartbeatTask[]
   botChildren: BotChild[]
   botAudit: BotAuditEntry[]
 
-  // ===== Solarpunk (asimilado de lizTheDeveloper + Isaacko0) =====
+  // ===== Solarpunk (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de lizTheDeveloper + Isaacko0) =====
   solar: SolarpunkState
 
-  // ===== Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG) =====
+  // ===== Colaberry (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Eliza / HR_AI_Agent-collaberry-HSCSG) =====
   colaberry: ColaberryState
 
-  // ===== Priorizar (asimilado de ZiadJ/prioritize) =====
+  // ===== Priorizar (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de ZiadJ/prioritize) =====
   prio: PrioritizeState
 
-  // ===== Vesting (asimilado de sepu85/collabberry-berry-vesting) =====
+  // ===== Vesting (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de sepu85/collabberry-berry-vesting) =====
   vesting: VestingState
 
-  // ===== Trustlines (asimilado de trustlines-protocol/contracts) =====
+  // ===== Trustlines (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de trustlines-protocol/contracts) =====
   trust: TrustState
 
-  // ===== Tekitl (asimilado de Baruch4413/tekitl) =====
+  // ===== Tekitl (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Baruch4413/tekitl) =====
   tekitl: TekitlState
 
-  // ===== Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui) =====
+  // ===== Soberanía (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui) =====
   sovereignty: SovereigntyState
 
-  // ===== Integral (asimilado de Integral Collective: 9 repos) =====
+  // ===== Integral (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Integral Collective: 9 repos) =====
   integral: IntegralState
 
-  // ===== Mundus (asimilado de Sci-Hive datapoint "Mundus Live") =====
+  // ===== Mundus (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Sci-Hive datapoint "Mundus Live") =====
   mundus: MundusState
 
-  // ===== Life (asimilado de GuiFV/life, Django) =====
+  // ===== Life (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de GuiFV/life, Django) =====
   life: LifeState
 
   // ===== Civilizaciones (horizontes postmonetarios: Auravana, One Community, TVP, RBE) =====
@@ -346,7 +429,11 @@ export interface AppState {
   // ===== Células (Freedom Cells: tejido social fractal) =====
   celulas: CelulasState
 
-  // ===== Colony (asimilado de JoinColony: gobernanza por dominios + pots) =====
+  // ===== Colony (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de JoinColony: gobernanza por dominios + pots) =====
   colony: ColonyState
 
   // ===== Kleros / Proof-of-Humanity (justicia como servicio + identidad soberana) =====
@@ -381,24 +468,52 @@ export interface AppState {
   delegation: DelegationState
   // Capabilities (CompAI CRM): optional by default, jardín cerrado offline
   capacidades: CapabilityState
-  // Educación postmonetaria (Didacta Community asimilado)
+  // Educación postmonetaria (Didacta Community asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do)
   education: EducationState
   // Educaas: monetización educativa anfibia (Didacta billing/subscriptions)
   educaas: EducaasState
-  // Urbanika asimilado
+  // Urbanika asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do
   sovereignCredit: SovereignCreditState
   regen: RegenState
   vecinal: VecinalState
-  // block/buzz asimilado
+  // block/buzz asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do
     nostrRelay: NostrRelayState
     agentMesh: AgentMeshState
-    // NVIDIA OO-Agents (NOOA) asimilado — capa agente-orobjeto isomorfa a agentMesh + Leyes MJ
+    // NVIDIA OO-Agents (NOOA) asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do — capa agente-orobjeto isomorfa a agentMesh + Leyes MJ
     nooa: NooaState
-    // ContentCreation-OS asimilado — co-pilot de contenido anfibio (gate humano = Ley III MJ)
+    // ContentCreation-OS asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do — co-pilot de contenido anfibio (gate humano = Ley III MJ)
     content: ContentState
-    // usdglo (Glo Foundation USDGLO) asimilado — oráculo priceParity ReFi Nivel 3 anfibio
+    // usdglo (Glo Foundation USDGLO) asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do — oráculo priceParity ReFi Nivel 3 anfibio
     usdglo: UsdgloState
-    // NEAR asimilado
+    // NEAR asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do
     proofOfResponse: ProofOfResponseState
     // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
     stageSeeds: Record<string, Record<string, unknown>>
@@ -543,7 +658,11 @@ export interface AppState {
   // Aprender
   completeChallenge: (id: string) => void
   addLearningChallenge: (title: string, topic: string, znuReward: number) => void
-  // Educación (Didacta Community asimilado)
+  // Educación (Didacta Community asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do)
   createEduCourse: (title: string, level: 'basico' | 'medio' | 'avanzado', evidenceRequired?: boolean) => void
   enrollEdu: (courseId: string, memberId: string) => void
   recordEduProgress: (courseId: string, memberId: string, progress: number) => void
@@ -719,7 +838,11 @@ export const useAppStore = create<AppState>()(
       notifList: [
         { type: 'info', title: 'CaaS · Acceso disponible', body: 'Tu contribución AUT del mes habilita 3 vectores de acceso (ALIM, ENER, SALU).', time: 'hace 2h', onClick: () => {} },
         { type: 'success', title: 'Vesting · Tramo liberado', body: 'Se liberaron 15.000 ZNU de tu allocation de 100.000. Reclamables ahora.', time: 'hace 5h', onClick: () => {} },
-        { type: 'warning', title: 'Soberanía · Pilar Water en build', body: 'Falta redundancia de bombeo. Sube la fase en /soberania para cerrar el eslabón débil.', time: 'ayer', onClick: () => {} },
+        { type: 'warning', title: 'Soberanía · Pilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+r Water en build', body: 'Falta redundancia de bombeo. Sube la fase en /soberania para cerrar el eslabón débil.', time: 'ayer', onClick: () => {} },
         { type: 'alert', title: 'Trustlines · Límite cercano', body: 'La línea Isaac↔Luz alcanzó el 60% del crédito mutuo. Considera saldar o ampliar.', time: 'ayer', onClick: () => {} },
         { type: 'info', title: 'Integral · Loop en salud 78/100', body: 'FRS reporta 1 señal crítica en OAD (eco-assessment de baterías). Promovida a issue.', time: 'hace 2d', onClick: () => {} },
       ],
@@ -749,7 +872,11 @@ export const useAppStore = create<AppState>()(
         return { lucidez: v }
       }),
 
-      // ===== Life (asimilado de GuiFV/life) =====
+      // ===== Life (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de GuiFV/life) =====
       addLifeGoal: (input) =>
         set((st) => ({ life: addGoal(st.life, input) })),
       toggleLifeNext: (id) =>
@@ -796,7 +923,11 @@ export const useAppStore = create<AppState>()(
       plans: initialPlans,
       pvsos: seed.seedPVSO,
       znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
-      // Orquestación (asimilado de Paperclip: control plane de agentes)
+      // Orquestación (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Paperclip: control plane de agentes)
       agents: seed.seedAgents,
       goals: seed.seedGoals,
       tasks: seed.seedTasks,
@@ -807,15 +938,27 @@ export const useAppStore = create<AppState>()(
       caasStreams: seed.seedCaasStreams,
       caasPayouts: seed.seedCaasPayouts,
       caasAudit: seed.seedCaasAudit,
-      // Automaton (asimilado de Conway Research)
+      // Automaton (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Conway Research)
       soul: seed.seedSoul,
       botActions: seed.seedBotActions,
       botHeartbeats: seed.seedBotHeartbeats,
       botChildren: seed.seedBotChildren,
       botAudit: seed.seedBotAudit,
-      // Solarpunk (asimilado de lizTheDeveloper + Isaacko0)
+      // Solarpunk (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de lizTheDeveloper + Isaacko0)
       solar: seed.seedSolar,
-      // Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG)
+      // Colaberry (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Eliza / HR_AI_Agent-collaberry-HSCSG)
       colaberry: {
         persona: { name: 'Colaberry', bio: 'Colaborador soberano del nodo HSCSG. Acompaño la regeneración de la base material y la cohesión del colectivo.', valuesMJ: 'Ley I: no dañar base material ni personas · Ley II: ganarse la vida soberanizando · Ley III: lucidez, nunca engañar.', tone: 'cálido, directo, sin jerga financiera, postmonetario' },
         channels: ['chat_colectivo', 'solarpunk', 'orquestacion'],
@@ -823,13 +966,33 @@ export const useAppStore = create<AppState>()(
         onboardings: [{ id: 'ob1', memberName: 'Isaac Ko', signedSocialDNA: true, channel: 'chat_colectivo', ts: Date.now() - 86400000 }],
         reminders: [{ id: 'rm1', channel: 'orquestacion', text: 'Heartbeat huerta: revisar riego', done: false, ts: Date.now() - 3600000 }],
       },
-      // Priorizar (asimilado de ZiadJ/prioritize)
+      // Priorizar (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de ZiadJ/prioritize)
       prio: {
         communityResources: [
-          { id: 'r_water', title: 'Agua', measurementType: 'Volume', quantityAvailable: 800, monthlyCapacity: 900 },
-          { id: 'r_energy', title: 'Energía', measurementType: 'Energy', quantityAvailable: 5.2, monthlyCapacity: 6 },
-          { id: 'r_food', title: 'Comida', measurementType: 'Weight', quantityAvailable: 18, monthlyCapacity: 20 },
-          { id: 'r_tools', title: 'Herramientas FABSHIP', measurementType: 'Units', quantityAvailable: 12, monthlyCapacity: 1 },
+          { id: 'r_water', title: 'Agua', measurementType: 'Volume', quantityAvailargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+ble: 800, monthlyCapacity: 900 },
+          { id: 'r_energy', title: 'Energía', measurementType: 'Energy', quantityAvailargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+ble: 5.2, monthlyCapacity: 6 },
+          { id: 'r_food', title: 'Comida', measurementType: 'Weight', quantityAvailargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+ble: 18, monthlyCapacity: 20 },
+          { id: 'r_tools', title: 'Herramientas FABSHIP', measurementType: 'Units', quantityAvailargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+ble: 12, monthlyCapacity: 1 },
         ],
         requests: [
           { id: 'req1', title: 'Asegurar agua potable diaria', description: 'Necesidad básica del colectivo', isBasicNeed: true, priority: 90, quantity: 1, proposalIds: ['prop1'] },
@@ -849,7 +1012,11 @@ export const useAppStore = create<AppState>()(
           { id: 'fb2', proposalId: 'prop2', rating: 3, confidence: 2, comment: 'Buenón, falta semilla' },
         ],
       },
-      // Vesting (asimilado de sepu85/collabberry-berry-vesting)
+      // Vesting (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de sepu85/collabberry-berry-vesting)
       // t0 = ~2.5 años atrás para que el demo muestre tramos ya liberados (estilo Berry: A 30% meses 25-30, pausa, B 70% meses 37-43)
       vesting: {
         token: 'ZNU',
@@ -859,8 +1026,16 @@ export const useAppStore = create<AppState>()(
         beneficiarySetDeadline: Date.now() - 870 * 86400000,
         ownerRenounced: false,
       },
-      // Trustlines (asimilado de trustlines-protocol/contracts)
-      // Crédito mutuo ZNU entre pares del colectivo (sin emisor central). Deuda bilateral simétrica.
+      // Trustlines (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de trustlines-protocol/contracts)
+      // Crédito mutuo ZNU entre pares del colectivo (sin emisor central). Deuda bilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+teral simétrica.
       trust: {
         trustlines: [
           { id: 'tl1', a: 'Isaac Ko', b: 'Luz', creditGiven: 500, creditReceived: 300, interestRate: 0 },
@@ -875,7 +1050,11 @@ export const useAppStore = create<AppState>()(
         },
         transfers: [],
       },
-      // Tekitl (asimilado de Baruch4413/tekitl)
+      // Tekitl (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Baruch4413/tekitl)
       // Proyectos colaborativos + moneda social (coins) + talentos/portafolio.
       tekitl: {
         projects: [
@@ -910,15 +1089,35 @@ export const useAppStore = create<AppState>()(
           { id: 'tal4', userId: 'Eva', occupation: 'Electricista', confidence: 3, yearsExp: 5 },
         ],
       },
-      // Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
-      // 13 pilares × 7 capas × 3 fases = diagnóstico de base material del nodo (isomorfo a Materialismo Jerárquico).
+      // Soberanía (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
+      // 13 pilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+res × 7 capas × 3 fases = diagnóstico de base material del nodo (isomorfo a Materialismo Jerárquico).
       sovereignty: makeSovereigntyState(),
-      // Integral (asimilado de Integral Collective: 9 repos)
+      // Integral (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Integral Collective: 9 repos)
       // Loop cerrado postmonetario: CDS→OAD→COS→ITC→FRS→CDS. Filosofía de coordinación del nodo.
       integral: makeIntegralState(),
-      // Mundus (asimilado de Sci-Hive datapoint "Mundus Live")
+      // Mundus (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Sci-Hive datapoint "Mundus Live")
       mundus: makeMundusState(),
-      // Life (asimilado de GuiFV/life, Django)
+      // Life (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de GuiFV/life, Django)
       life: makeLifeState(),
       // Civilizaciones (horizontes postmonetarios: Auravana, One Community, TVP, RBE)
       civilizaciones: makeCivilizacionesState(),
@@ -956,21 +1155,37 @@ export const useAppStore = create<AppState>()(
             // Educación postmonetaria (Didacta) + Educaas anfibio
             education: makeEducationState(),
             educaas: makeEducaasState(),
-            // Urbanika asimilado
+            // Urbanika asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do
             sovereignCredit: makeSovereignCreditState(),
             regen: makeRegenState(),
             vecinal: makeVecinalState(),
             // Virginia Network (Prototipo IE v2)
             virginia: makeVirginiaState(),
-            // block/buzz asimilado
+            // block/buzz asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do
             nostrRelay: makeNostrRelayState(),
             agentMesh: makeAgentMeshState(),
             nooa: makeNooaState(),
             content: makeContentState(),
             usdglo: makeUsdgloState(),
-            // NEAR asimilado
+            // NEAR asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do
             proofOfResponse: makeProofOfResponseState(),
-            // E→V (asimilado de E→V Documento Maestro v1.0)
+            // E→V (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de E→V Documento Maestro v1.0)
                         ev: makeEVState(),
                         // ALRAC (Consorcio de Transducción Soberana)
                         alrac: makeALRACState(),
@@ -998,7 +1213,11 @@ export const useAppStore = create<AppState>()(
       })),
       addPVSO: (p) => set((st) => ({ pvsos: [...st.pvsos, { ...p, id: uid(), ts: Date.now() }] })),
       updateZNU: (u) => set((st) => ({ znu: { ...st.znu, ...u } })),
-      // ---- Orquestación (Paperclip-assimilado) ----
+      // ---- Orquestación (Paperclip-assimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do) ----
       addAgent: (a) => set((st) => ({ agents: [...st.agents, { ...a, id: uid(), lastHeartbeatAt: null }] })),
       setAgentStatus: (id, status, reason) => set((st) => ({
         agents: st.agents.map((a) => (a.id === id ? { ...a, status, pauseReason: status === 'paused' ? (reason ?? a.pauseReason) : null } : a)),
@@ -1022,7 +1241,11 @@ export const useAppStore = create<AppState>()(
         return { caasPayouts: [...payouts, ...st.caasPayouts].slice(0, 100) }
       }),
       logCaasAudit: (e) => set((st) => ({ caasAudit: [e, ...st.caasAudit].slice(0, 200) })),
-      // ---- Automaton (asimilado de Conway Research) ----
+      // ---- Automaton (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Conway Research) ----
       setSoul: (s) => set((st) => ({ soul: { ...st.soul, ...s, updatedAt: Date.now() } })),
       proposeAction: (a) => set((st) => {
         const aut = autFromCAC(st.cac)
@@ -1035,7 +1258,11 @@ export const useAppStore = create<AppState>()(
       runBotHeartbeat: (id) => set((st) => ({ botHeartbeats: st.botHeartbeats.map((h) => (h.id === id ? { ...h, lastRun: Date.now() } : h)) })),
       spawnBotChild: (baseMaterialTarget) => set((st) => ({ botChildren: [...st.botChildren, { id: uid(), name: `${st.soul.name}-hijo-${Math.floor(Math.random() * 90 + 10)}`, baseMaterialTarget, parentId: st.soul.id, constitutionMJ: true, spawnedAt: Date.now() }] })),
       logBotAudit: (e) => set((st) => ({ botAudit: [e, ...st.botAudit].slice(0, 200) })),
-      // ---- Solarpunk (asimilado de lizTheDeveloper + Isaacko0) ----
+      // ---- Solarpunk (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de lizTheDeveloper + Isaacko0) ----
       addOffer: (resource, kind, from) => set((st) => ({ solar: { ...st.solar, offers: [...st.solar.offers, makeOffer(resource, kind, from)] } })),
       addNeed: (resource, kind, by) => set((st) => ({ solar: { ...st.solar, needs: [...st.solar.needs, makeNeed(resource, kind, by)] } })),
       doExchange: (offerId, needId, medium, znuAmount = 0) => set((st) => ({ solar: { ...st.solar, exchanges: [...st.solar.exchanges, makeExchange(offerId, needId, medium, znuAmount)] } })),
@@ -1047,7 +1274,11 @@ export const useAppStore = create<AppState>()(
         if (!gate.pass) return {}
         return { solar: { ...st.solar, sanctuary: [makeSanctuary(reason, by), ...st.solar.sanctuary].slice(0, 50) } }
       }),
-      // ---- Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG) ----
+      // ---- Colaberry (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Eliza / HR_AI_Agent-collaberry-HSCSG) ----
       addColaberryMessage: (channel, from, text, pass, law, reason) => set((st) => ({
         colaberry: { ...st.colaberry, messages: [...st.colaberry.messages, makeMessage(channel, from, text, pass, law, reason)].slice(-50) },
       })),
@@ -1057,7 +1288,11 @@ export const useAppStore = create<AppState>()(
       addReminder: (channel, text) => set((st) => ({
         colaberry: { ...st.colaberry, reminders: [...st.colaberry.reminders, makeReminder(channel, text)] },
       })),
-      // ---- Priorizar (asimilado de ZiadJ/prioritize) ----
+      // ---- Priorizar (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de ZiadJ/prioritize) ----
       addRequest: (title, description, isBasicNeed, priority, quantity) => set((st) => ({
         prio: { ...st.prio, requests: [...st.prio.requests, { id: uid(), title, description, isBasicNeed, priority, quantity, proposalIds: [] }] },
       })),
@@ -1067,7 +1302,11 @@ export const useAppStore = create<AppState>()(
       addFeedback: (proposalId, rating, confidence, comment) => set((st) => ({
         prio: { ...st.prio, feedbacks: [...st.prio.feedbacks, { id: uid(), proposalId, rating, confidence, comment }] },
       })),
-      // ---- Vesting (asimilado de sepu85/collabberry-berry-vesting) ----
+      // ---- Vesting (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de sepu85/collabberry-berry-vesting) ----
       setVestingBeneficiary: (beneficiary) => set((st) => {
         const r = setBeneficiary(st.vesting, beneficiary, Date.now())
         if (!r.ok) return {} // rechaza si ya asignado o vencido (isomorfo al contrato)
@@ -1083,7 +1322,11 @@ export const useAppStore = create<AppState>()(
         if (!r.ok) return {}
         return { vesting: { ...st.vesting, ownerRenounced: true } }
       }),
-      // ---- Trustlines (asimilado de trustlines-protocol/contracts) ----
+      // ---- Trustlines (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de trustlines-protocol/contracts) ----
       openTrustline: (a, b, creditGiven, creditReceived, interestRate) => set((st) => ({
         trust: { ...st.trust, trustlines: [...st.trust.trustlines, openTrustline(a, b, creditGiven, creditReceived, interestRate)] },
       })),
@@ -1095,7 +1338,11 @@ export const useAppStore = create<AppState>()(
         if (!r.ok || !r.debts || !r.transfer) return {}
         return { trust: { ...st.trust, debts: r.debts, transfers: [...st.trust.transfers, r.transfer] } }
       }),
-      // ---- Tekitl (asimilado de Baruch4413/tekitl) ----
+      // ---- Tekitl (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Baruch4413/tekitl) ----
       createProject: (title, goal, ownerId, coinsGoal = 1000) => set((st) => ({
         tekitl: { ...st.tekitl, projects: [...st.tekitl.projects, createProject(title, goal, ownerId, coinsGoal)] },
       })),
@@ -1177,7 +1424,11 @@ export const useAppStore = create<AppState>()(
           talents: [...st.tekitl.talents, declareTalent(userId, occupation, confidence, yearsExp)],
         },
       })),
-      // ---- Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui) ----
+      // ---- Soberanía (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui) ----
       setSovereigntyAnswer: (pillar, layer, phase) => set((st) => {
         const key = cellKey(pillar, layer)
         const answers = { ...st.sovereignty.answers, [key]: phase }
@@ -1186,7 +1437,11 @@ export const useAppStore = create<AppState>()(
       computePatternScore: () => set((st) => ({
         sovereignty: { ...st.sovereignty, patternScore: patternTheoryScore(st.sovereignty.answers) },
       })),
-      // ---- Integral (asimilado de Integral Collective: 9 repos) ----
+      // ---- Integral (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Integral Collective: 9 repos) ----
       raiseIntegralIssue: (title, raisedBy) => set((st) => ({
         integral: { ...st.integral, issues: [...st.integral.issues, raiseIssue(title, raisedBy)] },
       })),
@@ -1617,6 +1872,12 @@ export const useAppStore = create<AppState>()(
                                                   }
                                                 }),
 
+                                                ilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+rgiakaos: makeIlargiakaosState(),
+                                                urbanGreen: makeUrbanGreenState(),
                                                 // ===== Coworkers (inspirado en OpenBot) =====
                                                 addCoworker: (input) => set((st) => {
                                                   coworkers: { ...st.coworkers, coworkers: [...st.coworkers.coworkers, makeCoworker(input)] },
@@ -1781,7 +2042,13 @@ export const useAppStore = create<AppState>()(
                                                 ] as CaaSRevenueStream[],
                                                 caasPayouts: [],
                                                 caasAudit: [],
-                                                // Automaton (asimilado de Conway Research)
+                                                // Automaton (asimilargiakaos: st.ilargiakaos,
+                                                ieProtocol: makeIEProtocolState(),
+                                                ilargiakaos: makeIlargiakaosState(),
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Conway Research)
                                                 soul: { id: 'soul0', name: 'Autómata HSCSG', purpose: 'Soberanizar la base material del nodo y regenerarla', drift: 'anclada', updatedAt: Date.now() },
                                                 botActions: [],
                                                 botHeartbeats: [
@@ -1791,7 +2058,11 @@ export const useAppStore = create<AppState>()(
                                                 ],
                                                 botChildren: [],
                                                 botAudit: [],
-                                                // Solarpunk (asimilado de lizTheDeveloper + Isaacko0)
+                                                // Solarpunk (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de lizTheDeveloper + Isaacko0)
                                                 solar: {
                                                 offers: [],
                                                 needs: [],
@@ -1800,7 +2071,11 @@ export const useAppStore = create<AppState>()(
                                                 mesh: { online: true, peers: 0, lastSync: Date.now() },
                                                 sanctuary: [],
                                                 },
-                                                // Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG)
+                                                // Colaberry (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Eliza / HR_AI_Agent-collaberry-HSCSG)
                                                 colaberry: {
                                                 persona: { name: 'Colaberry', bio: 'Colaborador soberano del nodo HSCSG. Acompaño la regeneración de la base material y la cohesión del colectivo.', valuesMJ: 'Ley I: no dañar base material ni personas · Ley II: ganarse la vida soberanizando · Ley III: lucidez, nunca engañar.', tone: 'cálido, directo, sin jerga financiera, postmonetario' },
                                                 channels: ['chat_colectivo', 'solarpunk', 'orquestacion'],
@@ -1808,14 +2083,22 @@ export const useAppStore = create<AppState>()(
                                                 onboardings: [],
                                                 reminders: [],
                                                 },
-                                                // Priorizar (asimilado de ZiadJ/prioritize)
+                                                // Priorizar (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de ZiadJ/prioritize)
                                                 prio: {
                                                 communityResources: [],
                                                 requests: [],
                                                 proposals: [],
                                                 feedbacks: [],
                                                 },
-                                                // Vesting (asimilado de sepu85/collabberry-berry-vesting)
+                                                // Vesting (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de sepu85/collabberry-berry-vesting)
                                                 vesting: {
                                                 token: 'ZNU',
                                                 schedule: [],
@@ -1824,13 +2107,21 @@ export const useAppStore = create<AppState>()(
                                                 beneficiarySetDeadline: 0,
                                                 ownerRenounced: false,
                                                 },
-                                                // Trustlines (asimilado de trustlines-protocol/contracts)
+                                                // Trustlines (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de trustlines-protocol/contracts)
                                                 trust: {
                                                 trustlines: [],
                                                 debts: {},
                                                 transfers: [],
                                                 },
-                                                // Tekitl (asimilado de Baruch4413/tekitl)
+                                                // Tekitl (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Baruch4413/tekitl)
                                                 tekitl: {
                                                 projects: [],
                                                 roles: [],
@@ -1839,14 +2130,30 @@ export const useAppStore = create<AppState>()(
                                                 timeline: [],
                                                 talents: [],
                                                 },
-                                                // Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
+                                                // Soberanía (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
                                                 sovereignty: makeSovereigntyState(),
-                                                // Integral (asimilado de Integral Collective: 9 repos)
+                                                // Integral (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Integral Collective: 9 repos)
                                                 integral: makeIntegralState(),
-                                                // Mundus (asimilado de Sci-Hive datapoint "Mundus Live")
+                                                // Mundus (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de Sci-Hive datapoint "Mundus Live")
                                                 // Símbolo de unidad global de IDETRA + Circular Exchange System. Isomorfo a CaaS.
                                                 mundus: makeMundusState(),
-                                                // Life (asimilado de GuiFV/life, Django): organizador de vida personal del nodo.
+                                                // Life (asimilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+do de GuiFV/life, Django): organizador de vida personal del nodo.
                                                 life: makeLifeState(),
                                                 // Civilizaciones (horizontes postmonetarios)
                                                 civilizaciones: makeCivilizacionesState(),
@@ -1943,7 +2250,16 @@ audit: st.audit,
                                                 rbe: st.rbe,
                                                 offerDesigner: st.offerDesigner,
                                                 zeitnusCooperative: st.zeitnusCooperative,
-                                                }),
+                                                }),
+                                                ilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+rgiakaos: st.ilargiakaos: st.ilargiakaos,
+                                                urbanGreen: st.urbanGreen,
+    },
+  )
+rgiakaos,
     }
   )
 )
