@@ -4,26 +4,26 @@
   "description": "HSCSG v15 OS / Cosateca — Sistema operativo comunitario postmonetario (Materialismo Jerárquico + CaaS)",
   "type": "module",
   "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "preview": "vite preview",
-      "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-      "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
-      "test": "vitest",
-      "typecheck": "tsc --noEmit",
-      "license:check": "license-checker --production --failOn GPL-3.0,AGPL-3.0,CC-BY-NC-ND-4.0,Elastic-2.0",
-      "license:report": "license-checker --production --csv > license-report.csv",
-      "license:ci": "npm run license:check && echo \"License check passed\""
-    },
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "license:check": "license-checker --production --failOn GPL-3.0,AGPL-3.0,CC-BY-NC-ND-4.0,Elastic-2.0",
+    "license:report": "license-checker --production --csv > license-report.csv",
+    "license:ci": "npm run license:check && echo \"License check passed\""
+  },
   "dependencies": {
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "lucide-react": "^0.453.0",
-    "zustand": "^4.5.0",
     "react-router-dom": "^6.20.0",
-    "date-fns": "^2.30.0",
-    "clsx": "^2.0.0",
-    "tailwind-merge": "^2.0.0"
+    "tailwind-merge": "^2.0.0",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",
@@ -35,12 +35,12 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.0",
+    "license-checker": "^25.0.0",
     "postcss": "^8.4.30",
     "prettier": "^3.0.0",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5.3.0",
+    "typescript": "^5.9.3",
     "vite": "^5.0.0",
-    "vitest": "^1.0.0",
-    "license-checker": "^25.0.0"
+    "vitest": "^1.0.0"
   }
 }

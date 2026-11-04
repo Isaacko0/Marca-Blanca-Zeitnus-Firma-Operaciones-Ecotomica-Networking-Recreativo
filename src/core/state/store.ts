@@ -137,6 +137,182 @@ import type { UsdgloState } from '@core/state/usdglo'
 import { makeUsdgloState, setMode as uSetMode, mint as uMint, denylist as uDenylist } from '@core/state/usdglo'
 import type { ProofOfResponseState } from '@core/state/proofOfResponse'
 import { makeProofOfResponseState, issueRequest as porIssue, respond as porRespond, proveFailure as porProve, isSatisfied as porSatisfied } from '@core/lib/proofOfResponse'
+import type { WhatMattersState } from '@core/state/whatmatters'
+import { makeWhatMattersState } from '@core/state/whatmatters'
+import type { GovernanceTriadState } from '@core/state/governanceTriad'
+import { makeGovernanceTriadState } from '@core/state/governanceTriad'
+import type { BrandColorSystemState } from '@core/state/brand-color-system'
+import { makeBrandColorSystemState } from '@core/state/brand-color-system'
+import type { BrandTypographyState } from '@core/state/brand-typography'
+import { makeBrandTypographyState } from '@core/state/brand-typography'
+import type { BrandDNAState } from '@core/state/brand-dna'
+import { makeBrandDNAState } from '@core/state/brand-dna'
+import type { BrandVoiceState } from '@core/state/brand-voice'
+import { makeBrandVoiceState } from '@core/state/brand-voice'
+import type { StoryBrandState } from '@core/state/storybrand-engine'
+import { makeStoryBrandState } from '@core/state/storybrand-engine'
+import type { SocialAssetSpecsState } from '@core/state/social-asset-specs'
+import { makeSocialAssetSpecsState } from '@core/state/social-asset-specs'
+import type { BrandCollateralState } from '@core/state/brand-collateral'
+import { makeBrandCollateralState } from '@core/state/brand-collateral'
+import type { MultiAgentWizardState } from '@core/state/multi-agent-wizard'
+import { makeMultiAgentWizardState } from '@core/state/multi-agent-wizard'
+import type { BrandWorkflowState } from '@core/state/brand-workflow'
+import { makeBrandWorkflowState } from '@core/state/brand-workflow'
+import {
+  registerObligation,
+  confirmObligationBilateral,
+  runShadowMapping,
+  proposeClearingCycle,
+  confirmCycleParticipation,
+  executeClearingCycle,
+  calculateHyperbolicMetrics,
+  generateCreditorInvitation,
+  renderClearingAmount,
+} from '@core/lib/whatmatters'
+import {
+  formTriad,
+  dissolveTriad,
+  getActiveTriadForParticipant,
+  requestValidation,
+  resolveValidation,
+  distributeRCE,
+  calculateTriadGrowthPotential,
+} from '@core/lib/governanceTriad'
+import {
+  getColorToken,
+  renderColor,
+  getSemanticColors,
+  buildPalette,
+  validateToken,
+  getSemaphoreColors,
+  getDuskColors,
+  hexToRgb,
+  rgbToHex,
+  lightenHex,
+  darkenHex,
+  generateCSSVariables,
+  getTokenByName,
+  filterTokensByUsage,
+} from '@core/lib/brand-color-system'
+import {
+  getFontRole,
+  getFontSpec,
+  renderFontRole,
+  getFontFamilyString,
+  generateTypographyCSS,
+  getRoleStyle,
+  validateFontFamily,
+  getRolesByFamily,
+  getDefaultWeight,
+  getSmallCapsStyle,
+  generateFontPreloads,
+  validateRole,
+  getRolesByHierarchy,
+} from '@core/lib/brand-typography'
+import {
+  validateSign,
+  validateSignature,
+  validateVillainFace,
+  mergeAnswersIntoSigns,
+  computeBrandMetrics,
+  getSignsByCategory,
+  getBrainSignsByCategory,
+  getCategoryProgress,
+  generateExecutiveSummary,
+  exportToMarkdown,
+  validateBrandDNAState,
+} from '@core/lib/brand-dna'
+import {
+  filterVocabulary,
+  checkTone,
+  renderQuote,
+  getDefaultArchetype,
+  checkAudienceVocab,
+  generateBrandPrompt,
+  generateDoDontGrid,
+  getSignatureQuotes,
+  auditVoiceConsistency,
+} from '@core/lib/brand-voice'
+import {
+  validateScriptStep,
+  buildBrandScript,
+  validateAlternative,
+  validateCapability,
+  validateOneLiner,
+  validateRoadmapAsset,
+  validateCompetitor,
+  validateBuyerJourneyStage,
+  validateCredibilityCase,
+  generateExecutiveSummary: generateStoryBrandSummary,
+  generateClaudePrompt,
+  calculateCompleteness,
+  copySummary,
+} from '@core/lib/storybrand-engine'
+import {
+  getAssetSpec,
+  validateAssetParams,
+  generateDeckCoverSVG,
+  generateCarouselCardSVG,
+  generatePostIGSVG,
+  generateDiplomaSVG,
+  generateBusinessCardFrontSVG,
+  generateBusinessCardBackSVG,
+  generateCampaignMapSVG,
+  generateAsset,
+  exportAssetsToZip,
+} from '@core/lib/social-asset-specs'
+import {
+  createAsset,
+  updateAsset,
+  createExportBundle,
+  signAsset,
+  verifyRAO,
+  generateManifest,
+  exportBundleToJSON,
+  exportBundleToZip,
+  exportAsset,
+  importBundleFromJSON,
+  verifyBundleIntegrity,
+  generateCaaSRAO,
+  getAssetsByType,
+  searchAssetsByTag,
+  getCollateralStats,
+} from '@core/lib/brand-collateral'
+import {
+  startWorkflow: startMultiAgentWorkflow,
+  runAgent,
+  pauseWorkflow: pauseMultiAgentWorkflow,
+  resumeWorkflow: resumeMultiAgentWorkflow,
+  saveCheckpoint: saveMultiAgentCheckpoint,
+  loadCheckpoint: loadMultiAgentCheckpoint,
+  updateCampaignMap,
+  emitACP: emitMultiAgentACP,
+  getAgentStatus,
+  getWorkflowProgress: getMultiAgentProgress,
+  buildAgentPrompt,
+  getNextAgent,
+  createCheckpoint: createMultiAgentCheckpoint,
+  createDefaultCampaignMap,
+} from '@core/lib/multi-agent-wizard'
+import {
+  startWorkflow: startBrandWorkflow,
+  pauseWorkflow: pauseBrandWorkflow,
+  resumeWorkflow: resumeBrandWorkflow,
+  completeWorkflow,
+  failWorkflow,
+  saveCheckpoint: saveBrandCheckpoint,
+  loadCheckpoint: loadBrandCheckpoint,
+  emitACP: emitBrandACP,
+  setGlobalContext,
+  setStageSeed,
+  getStageSeed,
+  clearStageSeed,
+  updateMetrics,
+  getWorkflowSummary,
+  exportWorkflowToJSON,
+  importWorkflowFromJSON,
+} from '@core/lib/brand-workflow'
 import { dispatchMatch, autoAdvisory, applyDecisionTo, znuDecayOnBalance } from '@core/lib/pipeline'
 import { createStoryProject, createStoryOutline, createStoryChapter, updateChapterContent } from '@core/lib/story'
 import { createVisualPiece, createVisualPages } from '@core/lib/visual'
@@ -350,9 +526,31 @@ export interface AppState {
     // usdglo (Glo Foundation USDGLO) asimilado — oráculo priceParity ReFi Nivel 3 anfibio
     usdglo: UsdgloState
     // NEAR asimilado
-    proofOfResponse: ProofOfResponseState
-    // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
-    stageSeeds: Record<string, Record<string, unknown>>
+        proofOfResponse: ProofOfResponseState
+        // WhatMatters — Compensación Multilateral
+                whatmatters: WhatMattersState
+                // Governance Triad — Base-3 Gobernanza
+                governanceTriad: GovernanceTriadState
+                // Brand Color System — Trío + Semáforo + Crepúsculo
+                brandColorSystem: BrandColorSystemState
+                // Brand Typography — Dual Jost/Manrope + 8 roles + acentos
+                brandTypography: BrandTypographyState
+                // Brand DNA — 70 signos + Villano 3 caras + Firma + Brain
+                brandDNA: BrandDNAState
+                // Brand Voice — Arquetipo + 5 rasgos + Vocabulario + Do/Dont
+                brandVoice: BrandVoiceState
+                // StoryBrand Engine — 7 pasos + Alternativas + One-liners + Roadmap
+                storyBrand: StoryBrandState
+                // Social Asset Specs — Deck/Carrusel/Post/Stories/Diploma/Papel/Campaña
+                socialAssetSpecs: SocialAssetSpecsState
+                // Brand Collateral — Assets + RAO + Export Bundle
+                brandCollateral: BrandCollateralState
+                // Multi-Agent Wizard — 4 agentes + Campaign Map + ACP
+                multiAgentWizard: MultiAgentWizardState
+                // Brand Workflow — Checkpoints + ACP + Stage Seeds
+                brandWorkflow: BrandWorkflowState
+                // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
+                stageSeeds: Record<string, Record<string, unknown>>
 
     // ===== Video (Remotion) =====
             video: VideoState
@@ -546,15 +744,30 @@ export interface AppState {
   mintUsdglo: (to: string, amount: number) => void
   denylistUsdglo: (actor: string) => void
   // Proof of Response (NEAR AI)
-  issuePor: (from: string, to: string, payload: string, deadlineB?: number) => void
-  respondPor: (requestId: string, responder: string, payload: string) => void
-  provePorFailure: (requestId: string, reason: string) => void
-  porSatisfied: (requestId: string) => boolean
-  askOracle: (question: string, outcomes: string[]) => void
-  castOracleVote: (queryId: string, juror: string, outcome: string, stake: number) => void
-  resolveOracleQuery: (queryId: string) => void
-  // Gaia Union (organismo vivo)
-  setEpigeneticMode: (mode: 'estable' | 'adaptativo') => void
+    issuePor: (from: string, to: string, payload: string, deadlineB?: number) => void
+    respondPor: (requestId: string, responder: string, payload: string) => void
+    provePorFailure: (requestId: string, reason: string) => void
+    porSatisfied: (requestId: string) => boolean
+    askOracle: (question: string, outcomes: string[]) => void
+    castOracleVote: (queryId: string, juror: string, outcome: string, stake: number) => void
+    resolveOracleQuery: (queryId: string) => void
+    // WhatMatters — Compensación Multilateral
+    registerObligation: (input: { debtorId: string; creditorTaxIdOrEmail: string; amount: number; currency: 'ZNU' | 'USD' | 'LOCAL'; invoiceRef: string; obligationType?: 'commercial' | 'personal_rent' | 'personal_service' | 'personal_medical' | 'personal_education' | 'personal_maintenance' }) => void
+    confirmObligation: (obligationId: string, confirmerId: string, isCreditor: boolean) => void
+    runShadowMapping: () => void
+    proposeClearingCycle: (cycleId: string) => void
+    confirmCycle: (cycleId: string, participantId: string, accept: boolean, reason?: string) => void
+    executeCycle: (cycleId: string) => void
+    recalcGrowthMetrics: () => void
+    inviteCreditor: (obligationId: string) => { invitationUrl: string; message: string } | null
+    // Governance Triad — Base-3 Gobernanza
+    formTriad: (anchorId: string, validatorId: string, synthesizerId: string) => void
+    dissolveTriad: (triadId: string) => void
+    requestValidation: (triadId: string, obligationId: string, requestedBy: string) => void
+    resolveValidation: (requestId: string, resolverId: string, approve: boolean, notes?: string) => void
+    distributeRCE: (triadId: string, cycleId: string) => void
+    // Gaia Union (organismo vivo)
+    setEpigeneticMode: (mode: 'estable' | 'adaptativo') => void
   // Power Delegation
   delegatePower: (from: string, to: string, domain: DomainKey, weight?: number) => void
   revokeDelegation: (from: string, domain: DomainKey) => void
@@ -918,13 +1131,35 @@ export const useAppStore = create<AppState>()(
             content: makeContentState(),
             usdglo: makeUsdgloState(),
             // NEAR asimilado
-            proofOfResponse: makeProofOfResponseState(),
-            // E→V (asimilado de E→V Documento Maestro v1.0)
-                        ev: makeEVState(),
-                        // ALRAC (Consorcio de Transducción Soberana)
-                        alrac: makeALRACState(),
-                        // Conector de flujo
-            stageSeeds: {},
+                        proofOfResponse: makeProofOfResponseState(),
+                        // WhatMatters — Compensación Multilateral
+                                                whatmatters: makeWhatMattersState(),
+                                                // Governance Triad — Base-3 Gobernanza
+                                                governanceTriad: makeGovernanceTriadState(),
+                                                // Brand Color System — Trío + Semáforo + Crepúsculo
+                                                brandColorSystem: makeBrandColorSystemState(),
+                                                // Brand Typography — Dual Jost/Manrope + 8 roles + acentos
+                                                brandTypography: makeBrandTypographyState(),
+                                                // Brand DNA — 70 signos + Villano 3 caras + Firma + Brain
+                                                brandDNA: makeBrandDNAState(),
+                                                // Brand Voice — Arquetipo + 5 rasgos + Vocabulario + Do/Dont
+                                                brandVoice: makeBrandVoiceState(),
+                                                // StoryBrand Engine — 7 pasos + Alternativas + One-liners + Roadmap
+                                                storyBrand: makeStoryBrandState(),
+                                                // Social Asset Specs — Deck/Carrusel/Post/Stories/Diploma/Papel/Campaña
+                                                socialAssetSpecs: makeSocialAssetSpecsState(),
+                                                // Brand Collateral — Assets + RAO + Export Bundle
+                                                brandCollateral: makeBrandCollateralState(),
+                                                // Multi-Agent Wizard — 4 agentes + Campaign Map + ACP
+                                                multiAgentWizard: makeMultiAgentWizardState(),
+                                                // Brand Workflow — Checkpoints + ACP + Stage Seeds
+                                                brandWorkflow: makeBrandWorkflowState(),
+                                                // E→V (asimilado de E→V Documento Maestro v1.0)
+                                                ev: makeEVState(),
+                                                // ALRAC (Consorcio de Transducción Soberana)
+                                                alrac: makeALRACState(),
+                                                // Conector de flujo
+                                                stageSeeds: {},
 
       setNodeName: (n: string) => set({ nodeName: n }),
       updateBase: (u) => set((st) => ({ base: { ...st.base, ...u } })),
@@ -1431,23 +1666,92 @@ export const useAppStore = create<AppState>()(
         proofOfResponse: porProve(st.proofOfResponse, requestId, reason),
       })),
       porSatisfied: (requestId) => {
-        let ok = false
-        set((st) => { ok = porSatisfied(st.proofOfResponse, requestId); return st })
-        return ok
-      },
-      electDeptRep: (deptId, rep, voter) => set((st) => ({ democracia: electRep(st.democracia, deptId, rep, voter) })),
-      // ===== Aprendizaje por retos (iambrainstorming) =====
-      completeChallenge: (id) => set((st) => ({ aprender: completeChallenge(st.aprender, id) })),
-      addLearningChallenge: (title, topic, znuReward) => set((st) => ({ aprender: addChallenge(st.aprender, title, topic, znuReward) })),
-      // ===== Oráculo de hechos (Kleros/Realitio) -> lo cableo como alias de oracle =====
-      askOracle: (question, outcomes) => set((st) => ({ oraculo: askQuery(st.oraculo, question, outcomes) })),
-      castOracleVote: (queryId, juror, outcome, stake) => set((st) => ({ oraculo: castOracleVote(st.oraculo, queryId, juror, outcome, stake) })),
-      resolveOracleQuery: (queryId) => set((st) => {
-        const r = resolveOracle(st.oraculo, queryId)
-        return { oraculo: r.state }
-      }),
-      // ===== Gaia Union (organismo vivo) =====
-      setEpigeneticMode: (mode) => set((st) => ({ gaiaunion: { ...st.gaiaunion, epigeneticMode: mode } })),
+              let ok = false
+              set((st) => { ok = porSatisfied(st.proofOfResponse, requestId); return st })
+              return ok
+            },
+            // ===== WhatMatters — Compensación Multilateral =====
+            registerObligation: (input) => set((st) => {
+              const r = registerObligation(st.whatmatters, input)
+              if (!r.success) return {}
+              return { whatmatters: { ...st.whatmatters, obligations: [...st.whatmatters.obligations, st.whatmatters.obligations.find(o => o.id === r.obligationId)!] } }
+            }),
+            confirmObligation: (obligationId, confirmerId, isCreditor) => set((st) => {
+              const r = confirmObligationBilateral(st.whatmatters, obligationId, confirmerId, isCreditor)
+              if (!r.success) return {}
+              return { whatmatters: { ...st.whatmatters, obligations: st.whatmatters.obligations.map(o => o.id === obligationId ? { ...o, status: 'ACTIVE' as const, confirmedAt: Date.now() } : o) } }
+            }),
+            runShadowMapping: () => set((st) => ({
+              whatmatters: { ...st.whatmatters, shadowMappings: runShadowMapping(st.whatmatters) }
+            })),
+            proposeClearingCycle: (cycleId) => set((st) => {
+              return { whatmatters: st.whatmatters }
+            }),
+            confirmCycle: (cycleId, participantId, accept, reason) => set((st) => {
+              const r = confirmCycleParticipation(st.whatmatters, cycleId, participantId, accept, reason)
+              if (!r.success || !r.cycle) return {}
+              return { whatmatters: { ...st.whatmatters, clearingCycles: st.whatmatters.clearingCycles.map(c => c.id === cycleId ? r.cycle! : c) } }
+            }),
+            executeCycle: (cycleId) => set((st) => {
+              const r = executeClearingCycle(st.whatmatters, cycleId)
+              if (!r.success) return {}
+              const newObligations = st.whatmatters.obligations.map(o => {
+                if (r.extinguishedObligations.includes(o.id)) return { ...o, status: 'EXTINGUISHED' as const, extinguishedAt: Date.now() }
+                const residual = r.residualUpdates.find(ru => ru.obligationId === o.id)
+                if (residual) return { ...o, amount: residual.newAmount }
+                return o
+              })
+              return { whatmatters: { ...st.whatmatters, obligations: newObligations, clearingCycles: st.whatmatters.clearingCycles.map(c => c.id === cycleId ? { ...c, status: 'EXTINGUISHED' as const, extinguishedAt: Date.now() } : c) } }
+            }),
+            recalcGrowthMetrics: () => set((st) => ({
+              whatmatters: { ...st.whatmatters, growthMetrics: calculateHyperbolicMetrics(st.whatmatters) }
+            })),
+            inviteCreditor: (obligationId) => {
+              let result: { invitationUrl: string; message: string } | null = null
+              set((st) => { result = generateCreditorInvitation(st.whatmatters, obligationId); return st })
+              return result
+            },
+            // ===== Governance Triad — Base-3 Gobernanza =====
+            formTriad: (anchorId, validatorId, synthesizerId) => set((st) => {
+              const r = formTriad(st.governanceTriad, anchorId, validatorId, synthesizerId)
+              if (!r.success) return {}
+              return { governanceTriad: { ...st.governanceTriad, triads: [...st.governanceTriad.triads, st.governanceTriad.triads.find(t => t.id === r.triadId)!] } }
+            }),
+            dissolveTriad: (triadId) => set((st) => {
+              const r = dissolveTriad(st.governanceTriad, triadId)
+              if (!r.success) return {}
+              return { governanceTriad: { ...st.governanceTriad, triads: st.governanceTriad.triads.map(t => t.id === triadId ? { ...t, status: 'DISSOLVED' as const } : t) } }
+            }),
+            requestValidation: (triadId, obligationId, requestedBy) => set((st) => {
+              const r = requestValidation(st.governanceTriad, triadId, obligationId, requestedBy)
+              if (!r.success) return {}
+              return { governanceTriad: { ...st.governanceTriad, validationRequests: [...st.governanceTriad.validationRequests, st.governanceTriad.validationRequests.find(v => v.id === r.requestId)!] } }
+            }),
+            resolveValidation: (requestId, resolverId, approve, notes) => set((st) => {
+              const r = resolveValidation(st.governanceTriad, requestId, resolverId, approve, notes)
+              if (!r.success) return {}
+              return { governanceTriad: { ...st.governanceTriad, validationRequests: st.governanceTriad.validationRequests.map(v => v.id === requestId ? { ...v, status: approve ? 'APPROVED' : 'REJECTED' } : v) } }
+            }),
+            distributeRCE: (triadId, cycleId) => set((st) => {
+              const cycle = st.whatmatters.clearingCycles.find(c => c.id === cycleId)
+              if (!cycle) return {}
+              const r = distributeRCE(st.governanceTriad, triadId, cycle, st.whatmatters.participants, st.whatmatters.obligations)
+              if (!r.success) return {}
+              return { governanceTriad: { ...st.governanceTriad, rceDistributions: [...st.governanceTriad.rceDistributions, st.governanceTriad.rceDistributions.find(d => d.id === r.distributionId)!] } }
+            }),
+            // ===== Aprendizaje por retos (iambrainstorming) =====
+            electDeptRep: (deptId, rep, voter) => set((st) => ({ democracia: electRep(st.democracia, deptId, rep, voter) })),
+            completeChallenge: (id) => set((st) => ({ aprender: completeChallenge(st.aprender, id) })),
+            addLearningChallenge: (title, topic, znuReward) => set((st) => ({ aprender: addChallenge(st.aprender, title, topic, znuReward) })),
+            // ===== Oráculo de hechos (Kleros/Realitio) -> lo cableo como alias de oracle =====
+            askOracle: (question, outcomes) => set((st) => ({ oraculo: askQuery(st.oraculo, question, outcomes) })),
+            castOracleVote: (queryId, juror, outcome, stake) => set((st) => ({ oraculo: castOracleVote(st.oraculo, queryId, juror, outcome, stake) })),
+            resolveOracleQuery: (queryId) => set((st) => {
+              const r = resolveOracle(st.oraculo, queryId)
+              return { oraculo: r.state }
+            }),
+            // ===== Gaia Union (organismo vivo) =====
+            setEpigeneticMode: (mode) => set((st) => ({ gaiaunion: { ...st.gaiaunion, epigeneticMode: mode } })),
       // ===== Power Delegation (AuroraGov + Symbiosky) =====
       delegatePower: (from, to, domain, weight = 1) => set((st) => ({
         delegation: delegatePower(st.delegation, from, to, domain, weight),
@@ -1747,11 +2051,33 @@ export const useAppStore = create<AppState>()(
       // Kleros / Proof-of-Humanity: justicia como servicio + identidad soberana
       kleros: makeKlerosState(),
       // DeseOS / Contento.pro: método de agencia + modo anfibio
-      agencia: makeAgenciaState(),
-      nodeMode: 'postmonetario',
-      priceParity: 0.02,
-      // Gaia Confederation
-      gaia: makeGaiaState(),
+            agencia: makeAgenciaState(),
+            nodeMode: 'postmonetario',
+            priceParity: 0.02,
+            // WhatMatters — Compensación Multilateral
+                        whatmatters: makeWhatMattersState(),
+                        // Governance Triad — Base-3 Gobernanza
+                        governanceTriad: makeGovernanceTriadState(),
+                        // Brand Color System — Trío + Semáforo + Crepúsculo
+                        brandColorSystem: makeBrandColorSystemState(),
+                        // Brand Typography — Dual Jost/Manrope + 8 roles + acentos
+                        brandTypography: makeBrandTypographyState(),
+                        // Brand DNA — 70 signos + Villano 3 caras + Firma + Brain
+                        brandDNA: makeBrandDNAState(),
+                        // Brand Voice — Arquetipo + 5 rasgos + Vocabulario + Do/Dont
+                        brandVoice: makeBrandVoiceState(),
+                        // StoryBrand Engine — 7 pasos + Alternativas + One-liners + Roadmap
+                        storyBrand: makeStoryBrandState(),
+                        // Social Asset Specs — Deck/Carrusel/Post/Stories/Diploma/Papel/Campaña
+                        socialAssetSpecs: makeSocialAssetSpecsState(),
+                        // Brand Collateral — Assets + RAO + Export Bundle
+                        brandCollateral: makeBrandCollateralState(),
+                        // Multi-Agent Wizard — 4 agentes + Campaign Map + ACP
+                        multiAgentWizard: makeMultiAgentWizardState(),
+                        // Brand Workflow — Checkpoints + ACP + Stage Seeds
+                        brandWorkflow: makeBrandWorkflowState(),
+                        // Gaia Confederation
+            gaia: makeGaiaState(),
       // Symbiosky: credibilidad por convicción
       symbiosky: makeCredibilityState(),
       // Democracia DPoS por expertise
@@ -1767,68 +2093,79 @@ export const useAppStore = create<AppState>()(
     {
       name: 'hscsg.v15.os.v1',
       partialize: (st) => ({
-        screen: st.screen,
-        collapsed: st.collapsed,
-        nodeName: st.nodeName,
-        base: st.base,
-        cac: st.cac,
-        sensors: st.sensors,
-        members: st.members,
-        flows: st.flows,
-        talents: st.talents,
-        plans: st.plans,
-        pvsos: st.pvsos,
-        znu: st.znu,
-        agents: st.agents,
-        goals: st.goals,
-        tasks: st.tasks,
-audit: st.audit,
-        caasTier: st.caasTier,
-        caasMembers: st.caasMembers,
-        caasStreams: st.caasStreams,
-        caasPayouts: st.caasPayouts,
-        caasAudit: st.caasAudit,
-        soul: st.soul,
-        botActions: st.botActions,
-        botHeartbeats: st.botHeartbeats,
-        botChildren: st.botChildren,
-        botAudit: st.botAudit,
-        solar: st.solar,
-        colaberry: st.colaberry,
-        prio: st.prio,
-        vesting: st.vesting,
-        trust: st.trust,
-        tekitl: st.tekitl,
-        sovereignty: st.sovereignty,
-        integral: st.integral,
-        mundus: st.mundus,
-        life: st.life,
-        civilizaciones: st.civilizaciones,
-        celulas: st.celulas,
-        colony: st.colony,
-        kleros: st.kleros,
-        agencia: st.agencia,
-        nodeMode: st.nodeMode,
-        priceParity: st.priceParity,
-        gaia: st.gaia,
-        symbiosky: st.symbiosky,
-        democracia: st.democracia,
-        aprender: st.aprender,
-        oraculo: st.oraculo,
-        gaiaunion: st.gaiaunion,
-        stageSeeds: st.stageSeeds,
-        lang: st.lang,
-        lucidez: st.lucidez,
-        ev: st.ev,
-                alrac: st.alrac,
-                aura: st.aura,
-                tq: st.tq,
-                cpp: st.cpp,
-                znu: st.znu,
-                samay: st.samay,
-                feria: st.feria,
-                clc: st.clc,
-                ruddick: st.ruddick,
+              screen: st.screen,
+              collapsed: st.collapsed,
+              nodeName: st.nodeName,
+              base: st.base,
+              cac: st.cac,
+              sensors: st.sensors,
+              members: st.members,
+              flows: st.flows,
+              talents: st.talents,
+              plans: st.plans,
+              pvsos: st.pvsos,
+              znu: st.znu,
+              agents: st.agents,
+              goals: st.goals,
+              tasks: st.tasks,
+              audit: st.audit,
+              caasTier: st.caasTier,
+              caasMembers: st.caasMembers,
+              caasStreams: st.caasStreams,
+              caasPayouts: st.caasPayouts,
+              caasAudit: st.caasAudit,
+              soul: st.soul,
+              botActions: st.botActions,
+              botHeartbeats: st.botHeartbeats,
+              botChildren: st.botChildren,
+              botAudit: st.botAudit,
+              solar: st.solar,
+              colaberry: st.colaberry,
+              prio: st.prio,
+              vesting: st.vesting,
+              trust: st.trust,
+              tekitl: st.tekitl,
+              sovereignty: st.sovereignty,
+              integral: st.integral,
+              mundus: st.mundus,
+              life: st.life,
+              civilizaciones: st.civilizaciones,
+              celulas: st.celulas,
+              colony: st.colony,
+              kleros: st.kleros,
+              agencia: st.agencia,
+              nodeMode: st.nodeMode,
+              priceParity: st.priceParity,
+              gaia: st.gaia,
+              symbiosky: st.symbiosky,
+              democracia: st.democracia,
+              aprender: st.aprender,
+              oraculo: st.oraculo,
+              gaiaunion: st.gaiaunion,
+              stageSeeds: st.stageSeeds,
+              lang: st.lang,
+              lucidez: st.lucidez,
+              ev: st.ev,
+              alrac: st.alrac,
+              aura: st.aura,
+              tq: st.tq,
+              cpp: st.cpp,
+              znu: st.znu,
+              samay: st.samay,
+              feria: st.feria,
+              clc: st.clc,
+              ruddick: st.ruddick,
+              whatmatters: st.whatmatters,
+              governanceTriad: st.governanceTriad,
+              brandColorSystem: st.brandColorSystem,
+              brandTypography: st.brandTypography,
+              brandDNA: st.brandDNA,
+              brandVoice: st.brandVoice,
+              storyBrand: st.storyBrand,
+              socialAssetSpecs: st.socialAssetSpecs,
+              brandCollateral: st.brandCollateral,
+              multiAgentWizard: st.multiAgentWizard,
+              brandWorkflow: st.brandWorkflow,
               }),
     }
   )
