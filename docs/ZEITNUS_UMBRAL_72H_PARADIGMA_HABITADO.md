@@ -4,9 +4,55 @@
 
 ---
 
-## I. El Diagnóstico: Zeitnus No Tiene Umbral
+## 0. La Inversión Ontológica: El Handshake Como Acto Generativo (Capa 0)
+
+> **El handshake no es un componente del sistema. Es su acto generativo.**
+
+Antes de la Capa 1 (contabilidad), la Capa 2 (infraestructura), la Capa 7 (cultura), existe **Capa 0: El Handshake Generativo**.
+
+| Visión Tradicional | Visión Generativa (Esta) |
+|--------------------|--------------------------|
+| Handshake = componente de federación (Capa 7) | **Handshake = acto generativo del organismo (Capa 0)** |
+| Islas = proyectos a federar | **Islas = potenciales de órgano que el handshake actualiza** |
+| Validación = "7 capas funcionales" | **Validación = "handshake produce organismo"** |
+| Mitosis = replicar forma (7 capas) | **Mitosis = replicar protocolo de reconocimiento (handshake)** |
+| Compatibilidad = condición previa | **Compatibilidad = resultado del handshake (se cultiva, no se verifica)** |
+
+**El handshake no verifica compatibilidad. La cultiva.**
+
+En el proceso de operar el kit del otro durante 72h, cada isla **cambia**:
+
+| Antes del Handshake | Durante el Handshake (72h) | Después |
+|---------------------|----------------------------|---------|
+| Isla A: "Tengo mesh, me falta bio" | Opera bio del otro, *aprende* a medir TQ en biomasa | Ahora *sabe* integrar bio en su mesh |
+| Isla B: "Tengo bio, me falta gov" | Opera gov del otro, *aprende* a gobernar TQ | Ahora *sabe* gobernar su bio con TQ |
+
+**La compatibilidad no se verifica. Se *cultiva*. El handshake es el cultivo.**
+
+**Consecuencia de diseño**: El diseño empieza en el handshake. Todo lo demás (islas, capas, módulos) es *lo que el handshake necesita para poder ocurrir*.
+
+---
+
+## I. El Diagnóstico: Zeitnus No Tiene Umbral — Solo Potenciales de Órgano Sin Cuerpo
 
 El repositorio `Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo` es **el síntoma exacto**: arquitectura completa del techo, paredes y cimientos, pero **sin umbral**. El nombre largo no es falla de comunicación — es la prueba de que el paradigma todavía no encontró su **puerta de entrada concreta**.
+
+> **Las islas no son "proyectos a federar". Son potenciales de órgano que el handshake actualiza.**
+
+El repositorio ha identificado seis **potenciales de órgano** — cada uno con una función metabólica real y probada, pero **incompletos porque les falta el cuerpo que los sostiene**:
+
+| Potencial de Órgano | Función Metabólica Real | Lo Que Le Falta Para Ser Cuerpo |
+|---------------------|------------------------|--------------------------------|
+| **Zamora (Mesh+Gov)** | Sistema nervioso + gobierno | Metabolismo (comida/energía/herramientas) que gobernar |
+| **Spirulina (FR, MX, CL)** | Sistema digestivo (alimento denso) | Distribución (mesh), contabilidad (TQ), gobernanza |
+| **Cosatecas (BCN, Berlín, Oakland)** | Sistema circulatorio (herramientas/acceso) | Producción (bio), contabilidad (TQ), red (mesh) |
+| **Mesh Networks (Guifi, NYC, Freifunk)** | Sistema nervioso (comms) | Metabolismo que comunicar ni gobernar |
+| **Canutricio (Oaxaca 90, CDMX 60)** | Sistema inmune/endocrino (salud/longevidad) | Alimento (bio), energía (TQ), red (mesh) |
+| **Biohackerspaces globales** | Sistema reproductivo (I+D, hardware) | Metabolismo que replicar ni red que distribuya |
+
+**El patrón**: Cada potencial de órgano tiene **una función metabólica real y probada**, pero **incompleto porque le falta el cuerpo que lo sostiene**.
+
+**La completitud no es propiedad de cada nodo: emerge del reconocimiento entre nodos.**
 
 ### La Pregunta Que Organiza Todo
 
@@ -16,15 +62,15 @@ La contabilidad biofísica (1 TQ = 1 kWh), la autotrofía de 7 generaciones, la 
 
 ---
 
-## II. La Respuesta: El Territorio Mínimo Viable (TMV)
+## II. La Respuesta: El Territorio Mínimo Viable (TMV) — El Handshake Como Semilla
 
 No se entra a Zeitnus leyendo un whitepaper. Se entra **haciendo una cosa concreta que rompe la dependencia extractiva en tiempo real**.
 
-### La Puerta de Entrada: **El Kit de Autonomía Metabólica de 72 Horas**
+### La Puerta de Entrada: **El Kit de Autonomía Metabólica de 72 Horas — La Semilla del Organismo**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
-│  KIT ZEITNUS 72H: "Tu primer kWh soberano"                          │
+│  KIT ZEITNUS 72H: "Tu primer kWh soberano" — LA SEMILLA            │
 │                                                                     │
 │  1. FOTOBIORREACTOR DE ESCRITORIO (Spirulina)                      │
 │     → 10L, 37°C, pH 8.5, LED 450nm, cosecha día 3                 │
@@ -48,7 +94,9 @@ No se entra a Zeitnus leyendo un whitepaper. Se entra **haciendo una cosa concre
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Lo Que Se Experimenta en 72 Horas (Secuencia Pedagógica Viva)
+**El Kit 72H no es un producto. Es una semilla.** No explica Zeitnus. **Hace que Zeitnus sea necesario.**
+
+### Lo Que Se Experimenta en 72 Horas (Secuencia Generativa Viva)
 
 | Hora | Experiencia Concreta | Categoría Que Se Reorienta |
 |------|----------------------|----------------------------|
@@ -62,76 +110,27 @@ No se entra a Zeitnus leyendo un whitepaper. Se entra **haciendo una cosa concre
 
 ---
 
-## III. El Principio: **Primero el Metabolismo, Después la Explicación**
+## II. El Principio: **Primero el Handshake Generativo, Después el Metabolismo, Después la Explicación**
 
-```
-ORDEN TRADICIONAL (FALLO):      ORDEN ZEITNUS (HÁBITAT):
-─────────────────────────       ─────────────────────────
-1. Explicar TQ = 1 kWh    →     1. Producir 1 kWh → 15g proteína
-2. Explicar autotrofía 7G   →     2. Cosechar y comer tu autonomía
-3. Explicar gobernanza      →     3. Compartir herramienta via mesh
-4. Explicar secesión/FR     →     4. Simular despido y ver que sobrevives
-5. Explicar destrabajo      →     5. Ver medidor: 0.5 TQ/día = libertad
-6. "Ahora úsalo"            →     6. "Ahora entiendes por qué funciona"
+```text
+ORDEN TRADICIONAL (FALLO):      ORDEN ZEITNUS (HÁBITAT GENERATIVO):
+─────────────────────────       ────────────────────────────────────
+1. Explicar TQ = 1 kWh    →     1. Handshake generativo (72h)
+2. Explicar autotrofía 7G   →     2. Producir 1 kWh → 15g proteína
+3. Explicar gobernanza      →     3. Cosechar y comer tu autonomía
+4. Explicar secesión/FR     →     4. Compartir herramienta via mesh
+5. Explicar destrabajo      →     5. Simular despido y ver que sobrevives
+6. "Ahora úsalo"            →     6. Ver medidor: 0.5 TQ/día = libertad
+                                7. "Ahora entiendes por qué funciona"
 ```
 
-**La explicación solo tiene sentido como *etiquetado de lo ya vivido*.**
+**La explicación solo tiene sentido como *etiquetado de lo ya vivido*. El handshake genera la experiencia; la experiencia genera el metabolismo; el metabolismo genera la comprensión.**
 
 ---
 
-## IV. ¿Existe Hoy Algún Territorio Donde Zeitnus Ya Opera Parcialmente?
+## III. El Diagnóstico Revisado: Seis Potenciales de Órgano Sin Cuerpo
 
-### Respuesta Honesta: **Sí, pero fragmentado, invisible y sin nombre compartido**
-
-| Territorio/Práctica | Qué Opera de Zeitnus | Qué Falta | Puente Hacia TMV |
-|---------------------|----------------------|-----------|------------------|
-| **Zamora (Pilotos HSCSG)** | Mesh offline-first, gossip, mTLS, local-first storage, smart contracts gobernanza | Bio-producción, TQ ledger, cosatecas, canutricio | Integrar fotobiorreactor + medidor TQ en nodos existentes |
-| **Comunidades Spirulina (Francia, México, Chile)** | Bio-producción densa, pH 8.5, 37°C, cosecha continua, soberanía alimentaria | Mesh networking, TQ accounting, gobernanza algorítmica, secesión/FR | Añadir medidor TQ + cosateca mesh + protocolo secesión |
-| **Redes Cosatecas / Bibliotecas de Herramientas (Barcelona, Berlín, Oakland)** | Acceso distribuido, amortización por uso, inventarios auditables | Métrica TQ, bio-producción, mesh offline, gobernanza algorítmica | Unificar registro en TQs + integrar con nodos mesh |
-| **Comunidades Offline-First / Mesh (Guifi.net, NYC Mesh, Freifunk)** | Mesh tolerante a desconexión, mTLS, gossip, soberanía comms | Bio-metabolismo, TQ ledger, cosatecas, canutricio | Desplegar nodos bio-energéticos en la malla existente |
-| **Investigadores Canutriciotranshumanismo (Oaxaca, CDMX - tests 90/60)** | 3 umbrales validados, biomarcadores, amortalidad index, Spirulina density | Escalamiento comunitario, mesh, gobernanza, secesión/FR | Convertir tests en Kit 72H distribuible |
-| **Hackerspaces / Biohackerspaces (Global)** | Hardware abierto, experimentación metabólica, Spirulina DIY | Red federada, contabilidad unificada, protocolo secesión | Estandarizar Kit 72H como "Hello World" del movimiento |
-
-### El Patrón Común: **Islas de Competencia Parcial Sin Protocolo de Federación**
-
-Cada una tiene **una capa del stack** (Capa 1, 3, 4, 5 o 6) pero **ninguna tiene el stack completo + el umbral de entrada (Kit 72H)**.
-
----
-
-## V. La Estrategia: **Conectar las Islas vía el Kit 72H**
-
-No se construye Zeitnus desde cero. Se **federan las islas existentes** usando el Kit 72H como **protocolo de handshake universal**.
-
-### Protocolo de Federación (Handshake Zeitnus v1.0)
-
-```
-NODO A (ej. Zamora mesh)          NODO B (ej. Spirulina CDMX)
-     │                                  │
-     ├── KIT 72H A (mesh + governance)  │
-     │                                  ├── KIT 72H B (bio + canutricio)
-     │                                  │
-     │     HANDSHAKE:                   │
-     │     1. Intercambian Kit 72H      │
-     │     2. Cada uno opera 72h del otro│
-     │     3. Sincronizan TQ ledger     │
-     │     4. Federan cosatecas mesh    │
-     │     5. Crean NODO C híbrido      │
-     ▼                                  ▼
-[ZEITNUS FEDERADO: Capa 1+2+3+4+5+6+7]
-```
-
-### Primer Nodo Federación Objetivo: **Zamora + Oaxaca/CDMX**
-
-| Zamora (Ya Opera) | Oaxaca/CDMX (Ya Opera) | Federación Inmediata |
-|-------------------|------------------------|----------------------|
-| Mesh offline-first | Spirulina + canutricio validado | Kit 72H híbrido en 2 semanas |
-| Gossip + mTLS | Tests 90/60 scorecard | Medidor TQ unificado |
-| HSCSG OS v15 | 3 umbrales pipeline | Cosateca mesh compartida |
-| Smart contracts gov | Biomarcadores | Secesión/FR simulada |
-
-**Resultado**: Primer nodo Zeitnus completo (7 capas) operando en **< 30 días** con hardware ya existente.
-
----
+> **Las islas no son "proyectos a federar". Son potenciales de órgano que el handshake actualiza.**
 
 ## VI. El Kit 72H Como Producto Mínimo Viable (PMV) — Especificación Técnica
 
