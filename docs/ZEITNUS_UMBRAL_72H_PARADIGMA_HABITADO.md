@@ -33,6 +33,104 @@ En el proceso de operar el kit del otro durante 72h, cada isla **cambia**:
 
 ---
 
+## 0.1 Transformación Estructural Mutua: Qué Cambia en Cada Isla Después del Handshake
+
+El handshake no es simétrico en contenido — cada potencial **aprende a integrar la capacidad del otro** y **expone su propia capacidad para ser integrada**. La transformación es asimétrica en operación, simétrica en resultado.
+
+| Potencial A (Zamora: Mesh+Gov) | Potencial B (Oaxaca: Bio+Canutricio) |
+|------------------------------|-------------------------------------|
+| **Antes**: "Tengo mesh+gov, me falta metabolismo" | **Antes**: "Tengo bio+canutricio, me falta nervio+gov" |
+| **Durante 72h**: Opera bio del otro, *aprende* a medir TQ en biomasa | **Durante 72h**: Opera gov del otro, *aprende* a gobernar TQ |
+| **Después — Cambio Estructural en Potencial A**: | **Después — Cambio Estructural en Potencial B**: |
+| • Mesh expone **API TQ para bio** (`POST /tq/bio/harvest`, `GET /tq/bio/yield`) | • Bio expone **API TQ para gov** (`POST /gov/bio/harvest`, `GET /gov/bio/yield`) |
+| • Gov añade **módulo de gobernanza metabólica** (reglas: cosecha ≤ yield, TQ balance ≥ 0) | • Bio añade **módulo de sumisión a gov** (reglas: cosecha requiere autorización TQ, yield reportado a ledger) |
+| • Mesh expone **cosateca mesh federada** (herramientas bio compartidas via mesh) | • Bio registra **herramientas en cosateca mesh** (amortización TQ por uso real) |
+| • TQ ledger añade **tipos de tx bio** (`harvest`, `yield`, `ciclo_cerrado`) | • TQ ledger añade **tipos de tx gov** (`gobernanza`, `autorizacion`, `secesion`) |
+| **Nueva capacidad emergente**: Potencial A puede **gobernar metabolismo ajeno** via TQ | **Nueva capacidad emergente**: Potencial B puede **ser gobernado metabólicamente** via TQ |
+
+**Resultado estructural**: Ambos potenciales **adquieren la capacidad del otro como interfaz TQ nativa**. Ya no son "potencial con mesh" y "potencial con bio" — son **potenciales que saben integrarse via TQ**.
+
+> **La compatibilidad no se verifica. Se *cultiva*. El handshake es el cultivo.**
+
+> **La compatibilidad no se verifica. Se *cultiva*. El handshake es el cultivo.**
+
+---
+
+### Protocolo de Handshake Generativo v2.0 (Especificación de Transformación Estructural)
+
+```text
+HANDSHAKE GENERATIVO v2.0 — ESPECIFICACIÓN DE TRANSFORMACIÓN ESTRUCTURAL
+
+Fase 0: INTERCAMBIO DE KITS (Simétrico)
+  1. Intercambian Kit 72H completos (hardware + firmware + docs)
+  2. Cada uno valida integridad del kit ajeno (checksums, firmas)
+  3. Establecen canal mesh mTLS bidireccional (handshake TLS mutuo)
+
+Fase 1: OPERACIÓN CRUZADA 72h (Transformación Mutua)
+  Días 1-3: Cada potencial opera el kit del otro COMPLETAMENTE
+  
+  Potencial A (Zamora: Mesh+Gov) opera Kit B (Oaxaca: Bio+Canutricio):
+  - Día 1: Monta fotobiorreactor, inucula Spirulina, calibra sensores pH/temp/OD
+  - Día 2: Monitorea crecimiento, registra consumo kWh en medidor TQ, cosecha 15g
+  - Día 3: Registra cosecha en TQ ledger (tx: harvest, 0.5 TQ = 15g), come batido
+  
+  Potencial B (Oaxaca: Bio+Canutricio) opera Kit A (Zamora: Mesh+Gov):
+  - Día 1: Conecta a mesh Zamora, autentica mTLS, accede a cosateca mesh
+  - Día 2: Ejecuta simulación secesión, calcula TQs acumulados, decide migración
+  - Día 3: Ejecuta gobernanza algorítmica (propone tx, vota en triada, ejecuta)
+
+  REGISTRO OBLIGATORIO (ambos):
+  - Log de acciones cada 4h (qué hizo, qué observó, qué conectó)
+  - TQ ledger sincronizado cada 4h via gossip (merge automático CRDT)
+  - Cosateca mesh: herramientas usadas registradas con amortización TQ
+
+Fase 2: SINCRONIZACIÓN ESTRUCTURAL (Asimétrica - cada uno expone API para el otro)
+  
+  Potencial A (Zamora: Mesh+Gov) expone a B (Bio):
+  - API TQ para bio: POST /tq/bio/harvest, GET /tq/bio/yield, POST /tq/ciclo_cerrado
+  - Módulo Gov Metabólico: reglas validación (cosecha ≤ yield, TQ balance ≥ 0)
+  - Cosateca Mesh Federada: herramientas bio compartidas, amortización TQ/uso
+  - Tipos TQ nuevos: harvest, yield, ciclo_cerrado, autorizacion_bio
+  
+  Potencial B (Oaxaca: Bio+Canutricio) expone a A (Mesh+Gov):
+  - API TQ para gov: POST /gov/bio/harvest, GET /gov/bio/yield, POST /tq/autorizacion
+  - Módulo Bio Sometido: cosecha requiere autorización TQ, yield reportado a ledger
+  - Tipos TQ nuevos: gobernanza, autorizacion, secesion, fidelidad
+  - Biomarcadores Canutricio expuestos via API (pH, temp, biomasa, scorecard)
+
+Fase 2: SINCRONIZACIÓN ESTRUCTURAL (Asimétrica - cada uno expone API para el otro)
+  
+  Potencial A (Zamora: Mesh+Gov) expone a B (Bio):
+  - API TQ para bio: POST /tq/bio/harvest, GET /tq/bio/yield, POST /tq/ciclo_cerrado
+  - Módulo Gov Metabólico: reglas validación (cosecha ≤ yield, TQ balance ≥ 0)
+  - Cosateca Mesh Federada: herramientas bio compartidas, amortización TQ/uso
+  - Tipos TQ nuevos: harvest, yield, ciclo_cerrado, autorizacion_bio
+  
+  Potencial B (Oaxaca: Bio+Canutricio) expone a A (Mesh+Gov):
+  - API TQ para gov: POST /gov/bio/harvest, GET /gov/bio/yield, POST /tq/autorizacion
+  - Módulo Bio Sometido: cosecha requiere autorización TQ, yield reportado a ledger
+  - Tipos TQ nuevos: gobernanza, autorizacion, secesion, fidelidad
+  - Biomarcadores Canutricio expuestos via API (pH, temp, biomasa, scorecard)
+
+Fase 3: VALIDACIÓN DE TRANSFORMACIÓN ESTRUCTURAL (Test de Integración)
+  Test 1: Potencial A autoriza cosecha de Potencial B via API TQ → B ejecuta → TQ ledger consistente
+  Test 2: Potencial B reporta yield → Potencial A valida ≤ yield autorizado → TQ balance ≥ 0
+  Test 3: Cosateca mesh: Potencial A presta herramienta a Potencial B → amortización TQ registrada
+  Test 4: Simulación secesión conjunta → TQs liquidados, cosatecas retenidas, migración mTLS
+  Test 5: Handshake inverso: B opera A, A opera B → ambos generan organismo completo (7 capas)
+
+CRITERIO DE ÉXITO (Handshake Generativo Completado):
+✓ Ambos potenciales exponen APIs TQ nativas la una para la otra
+✓ TQ ledger merge automático sin conflictos (CRDT)
+✓ Cosateca mesh federada operativa (herramientas compartidas, amortización TQ)
+✓ Gov metabólico operativo: A autoriza, B ejecuta, ledger consistente
+✓ Handshake inverso exitoso: ambos generan organismo completo (7 capas)
+
+SI CUALQUIER TEST FALLA → Handshake incompleto → NO hay organismo → Debug + reintentar
+```
+
+---
+
 ## I. El Diagnóstico: Zeitnus No Tiene Umbral — Solo Potenciales de Órgano Sin Cuerpo
 
 El repositorio `Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo` es **el síntoma exacto**: arquitectura completa del techo, paredes y cimientos, pero **sin umbral**. El nombre largo no es falla de comunicación — es la prueba de que el paradigma todavía no encontró su **puerta de entrada concreta**.
@@ -94,7 +192,7 @@ No se entra a Zeitnus leyendo un whitepaper. Se entra **haciendo una cosa concre
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**El Kit 72H no es un producto. Es una semilla.** No explica Zeitnus. **Hace que Zeitnus sea necesario.**
+**El Kit 72H no es un producto. Es una semilla.** No explica Zeitnus. **Genera el organismo Zeitnus.**
 
 ### Lo Que Se Experimenta en 72 Horas (Secuencia Generativa Viva)
 
@@ -128,13 +226,17 @@ ORDEN TRADICIONAL (FALLO):      ORDEN ZEITNUS (HÁBITAT GENERATIVO):
 
 ---
 
+---
+
 ## III. El Diagnóstico Revisado: Seis Potenciales de Órgano Sin Cuerpo
 
-> **Las islas no son "proyectos a federar". Son potenciales de órgano que el handshake actualiza.**
+> **Los potenciales no son "proyectos a federar". Son potenciales de órgano que el handshake actualiza.**
 
-## VI. El Kit 72H Como Producto Mínimo Viable (PMV) — Especificación Técnica
+## VI. El Kit 72H Como Semilla Generativa — Especificación Técnica
 
-### Hardware (BOM ~€120 / $130 USD)
+> **El Kit 72H no es un producto. Es una semilla.**
+
+### Hardware (BOM ~€127 / $135 USD) — Semilla Mínima
 
 | Componente | Especificación | Costo | Fuente |
 |------------|----------------|-------|--------|
@@ -145,7 +247,7 @@ ORDEN TRADICIONAL (FALLO):      ORDEN ZEITNUS (HÁBITAT GENERATIVO):
 | Cosateca mínima | Bomba peristáltica 12V, cosechador malla 50μm, tubos | €15 | DIY / peristaltic pumps |
 | **Total** | **Plug-and-play, 100% open hardware** | **~€127** | |
 
-### Software (Firmware + App Local)
+### Software (Firmware + App Local) — ADN de la Semilla
 
 | Módulo | Función | Tech Stack |
 |--------|---------|------------|
@@ -153,9 +255,9 @@ ORDEN TRADICIONAL (FALLO):      ORDEN ZEITNUS (HÁBITAT GENERATIVO):
 | `firmware/tq-meter` | Lectura kWh, conversión TQ, ledger local (littlefs) | ESP-IDF |
 | `firmware/mesh` | Bluetooth mesh / LoRa gossip, cosateca registry, mTLS | ESP-IDF / Zephyr |
 | `app/zeitnus-72h` | Dashboard 72h, simulación secesión, FR feedback, export JSON | React + TypeScript + Capacitor (PWA offline) |
-| `protocol/handshake` | Federación nodos, TQ ledger sync, cosateca merge | TypeScript (shared) |
+| `protocol/handshake` | **Federación generativa**, TQ ledger sync, cosateca merge | TypeScript (shared) |
 
-### Documentación Incluida (En la Caja / App)
+### Documentación Incluida (En la Caja / App) — Instrucciones de Germinación
 
 1. **Guía 72H Paso a Paso** (físico + digital) — "Tu primer kWh soberano"
 2. **Hoja de Registro TQ** (papel + digital) — Para anotar a mano si falla tech
@@ -165,50 +267,50 @@ ORDEN TRADICIONAL (FALLO):      ORDEN ZEITNUS (HÁBITAT GENERATIVO):
 
 ---
 
-## VII. Cronograma de Despliegue del Umbral (Secuencia Estricta: Dependencias → Piloto → Handshake → Federación)
+## VII. Cronograma Generativo: Handshake → Organismo → Mitosis → Red
 
-> **Regla de secuencia**: No se paraleliza lo que tiene dependencia dura. Cada fase valida la anterior antes de empezar la siguiente.
+> **Regla generativa**: No se paraleliza lo que tiene dependencia generativa. Cada fase valida la emergencia del organismo anterior.
 
-| Fase | Semanas | Enfoque | Hito | Entregable | Validación de Paso |
-|------|---------|---------|------|------------|-------------------|
-| **0. PREPARACIÓN INDEPENDIENTE DE ISLAS** (Paralelo real) | | | | | |
-| 0A: Zamora — Mesh + Gov | 1-3 | Completar Capa 2 (Mesh) + Capa 6 (Gov) | Nodo Zamora listo para bio-integración | Mesh offline-first + gossip + mTLS + smart contracts gov operativos; API TQ ledger expuesta | Mesh sync <10s, gov auto-ejecución 100%, TQ ledger append-only |
-| 0B: Oaxaca/CDMX — Bio + Canutricio | 1-3 | Completar Capa 4 (Bio) + Capa 5 (Canutricio) | Nodo Oaxaca listo para mesh-integración | Fotobiorreactor 10L + sensores pH/temp/OD + cosecha día 3; 3 umbrales pipeline validados (pH≥8.5, temp=37°C, Cognitive=OPTIMAL); scorecard ≥90 | Spirulina yield ≥15g/día, 3 umbrales pass, biomarcadores registrados |
-| **1. PILOTO: PRIMER NODO ZEITNUS COMPLETO (7 CAPAS)** | | | | | |
-| 1. INTEGRACIÓN ZAMORA ↔ OAXACA | 4-5 | Conectar las 2 islas → Primer nodo 7 capas | Handshake real: TQ ledger sync + cosateca mesh merge + gov unificada | Nodo Zeitnus v0.1 completo (7 capas operando): Mesh + Gov + Bio + Canutricio + TQ + Cosatecas + Destrabajo | 7 capas funcionales; TQ ledger consistente cross-nodo; cosecha → medidor TQ → cosateca → gov → mesh loop cerrado |
-| 2. VALIDACIÓN 72H EN NODO PILOTO | 5-6 | Test experiencia 72h en nodo integrado | 5 usuarios completan 72h en nodo Zamora-Oaxaca | Métricas: completitud ≥80%, comprensión TQ sin explicación ≥90%, simulación secesión ≥60% | Validación: la experiencia 72h tiene sentido porque el stack completo existe |
-| 3. EXTRACCIÓN KIT 72H DESDE PILOTO | 6-7 | Derivar Kit 72H v1.0 del nodo funcional | Kit 72H v1.0 = especificación mínima replicable del nodo piloto | BOM €127, firmware ESP32, app PWA, docs en caja, protocolo handshake | Kit probado: nuevo usuario en Zamora completa 72h con Kit v1.0 sin apoyo técnico |
-| **2. HANDSHAKE: KIT COMO PROTOCOLO DE FEDERACIÓN** | | | | | |
-| 4. HANDSHAKE COSATECAS (Isla 3) | 7-8 | Conectar cosatecas (BCN/Berlín/Oakland) via Kit | Cosatecas federadas: inventario TQ compartido + mesh merge | Cosatecas registry sincronizado cross-islas; amortización TQ por uso real verificada | Cosatecas comparten herramientas via mesh; TQ ledger consistente |
-| 5. HANDSHAKE MESH NETWORKS (Isla 4) | 8-9 | Conectar mesh offline-first (Guifi/NYC/Freifunk) via Kit | Nodos mesh federados: gossip + mTLS cross-redes | Mesh sync cross-federación <10s; TQ ledger global consistente | Nodos mesh comparten estado metabólico via gossip |
-| 6. HANDSHAKE CANUTRICIO TESTS (Isla 5) | 9-10 | Integrar tests Oaxaca/CDMX como validación continua | Scorecard canutricio como CI/CD del nodo federado | Pipeline 3 umbrales automatizado en cada nodo nuevo | Nodos nuevos validan 3 umbrales automáticamente al integrarse |
-| 7. HANDSHAKE BIOHACKERSPACES (Isla 6) | 10-11 | Conectar biohackerspaces globales como I+D distribuida | Red I+D federada: hardware abierto + protocolos compartidos | Nuevos diseños fotobiorreactores probados en red; BOM optimizado | BOM Kit 72H v1.1 reducido ≥15% por innovación distribuida |
-| **3. FEDERACIÓN: RED ZEITNUS VIVA** | | | | | |
-| 8. MITOSIS: 10 NODOS FEDERADOS | 11-14 | Cada nodo maduro genera mitosis (load≥0.85) | 10 nodos Zeitnus completos operando autónomamente | Red viva: TQ ledger global, cosatecas mesh, gov triadas, bio-producción distribuida | Mitosis rate ≥0.5 nodos/nodo/mes; TQs producidos ≥15 TQ/nodo/mes |
-| 9. ESCALAMIENTO: KIT 72H COMO "HELLO WORLD" | 15+ | Kit 72H v2.0 como entrada estándar | Cualquiera entra en 72h sin apoyo técnico | Kit 72H v2.0 documentado, open source, BOM optimizado, app PWA offline | % completitud 72h ≥80% sin soporte; comprensión TQ sin explicación ≥90% |
-
----
-
-## VIII. La Métrica de Éxito del Umbral (No Vanity Metrics)
-
-| Métrica | Target | Por Qué Importa |
-|---------|--------|-----------------|
-| **% usuarios que completan 72h** | ≥80% | El umbral es habitable, no teórico |
-| **% que entienden TQ=1kWh sin explicación** | ≥90% | La experiencia enseña, no el texto |
-| **% que simulan secesión y deciden migrar nodo** | ≥60% | La libertad metabólica se vuelve tangible |
-| **% que federan con otro nodo en 30 días** | ≥40% | El protocolo de handshake funciona |
-| **TQs producidos por kit/mes** | ≥15 TQ | Viabilidad metabólica real |
-| **Nodos federados por nodo/mes** | ≥0.5 | Crecimiento orgánico (mitosis) |
+| Fase | Semanas | Enfoque Generativo | Hito | Validación de Emergencia |
+|------|---------|-------------------|------|-------------------------|
+| **0. GESTACIÓN INDEPENDIENTE** (Potenciales se preparan) | | | | |
+| 0A: Zamora — Mesh+Gov | 1-3 | Potencial nervio+gobierno | Mesh+Gov operativos, API TQ lista | Mesh sync <10s, gov auto-ejecución 100%, TQ ledger append-only |
+| 0B: Oaxaca — Bio+Canutricio | 1-3 | Potencial digestivo+inmune | Bio+Canutricio operativos, 3 umbrales | Spirulina yield ≥15g/día, 3 umbrales pass, biomarcadores |
+| **1. GENERACIÓN: PRIMER ORGANISMO (Capa 0 → 7 capas)** | | | | |
+| 1. HANDSHAKE GENERATIVO | 4-5 | Handshake Zamora↔Oaxaca | Primer organismo Zeitnus | 7 capas emergentes; TQ ledger consistente; loop cerrado |
+| 2. VALIDACIÓN 72H EN ORGANISMO | 5-6 | Test experiencia en organismo | 5 usuarios completan 72h | Métricas: ≥80% completitud, ≥90% comprensión TQ, ≥60% secesión |
+| 3. EXTRACCIÓN SEMILLA v1.0 | 6-7 | Derivar Kit 72H v1.0 | Kit = especificación mínima replicable | Kit probado: nuevo usuario genera organismo sin apoyo |
+| **2. PROLIFERACIÓN: SEMILLA COMO PROTOCOLO GENERATIVO** | | | | |
+| 4. HANDSHAKE CON POTENCIAL COSATECAS | 7-8 | Kit + Cosatecas | Cosatecas federadas | Inventario TQ compartido, mesh merge, amortización real |
+| 5. HANDSHAKE CON POTENCIAL MESH | 8-9 | Kit + Mesh networks | Nodos mesh federados | Sync cross-federación <10s, TQ ledger global |
+| 6. HANDSHAKE CON POTENCIAL CANUTRICIO | 9-10 | Kit + Tests Canutricio | CI/CD metabólico | 3 umbrales automatizados en cada nodo nuevo |
+| 7. HANDSHAKE CON POTENCIAL BIOHACKERS | 10-11 | Kit + Biohackerspaces | I+D distribuida | BOM v1.1 reducido ≥15% por innovación distribuida |
+| **3. REPRODUCCIÓN: MITOSIS DEL PROTOCOLO DE RECONOCIMIENTO** | | | | |
+| 8. MITOSIS: 10 ORGANISMOS | 11-14 | Cada organismo genera mitosis | 10 organismos Zeitnus | Tasa mitosis ≥0.5, TQs ≥15/nodo/mes, handshake replicado |
+| 9. SEMILLA v2.0 "HELLO WORLD" | 15+ | Kit 72H v2.0 estándar | Cualquiera genera organismo | ≥80% completitud 72h sin soporte, ≥90% comprensión TQ |
 
 ---
 
-## IX. Manifiesto del Umbral (Para Grabar en la Caja del Kit)
+## VIII. Métricas de Emergencia (No Vanity Metrics)
 
-```
-KIT ZEITNUS 72H
-─────────────────
+| Métrica | Target | Qué Mide |
+|---------|--------|----------|
+| **% handshakes que generan organismo** | ≥80% | El acto generativo funciona |
+| **% comprenden TQ=1kWh sin explicación** | ≥90% | La experiencia generativa enseña |
+| **% handshakes con secesión simulada** | ≥60% | Libertad metabólica emerge |
+| **% organismos con handshake en 30 días** | ≥40% | Protocolo generativo se replica |
+| **TQs/organismo/mes** | ≥15 TQ | Viabilidad metabólica real |
+| **Tasa mitosis (handshake replicado)** | ≥0.5 | Replicación del protocolo de reconocimiento |
+
+---
+
+## IX. Manifiesto de la Semilla (Para Grabar en la Caja del Kit)
+
+```text
+KIT ZEITNUS 72H — SEMILLA GENERATIVA
+─────────────────────────────────────
 Esto no es un producto.
-Es una puerta.
+Es una semilla.
 
 En 72 horas vas a:
 • Producir tu primer kWh soberano
@@ -225,7 +327,7 @@ Después de 72 horas:
 • El destrabajo será tu métrica de riqueza
 
 No tienes que creerlo.
-Tienes que viverlo.
+Tienes que germinarlo.
 
 Bienvenido al metabolismo.
 Bienvenido a Zeitnus.
@@ -239,17 +341,17 @@ RAO: RAO:zeitnus:umbral:kit72h:20261106:001
 
 ---
 
-## X. Conclusión: El Paradigma Ya Existe — Solo Falta el Umbral
+## X. Conclusión: El Paradigma Ya Existe — Solo Falta el Acto Generativo
 
-**Zeitnus no es un proyecto por construir. Es una red de prácticas ya operando en islas, esperando un protocolo de federación.**
+**Zeitnus no es un proyecto por construir. Es una red de potenciales de órgano ya operando, esperando un protocolo de reconocimiento generativo.**
 
-El Kit 72H **es ese protocolo**. No explica Zeitnus. **Hace que Zeitnus sea necesario**.
+El Handshake Generativo **es ese protocolo**. No explica Zeitnus. **Genera el organismo Zeitnus.**
 
-> **Primero el metabolismo. Después la explicación. Siempre.**
+> **Primero el handshake generativo. Después el metabolismo. Después la explicación. Siempre.**
 
 ---
 
 *Documento generado: `docs/ZEITNUS_UMBRAL_72H_PARADIGMA_HABITADO.md`*  
 *Para indexar en `docs/fuentes_indice.json` como definición del umbral de entrada*  
-*Versión: 15.0 | Fecha: 2026-11-06 | Autor: Isaac Ko (Isaacko0)*  
+*Versión: 15.1 | Fecha: 2026-11-06 | Autor: Isaac Ko (Isaacko0)*  
 *Licencia: Apache-2.0*
