@@ -166,16 +166,27 @@ NODO A (ej. Zamora mesh)          NODO B (ej. Spirulina CDMX)
 
 ---
 
-## VII. Cronograma de Despliegue del Umbral
+## VII. Cronograma de Despliegue del Umbral (Secuencia Estricta: Dependencias → Piloto → Handshake → Federación)
 
-| Semana | Hito | Entregable |
-|--------|------|------------|
-| **1-2** | Prototipo Kit 72H v0.1 (hardware + firmware) | 3 kits funcionales en Zamora |
-| **3-4** | App 72H + simulación secesión + FR | Test 72H con 5 usuarios reales |
-| **5-6** | Handshake federado Zamora ↔ Oaxaca | Primer nodo Zeitnus completo (7 capas) |
-| **7-8** | Documentación open source + BOM + firmware | Release Kit 72H v1.0 en GitHub |
-| **9-12** | 10 nodos federados (kit distribuido) | Red Zeitnus viva, métricas reales |
-| **13+** | Escalamiento: Kit 72H como "Hello World" civilizatorio | Cualquiera puede entrar en 72h |
+> **Regla de secuencia**: No se paraleliza lo que tiene dependencia dura. Cada fase valida la anterior antes de empezar la siguiente.
+
+| Fase | Semanas | Enfoque | Hito | Entregable | Validación de Paso |
+|------|---------|---------|------|------------|-------------------|
+| **0. PREPARACIÓN INDEPENDIENTE DE ISLAS** (Paralelo real) | | | | | |
+| 0A: Zamora — Mesh + Gov | 1-3 | Completar Capa 2 (Mesh) + Capa 6 (Gov) | Nodo Zamora listo para bio-integración | Mesh offline-first + gossip + mTLS + smart contracts gov operativos; API TQ ledger expuesta | Mesh sync <10s, gov auto-ejecución 100%, TQ ledger append-only |
+| 0B: Oaxaca/CDMX — Bio + Canutricio | 1-3 | Completar Capa 4 (Bio) + Capa 5 (Canutricio) | Nodo Oaxaca listo para mesh-integración | Fotobiorreactor 10L + sensores pH/temp/OD + cosecha día 3; 3 umbrales pipeline validados (pH≥8.5, temp=37°C, Cognitive=OPTIMAL); scorecard ≥90 | Spirulina yield ≥15g/día, 3 umbrales pass, biomarcadores registrados |
+| **1. PILOTO: PRIMER NODO ZEITNUS COMPLETO (7 CAPAS)** | | | | | |
+| 1. INTEGRACIÓN ZAMORA ↔ OAXACA | 4-5 | Conectar las 2 islas → Primer nodo 7 capas | Handshake real: TQ ledger sync + cosateca mesh merge + gov unificada | Nodo Zeitnus v0.1 completo (7 capas operando): Mesh + Gov + Bio + Canutricio + TQ + Cosatecas + Destrabajo | 7 capas funcionales; TQ ledger consistente cross-nodo; cosecha → medidor TQ → cosateca → gov → mesh loop cerrado |
+| 2. VALIDACIÓN 72H EN NODO PILOTO | 5-6 | Test experiencia 72h en nodo integrado | 5 usuarios completan 72h en nodo Zamora-Oaxaca | Métricas: completitud ≥80%, comprensión TQ sin explicación ≥90%, simulación secesión ≥60% | Validación: la experiencia 72h tiene sentido porque el stack completo existe |
+| 3. EXTRACCIÓN KIT 72H DESDE PILOTO | 6-7 | Derivar Kit 72H v1.0 del nodo funcional | Kit 72H v1.0 = especificación mínima replicable del nodo piloto | BOM €127, firmware ESP32, app PWA, docs en caja, protocolo handshake | Kit probado: nuevo usuario en Zamora completa 72h con Kit v1.0 sin apoyo técnico |
+| **2. HANDSHAKE: KIT COMO PROTOCOLO DE FEDERACIÓN** | | | | | |
+| 4. HANDSHAKE COSATECAS (Isla 3) | 7-8 | Conectar cosatecas (BCN/Berlín/Oakland) via Kit | Cosatecas federadas: inventario TQ compartido + mesh merge | Cosatecas registry sincronizado cross-islas; amortización TQ por uso real verificada | Cosatecas comparten herramientas via mesh; TQ ledger consistente |
+| 5. HANDSHAKE MESH NETWORKS (Isla 4) | 8-9 | Conectar mesh offline-first (Guifi/NYC/Freifunk) via Kit | Nodos mesh federados: gossip + mTLS cross-redes | Mesh sync cross-federación <10s; TQ ledger global consistente | Nodos mesh comparten estado metabólico via gossip |
+| 6. HANDSHAKE CANUTRICIO TESTS (Isla 5) | 9-10 | Integrar tests Oaxaca/CDMX como validación continua | Scorecard canutricio como CI/CD del nodo federado | Pipeline 3 umbrales automatizado en cada nodo nuevo | Nodos nuevos validan 3 umbrales automáticamente al integrarse |
+| 7. HANDSHAKE BIOHACKERSPACES (Isla 6) | 10-11 | Conectar biohackerspaces globales como I+D distribuida | Red I+D federada: hardware abierto + protocolos compartidos | Nuevos diseños fotobiorreactores probados en red; BOM optimizado | BOM Kit 72H v1.1 reducido ≥15% por innovación distribuida |
+| **3. FEDERACIÓN: RED ZEITNUS VIVA** | | | | | |
+| 8. MITOSIS: 10 NODOS FEDERADOS | 11-14 | Cada nodo maduro genera mitosis (load≥0.85) | 10 nodos Zeitnus completos operando autónomamente | Red viva: TQ ledger global, cosatecas mesh, gov triadas, bio-producción distribuida | Mitosis rate ≥0.5 nodos/nodo/mes; TQs producidos ≥15 TQ/nodo/mes |
+| 9. ESCALAMIENTO: KIT 72H COMO "HELLO WORLD" | 15+ | Kit 72H v2.0 como entrada estándar | Cualquiera entra en 72h sin apoyo técnico | Kit 72H v2.0 documentado, open source, BOM optimizado, app PWA offline | % completitud 72h ≥80% sin soporte; comprensión TQ sin explicación ≥90% |
 
 ---
 
