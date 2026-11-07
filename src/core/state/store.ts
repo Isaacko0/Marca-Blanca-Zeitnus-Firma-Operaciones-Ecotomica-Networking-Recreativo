@@ -320,6 +320,31 @@ import { setExpression, toggleStreaming, grantConsent, revokeConsent } from '@co
 import { addCanvasAgent, toggleAgentStatus, addAutomation, logCanvasAction } from '@core/lib/agentCanvas'
 import { createComposition, addClip, togglePlayback, seekFrame } from '@core/lib/video'
 import { createHighlightProject, addHighlight, exportHighlight } from '@core/lib/highlight'
+import {
+  purposeBasedOrgEngine,
+  type PurposeBasedOrganization,
+} from '@core/lib/purposeBasedOrg'
+import {
+  legalFrameworkEngine,
+  type LegalFramework,
+} from '@core/lib/legalFramework'
+import {
+  networkOpennessEngine,
+  type NetworkOpennessConfig,
+  type AccessTier,
+} from '@core/lib/networkOpenness'
+import {
+  digitalEnvironmentEngine,
+  type DigitalEnvironment,
+  type AgentPresence,
+} from '@core/lib/digitalEnvironment'
+import {
+  propagationEngine,
+  type PropagationModel,
+  type InitiationRitual,
+  type GenerativeHandshake,
+  type MitosisProtocol,
+} from '@core/lib/propagationModels'
 
 import type { BrandDNAKey, ICPProfile } from '@core/lib/agencia'
 import * as seed from '@core/state/seed'
@@ -547,10 +572,22 @@ export interface AppState {
                 brandCollateral: BrandCollateralState
                 // Multi-Agent Wizard — 4 agentes + Campaign Map + ACP
                 multiAgentWizard: MultiAgentWizardState
-                // Brand Workflow — Checkpoints + ACP + Stage Seeds
-                brandWorkflow: BrandWorkflowState
-                // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
-                stageSeeds: Record<string, Record<string, unknown>>
+                // ===== Brand Workflow — Checkpoints + ACP + Stage Seeds =====
+                  brandWorkflow: BrandWorkflowState
+                  // ===== OVN Bloque 3: Propósito, Legal, Openness, Digital, Propagación =====
+                  purposeBasedOrgs: PurposeBasedOrganization[]
+                  legalFrameworks: LegalFramework[]
+                  networkOpenness: NetworkOpennessConfig
+                  accessTiers: AccessTier[]
+                  digitalEnvironments: DigitalEnvironment[]
+                  agentPresences: Map<string, AgentPresence>
+                  propagationModels: PropagationModel[]
+                  initiations: InitiationRitual[]
+                  handshakes: GenerativeHandshake[]
+                  mitoses: MitosisProtocol[]
+
+                  // Conector de flujo: params sembrados para la siguiente pantalla (auto-llenado)
+                  stageSeeds: Record<string, Record<string, unknown>>
 
     // ===== Video (Remotion) =====
             video: VideoState
@@ -1153,13 +1190,20 @@ export const useAppStore = create<AppState>()(
                                                 // Multi-Agent Wizard — 4 agentes + Campaign Map + ACP
                                                 multiAgentWizard: makeMultiAgentWizardState(),
                                                 // Brand Workflow — Checkpoints + ACP + Stage Seeds
-                                                brandWorkflow: makeBrandWorkflowState(),
-                                                // E→V (asimilado de E→V Documento Maestro v1.0)
-                                                ev: makeEVState(),
-                                                // ALRAC (Consorcio de Transducción Soberana)
-                                                alrac: makeALRACState(),
-                                                // Conector de flujo
-                                                stageSeeds: {},
+                                                                        brandWorkflow: makeBrandWorkflowState(),
+                                                                        // ===== OVN Bloque 3: Propósito, Legal, Openness, Digital, Propagación =====
+                                                                        purposeBasedOrgs: [],
+                                                                        legalFrameworks: [],
+                                                                        networkOpenness: networkOpennessEngine.getConfig(),
+                                                                        accessTiers: networkOpennessEngine.getAccessTiers(),
+                                                                        digitalEnvironments: [],
+                                                                        agentPresences: new Map(),
+                                                                        propagationModels: propagationEngine.getAllModels(),
+                                                                        initiations: [],
+                                                                        handshakes: [],
+                                                                        mitoses: [],
+                                                                        // Conector de flujo
+                                                                        stageSeeds: {},
 
       setNodeName: (n: string) => set({ nodeName: n }),
       updateBase: (u) => set((st) => ({ base: { ...st.base, ...u } })),
@@ -1751,22 +1795,159 @@ export const useAppStore = create<AppState>()(
               return { oraculo: r.state }
             }),
             // ===== Gaia Union (organismo vivo) =====
-            setEpigeneticMode: (mode) => set((st) => ({ gaiaunion: { ...st.gaiaunion, epigeneticMode: mode } })),
-      // ===== Power Delegation (AuroraGov + Symbiosky) =====
-      delegatePower: (from, to, domain, weight = 1) => set((st) => ({
-        delegation: delegatePower(st.delegation, from, to, domain, weight),
-      })),
-      revokeDelegation: (from, domain) => set((st) => ({
-        delegation: revokeDelegation(st.delegation, from, domain),
-      })),
-      // ===== Capabilities (CompAI CRM) =====
-      toggleCapability: (key) => set((st) => ({
-        capacidades: toggleCapability(st.capacidades, key, st.nodeMode),
-      })),
-      // ===== Conector de flujo (auto-llenado entre pantallas) =====
-      seedStage: (target, params) => set((st) => ({
-        stageSeeds: { ...st.stageSeeds, [target]: params },
-      })),
+                  setEpigeneticMode: (mode) => set((st) => ({ gaiaunion: { ...st.gaiaunion, epigeneticMode: mode } })),
+                  // ===== Power Delegation (AuroraGov + Symbiosky) =====
+                  delegatePower: (from, to, domain, weight = 1) => set((st) => ({
+                    delegation: delegatePower(st.delegation, from, to, domain, weight),
+                  })),
+                  revokeDelegation: (from, domain) => set((st) => ({
+                    delegation: revokeDelegation(st.delegation, from, domain),
+                  })),
+                  // ===== Capabilities (CompAI CRM) =====
+                  toggleCapability: (key) => set((st) => ({
+                    capacidades: toggleCapability(st.capacidades, key, st.nodeMode),
+                  })),
+                  // ===== OVN Bloque 3: Purpose-Based Organization =====
+                  createPurposeBasedOrg: (name: string, purpose: any, socialFunction: any, founders: string[]) => set((st) => ({
+                    purposeBasedOrgs: [...st.purposeBasedOrgs, purposeBasedOrgEngine.createOrganization(name, purpose, socialFunction, founders)],
+                  })),
+                  updatePurposeBasedOrg: (orgId: string, updates: Partial<PurposeBasedOrganization>) => set((st) => ({
+                    purposeBasedOrgs: st.purposeBasedOrgs.map((o) => (o.id === orgId ? { ...o, ...updates, updatedAt: Date.now(), version: o.version + 1 } : o)),
+                  })),
+                  recordPurposeMetric: (orgId: string, metricId: string, value: number) => set((st) => {
+                    const org = st.purposeBasedOrgs.find(o => o.id === orgId)
+                    if (org) purposeBasedOrgEngine.recordPurposeMetric(orgId, metricId, value)
+                    return {}
+                  }),
+                  checkImmuneRightViolation: (orgId: string, rightId: string, action: string) => {
+                    return purposeBasedOrgEngine.checkImmuneRightViolation(orgId, rightId, action)
+                  },
+                  checkConcentrationLimits: (orgId: string) => {
+                    return purposeBasedOrgEngine.checkConcentrationLimits(orgId)
+                  },
+                  checkBoundaryViolation: (orgId: string, action: string) => {
+                    return purposeBasedOrgEngine.checkBoundaryViolation(orgId, action)
+                  },
+                  enforceMoneyAsMeans: (orgId: string, transaction: any) => {
+                    return purposeBasedOrgEngine.enforceMoneyAsMeans(orgId, transaction)
+                  },
+                  enforceDistributionPriorities: (orgId: string, availableFunds: number) => {
+                    return purposeBasedOrgEngine.enforceDistributionPriorities(orgId, availableFunds)
+                  },
+                  // ===== OVN Bloque 3: Legal Framework =====
+                  createLegalFramework: (name: string, jurisdiction: any, legalTheory: any) => set((st) => {
+                    const framework = legalFrameworkEngine.createOrganization ? legalFrameworkEngine.createOrganization(name, jurisdiction, legalTheory) : { id: uid(), name, jurisdiction, legalTheory }
+                    return { legalFrameworks: [...st.legalFrameworks, framework] }
+                  }),
+                  runComplianceCheck: async (frameworkId: string) => {
+                    const results = await legalFrameworkEngine.runComplianceCheck(frameworkId)
+                    set((st) => ({ legalFrameworks: st.legalFrameworks.map(f => f.id === frameworkId ? { ...f, lastComplianceCheck: Date.now(), complianceResults: results } : f) }))
+                    return results
+                  },
+                  getRegulatoryEngagementPlan: (frameworkId: string) => {
+                    return legalFrameworkEngine.getRegulatoryEngagementPlan(frameworkId)
+                  },
+                  initiateDispute: (frameworkId: string, dispute: any) => {
+                    return legalFrameworkEngine.initiateDispute(frameworkId, dispute)
+                  },
+                  // ===== OVN Bloque 3: Network Openness =====
+                  joinNetwork: (agentId: string, profile?: { displayName?: string; pseudonymous?: boolean }) => {
+                    return networkOpennessEngine.joinNetwork(agentId, profile)
+                  },
+                  requestUniversalAccess: (agentId: string, needType: string) => {
+                    return networkOpennessEngine.requestUniversalAccess(agentId, needType)
+                  },
+                  requestEmergencyAccess: (agentId: string, trigger: string) => {
+                    return networkOpennessEngine.requestEmergencyAccess(agentId, trigger)
+                  },
+                  evaluateAccessTier: (agent: { contributionHours: number; reputation: Record<string, number> }) => {
+                    return networkOpennessEngine.evaluateAccessTier(agent)
+                  },
+                  checkCredentialAccess: (agentCredentials: any[], resourceId: string, requiredScope: any) => {
+                    return networkOpennessEngine.checkCredentialAccess(agentCredentials, resourceId, requiredScope)
+                  },
+                  checkBoundary: (action: string, agent: { credentials: any[]; coreGroupMember: boolean }) => {
+                    return networkOpennessEngine.checkBoundary(action, agent)
+                  },
+                  updateNetworkOpennessConfig: (updates: Partial<NetworkOpennessConfig>) => set((st) => {
+                    networkOpennessEngine.updateConfig(updates)
+                    return { networkOpenness: networkOpennessEngine.getConfig() }
+                  }),
+                  addOpennessBoundary: (boundary: any) => set((st) => {
+                    networkOpennessEngine.addBoundary(boundary)
+                    return { networkOpenness: networkOpennessEngine.getConfig() }
+                  }),
+                  removeOpennessBoundary: (boundaryId: string) => set((st) => {
+                    networkOpennessEngine.removeBoundary(boundaryId)
+                    return { networkOpenness: networkOpennessEngine.getConfig() }
+                  }),
+                  addGuaranteedNeed: (need: any) => set((st) => {
+                    networkOpennessEngine.addGuaranteedNeed(need)
+                    return { networkOpenness: networkOpennessEngine.getConfig() }
+                  }),
+                  // ===== OVN Bloque 3: Digital Environment =====
+                  registerAgentPresence: (agentId: string, envId?: string) => set((st) => {
+                    const presence = digitalEnvironmentEngine.registerAgentPresence(agentId, envId)
+                    return { agentPresences: new Map(st.agentPresences).set(agentId, presence) }
+                  }),
+                  updateAgentPresence: (agentId: string, updates: Partial<AgentPresence>, envId?: string) => set((st) => {
+                    const presence = digitalEnvironmentEngine.updateAgentPresence(agentId, updates, envId)
+                    if (presence) {
+                      return { agentPresences: new Map(st.agentPresences).set(agentId, presence) }
+                    }
+                    return {}
+                  }),
+                  setAgentLayer: (agentId: string, layerId: string, envId?: string) => set((st) => {
+                    const success = digitalEnvironmentEngine.setAgentLayer(agentId, layerId, envId)
+                    return {}
+                  }),
+                  createSharedSpace: (envId: string, config: any) => set((st) => {
+                    const space = digitalEnvironmentEngine.createSharedSpace(envId, config)
+                    return { digitalEnvironments: st.digitalEnvironments.map(e => e.id === envId ? { ...e, sharedSpaces: [...e.sharedSpaces, space] } : e) }
+                  }),
+                  joinSpace: (spaceId: string, agentId: string, role?: any, envId?: string) => set((st) => {
+                    const success = digitalEnvironmentEngine.joinSpace(spaceId, agentId, role, envId)
+                    return {}
+                  }),
+                  leaveSpace: (spaceId: string, agentId: string, envId?: string) => set((st) => {
+                    const success = digitalEnvironmentEngine.leaveSpace(spaceId, agentId, envId)
+                    return {}
+                  }),
+                  emitEnvironmentSignal: (emitterId: string, type: string, payload: any, location: any, options?: any) => {
+                    return digitalEnvironmentEngine.emitEnvironmentSignal(emitterId, type, payload, location, options)
+                  },
+                  discoverSignalsForAgent: (agentId: string, envId?: string) => {
+                    return digitalEnvironmentEngine.discoverSignalsForAgent(agentId, envId)
+                  },
+                  updateEnvironmentMetrics: (envId?: string) => set((st) => {
+                    const metrics = digitalEnvironmentEngine.updateMetrics(envId)
+                    return {}
+                  }),
+                  // ===== OVN Bloque 3: Propagation Models =====
+                  startInitiation: async (modelId: string, initiatorId: string, context: any) => set((st) => {
+                    const ritual = await propagationEngine.startInitiation(modelId, initiatorId, context)
+                    return { initiations: [...st.initiations, ritual] }
+                  }),
+                  executeInitiationStep: async (ritualId: string, stepId: string, executorId: string) => set((st) => {
+                    const success = await propagationEngine.executeStep(ritualId, stepId, executorId)
+                    return {}
+                  }),
+                  initiateHandshake: async (parentNodeId: string, childNodeId: string, parentPresentation: any, childPresentation: any) => set((st) => {
+                    const handshake = await propagationEngine.initiateHandshake(parentNodeId, childNodeId, parentPresentation, childPresentation)
+                    return { handshakes: [...st.handshakes, handshake] }
+                  }),
+                  advanceHandshakePhase: async (handshakeId: string, phase: any) => set((st) => {
+                    const success = await propagationEngine.advanceHandshakePhase(handshakeId, phase)
+                    return {}
+                  }),
+                  initiateMitosis: async (parentNodeId: string, daughterConfig: any) => set((st) => {
+                    const mitosis = await propagationEngine.initiateMitosis(parentNodeId, daughterConfig)
+                    return { mitoses: [...st.mitoses, mitosis] }
+                  }),
+                  // ===== Conector de flujo (auto-llenado entre pantallas) =====
+                  seedStage: (target, params) => set((st) => ({
+                    stageSeeds: { ...st.stageSeeds, [target]: params },
+                  })),
       // ===== Pipeline: actuator (CIERRA el loop) =====
             pipeDispatch: (needTitle, assignee) => set((st) => {
               const next = dispatchMatch(st.integral, needTitle, assignee)
@@ -2051,10 +2232,21 @@ export const useAppStore = create<AppState>()(
       // Kleros / Proof-of-Humanity: justicia como servicio + identidad soberana
       kleros: makeKlerosState(),
       // DeseOS / Contento.pro: método de agencia + modo anfibio
-            agencia: makeAgenciaState(),
-            nodeMode: 'postmonetario',
-            priceParity: 0.02,
-            // WhatMatters — Compensación Multilateral
+                  agencia: makeAgenciaState(),
+                  nodeMode: 'postmonetario',
+                  priceParity: 0.02,
+                  // ===== OVN Bloque 3: Propósito, Legal, Openness, Digital, Propagación =====
+                  purposeBasedOrgs: [],
+                  legalFrameworks: [],
+                  networkOpenness: networkOpennessEngine.getConfig(),
+                  accessTiers: networkOpennessEngine.getAccessTiers(),
+                  digitalEnvironments: [],
+                  agentPresences: new Map(),
+                  propagationModels: propagationEngine.getAllModels(),
+                  initiations: [],
+                  handshakes: [],
+                  mitoses: [],
+                  // WhatMatters — Compensación Multilateral
                         whatmatters: makeWhatMattersState(),
                         // Governance Triad — Base-3 Gobernanza
                         governanceTriad: makeGovernanceTriadState(),
@@ -2165,8 +2357,18 @@ export const useAppStore = create<AppState>()(
               socialAssetSpecs: st.socialAssetSpecs,
               brandCollateral: st.brandCollateral,
               multiAgentWizard: st.multiAgentWizard,
-              brandWorkflow: st.brandWorkflow,
-              }),
+                            brandWorkflow: st.brandWorkflow,
+                            purposeBasedOrgs: st.purposeBasedOrgs,
+                            legalFrameworks: st.legalFrameworks,
+                            networkOpenness: st.networkOpenness,
+                            accessTiers: st.accessTiers,
+                            digitalEnvironments: st.digitalEnvironments,
+                            agentPresences: st.agentPresences,
+                            propagationModels: st.propagationModels,
+                            initiations: st.initiations,
+                            handshakes: st.handshakes,
+                            mitoses: st.mitoses,
+                            }),
     }
   )
 )
