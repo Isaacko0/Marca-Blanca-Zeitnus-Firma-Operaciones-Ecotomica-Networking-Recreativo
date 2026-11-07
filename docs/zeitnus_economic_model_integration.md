@@ -417,11 +417,109 @@
 
 ---
 
-## Notas de Asimilación (Copyright)
+## Apéndice: Hallazgos de Scraping de Referencias Externas (2026-11-07)
 
-- **Wiki P2P Foundation**: CC-BY-SA — contenido enciclopédico, fair use para análisis/asimilación exhaustiva
-- **Sensorica/OVN**: Contenido abierto, praxis 15 años — asimilación de **patrones vivos probados**, no copia textual
-- **Conceptos universales**: Coase, Benkler, Shirky, Ostrom, Dunbar, VSM, CBPP, stigmergy, non-dominium, commons — dominio público / conocimiento compartido
-- **Implementaciones específicas Sensorica** (CAKE Custodio, PEP Master, Decanter, Drone/3D Printing projects, IGC-HEC case): Documentadas como **instancias operativas** que validan patrones — no se asimila código, solo lógica
-- **Artículos restringidos/académicos** (Turgeon et al., Franz & Pearce): Referenciados como evidencia empírica — no contenido copiado
-- **Próximo paso**: Implementación iterativa Fases 0-4 según plan arriba. **Fase 0 comienza YA** con Non-Dominium Property System + Contribution Accounting Core + NRP-CAS Integration.
+**Fuentes scrapeadas**: Multitude Project (2016, 2022), P2P Foundation Wiki (Peer Production), HBR (2015), Sensorica/Open Alliance (dinámico), Franz & Pearce (paywalled)
+
+### A1. Fuente Original Autoritativa: Multitude Project 2016 — TiberiusB (Tiberius Brastaviceanu)
+
+> **Confirmación crítica**: Las distinciones sharing/collaborative/participatory en Sección 2 del modelo OVN **no son teóricas abstractas** — son **basadas en experiencia operativa Sensorica** (escritas por co-fundador).
+
+**Implicación para Zeitnus**: Los tres modos económicos son **patrones vivos probados**, no constructos teóricos. Zeitnus debe implementar los tres como **modos operativos nativos**:
+- `economicTypology.ts` → enum `Sharing | Collaborative | Participatory` con reglas operativas distintas
+- `sharingMode.ts` — non-transactional access, gift/barter, custodianship rules
+- `collaborativeMode.ts` — zero monetary exchange, project-specific contributions, benefit redistribution rules
+- `participatoryMode.ts` — permissionless process access, delivery-based entry, no hiring filters
+
+### A2. Four Building Blocks of Peer Production (P2P Foundation / Christian) → Validación Handshake Capa 0
+
+| Building Block | OVN Model | Zeitnus Handshake Capa 0 Validation |
+|----------------|-----------|-------------------------------------|
+| **1. Voluntary cooperation among peers** (stigmergic) | Stigmergic coordination | Handshake = mutual stigmergic operation (72h each other's kit) |
+| **2. Peer-based** (autonomous, decentralized) | Open membership, permissionless | Handshake requires no central auth — direct peer-to-peer |
+| **3. Commons-based** (general interest, open access, forkability) | Digital commons, open IP licenses | Handshake generates commons output (TQ ledger, CaaS primitives) |
+| **4. Reproducibility & Derivativeness** (forkability) | Fork/remix ventures, dormant reanimation | **Mitosis Protocol** = institutionalized forkability |
+
+**Decisión EBD D13**: Handshake Capa 0 **debe satisfacer los 4 building blocks** como criterio de éxito. Test: ¿el handshake produce voluntary stigmergic cooperation? ¿peer-based autonomy? ¿commons output? ¿forkable organism?
+
+### A3. Three Criteria for Peer Production (Michel Bauwens — Circulation of the Common) → Handshake Design
+
+| Criterio Bauwens | OVN Implementation | Zeitnus Handshake Requirement |
+|------------------|-------------------|-------------------------------|
+| **Open Input** — free contribution, access to open raw material | Permissionless ventures, shareable pool | Kit 72H = open input (anyone can start, materials sourced via shareable pool) |
+| **Participatory Process** — participatory governance | Stigmergic coordination, emergent roles | 72h operation = participatory governance in action (quadratic voting, triadas) |
+| **Commons Output** — output in commons for iterative reuse | Digital commons, open licenses | Handshake generates TQ ledger + CaaS primitives as commons (open source, replicable) |
+
+**Decisión EBD D14**: Handshake **genera los tres criterios simultáneamente**. No pre-existen — el handshake ES la instanciación de los tres.
+
+### A4. Fractal Networks & Interconnectivity (Multitude Project 2022 — Tibi) → Zeitnus Federation
+
+**Hallazgos clave**:
+- Open networks = **fractal** (made of smaller, coalesce into larger)
+- "Open networks 'try to discover' new ways to connect. It's in their nature"
+- **No intermediaries needed** — direct plug-in via shared protocol/attachment sites
+- Biology analogy: molecules/proteins interact via internal structure + affinities + biochemical rules
+- **Gitcoin grants as metabolic stimulus**: increases metabolism + stimulates connections
+- "Neurons that fire together network together" — rewarded concomitant interaction
+- Gitcoin collections = shared funding → stimulus for new connections
+
+**Implementación Zeitnus**:
+- `zeitnusFederation.ts` — **fractal federation protocol** (no central intermediary)
+- `attachmentSites.ts` — "attachment sites" = handshake interfaces (APIs TQ nativas mutuas)
+- `grantStimulus.ts` — CaaS credit pool allocations as metabolic stimulus for new handshakes
+- `collectionProtocol.ts` — bundled handshakes (collections) for synergistic federation
+- `consensus-gossip.ts` — direct P2P pipes (Discord bot/webhook model) not platform intermediaries
+
+**Decisión EBD D15**: Federación Zeitnus = **fractal, intermediary-free, stimulus-driven**. Handshake = attachment site. Mitosis = fractal replication.
+
+### A5. Produsage (Axel Bruns) → CaaS Participant Model
+
+> "Consumer/producer distinction faded → **produser**. Collaborative, ad hoc engagement. Production term no longer accurate."
+
+**Implementación**: `caasParticipant.ts` — **no users, only produsers**
+- `earning` = contribution (code, materials, energy, feedback, governance)
+- `spending` = access (resources, services, governance rights, market bridge)
+- No separate "customer" role — customers invited to become contributors (OVN prosumer model)
+- Feedback = contribution = earning (validated in OVN model)
+
+### A6. HBR 2015 Validation → Disclosure Protocol
+
+> "Sharing economy isn't really a 'sharing' economy at all; it's an **access economy**."
+
+**Validación externa** de distinción OVN Sección 2. Zeitnus `disclosureProtocol.ts` debe:
+- Explicitly label transactional access as "access economy" (not sharing)
+- Reserve "sharing" for non-transactional reciprocal flows (gift/barter/shareable pool)
+- Transparency eliminates info asymmetry → ethical premium pricing justified
+
+### A7. Ten Social Patterns of Peer Production (p2pValue) — Pendiente Lectura Completa
+
+**Acción**: Leer `wiki.p2pfoundation.net-6dc62459b8.md` offset 107+ para extraer 10 patterns y mapear a módulos Zeitnus.
+
+### A8. Google Docs / Sensorica Pages — Inaccesibles via Scraping Simple
+
+**Pendientes** (requieren browser automation con JS rendering):
+- OVN Framework paper (Google Doc publishe)
+- Sensorica Product Design Philosophy (Google Doc)
+- Open Alliance page (Google Sites)
+- IGC-HEC Case Study (Sensorica)
+
+**Workaround**: Buscar versiones PDF/HTML estáticas o pedir acceso a Tiberius/Sensorica.
+
+---
+
+## Decisiones EBD Adicionales (D13-D15)
+
+| Decisión | Fundamento (Scraped Sources) | Módulos Afectados |
+|----------|------------------------------|-------------------|
+| **D13**: Handshake success criteria = 4 Building Blocks of Peer Production | P2P Foundation: voluntary stigmergic cooperation, peer-based autonomy, commons output, forkability | `zeitnusHandshake.ts` — test suite criteria |
+| **D14**: Handshake generates Bauwens' 3 criteria (open input, participatory process, commons output) | Bauwens Circulation of the Common | `zeitnusHandshake.ts` — generative validation |
+| **D15**: Federation = fractal, intermediary-free, stimulus-driven (Gitcoin model) | Multitude Project 2022 (Tibi) | `zeitnusFederation.ts`, `grantStimulus.ts`, `collectionProtocol.ts` |
+
+---
+
+## Próximas Acciones de Scraping
+
+1. **Leer P2P Foundation Peer Production completo** (50KB) — extraer 10 social patterns, governance patterns
+2. **Browser automation para Google Docs/Sites** — render JS, extraer contenido
+3. **Franz & Pearce paper** — buscar preprint/open access version
+4. **Open Alliance / IGC-HEC** — contactar Sensorica para acceso o export estático
