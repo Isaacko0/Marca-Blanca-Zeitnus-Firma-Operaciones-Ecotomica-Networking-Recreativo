@@ -256,6 +256,48 @@ export function governAction(
 
 export const DEFAULT_BOUNDARY_POLICY: BoundaryPolicy = {
   mode: 'enforce',
-  deny: [],
-  allow: ['intent == "read"'],
+  deny: [
+    // ===== TQ-GAIA INCOMPATIBILIDADES (Límites duros - NO negociables) =====
+    // 1. PRECIO: TQ = energía + materiales + horas (fijo catálogo) vs Gaia variable por proyecto
+    'intent contains "gaia_price_negotiation"',
+    'intent contains "gaia_variable_pricing"',
+    // 2. TRANSACCIONES: TQ prohíbe comisiones (Reglamento art. 10e) vs Gaia 50%/30%/10%
+    'intent contains "gaia_platform_commission"',
+    'intent contains "transaction_fee" && page.host contains "gaia"',
+    // 3. MONEDAS: TQ = 1 kWh, sin tasa cambio, no fiat/cripto vs Gaia CORE-U/GAIAUSD
+    'intent contains "gaia_fiat_exchange"',
+    'intent contains "gaia_token_exchange"',
+    'intent contains "gaia_elastic_supply"',
+    'tool contains "exchange" && page.host contains "gaia"',
+    // 4. GOBERNANZA: TQ 1 persona = 1 voto vs Gaia token holders (CORE-G)
+    'intent contains "gaia_token_governance"',
+    'intent contains "token_weighted_vote"',
+    // 5. CAPITAL: TQ cuentas empiezan en 0 (sin capital externo) vs Gaia capital inversores/subvenciones
+    'intent contains "gaia_external_capital"',
+    'intent contains "external_funding" && page.host contains "gaia"',
+    // ===== OTROS LÍMITES DUROS TQ =====
+    'intent contains "tq_buy_sell_fiat"',
+    'intent contains "tq_buy_sell_crypto"',
+    'intent contains "tq_commission"',
+    'intent contains "tq_price_negotiation"',
+    // ===== LÍMITES ZNU ANFIBIO =====
+    'intent contains "znu_conversion" && key != "allow_conversion"',
+  ],
+  allow: [
+    'intent == "read"',
+    // Enlace visible simple TQ-Gaia (referencia SIN transacción)
+    'intent == "tq_catalog_reference"',
+    'intent == "tq_visible_link"',
+    // Operaciones TQ legítimas
+    'intent == "tq_catalog_add"',
+    'intent == "tq_transaction"',
+    'intent == "tq_governance_vote"',
+    'intent == "tq_account_create"',
+    // Operaciones ZNU legítimas
+    'intent == "znu_transfer"',
+    'intent == "znu_demurrage"',
+    'intent == "znu_caas_payout"',
+    'intent == "znu_price_parity_update"',
+    'intent == "znu_mode_switch"',
+  ]
 }

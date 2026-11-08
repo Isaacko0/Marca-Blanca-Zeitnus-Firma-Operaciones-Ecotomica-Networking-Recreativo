@@ -345,6 +345,16 @@ import {
   type GenerativeHandshake,
   type MitosisProtocol,
 } from '@core/lib/propagationModels'
+import {
+  tqEngine,
+  type TQState,
+  type TQTransaction,
+  type TQCatalogEntry,
+} from '@core/state/tq'
+import {
+  znuEngine,
+  type ZNUState,
+} from '@core/state/znu'
 
 import type { BrandDNAKey, ICPProfile } from '@core/lib/agencia'
 import * as seed from '@core/state/seed'
@@ -1924,30 +1934,98 @@ export const useAppStore = create<AppState>()(
                     return {}
                   }),
                   // ===== OVN Bloque 3: Propagation Models =====
-                  startInitiation: async (modelId: string, initiatorId: string, context: any) => set((st) => {
-                    const ritual = await propagationEngine.startInitiation(modelId, initiatorId, context)
-                    return { initiations: [...st.initiations, ritual] }
-                  }),
-                  executeInitiationStep: async (ritualId: string, stepId: string, executorId: string) => set((st) => {
-                    const success = await propagationEngine.executeStep(ritualId, stepId, executorId)
-                    return {}
-                  }),
-                  initiateHandshake: async (parentNodeId: string, childNodeId: string, parentPresentation: any, childPresentation: any) => set((st) => {
-                    const handshake = await propagationEngine.initiateHandshake(parentNodeId, childNodeId, parentPresentation, childPresentation)
-                    return { handshakes: [...st.handshakes, handshake] }
-                  }),
-                  advanceHandshakePhase: async (handshakeId: string, phase: any) => set((st) => {
-                    const success = await propagationEngine.advanceHandshakePhase(handshakeId, phase)
-                    return {}
-                  }),
-                  initiateMitosis: async (parentNodeId: string, daughterConfig: any) => set((st) => {
-                    const mitosis = await propagationEngine.initiateMitosis(parentNodeId, daughterConfig)
-                    return { mitoses: [...st.mitoses, mitosis] }
-                  }),
-                  // ===== Conector de flujo (auto-llenado entre pantallas) =====
-                  seedStage: (target, params) => set((st) => ({
-                    stageSeeds: { ...st.stageSeeds, [target]: params },
-                  })),
+                                    startInitiation: async (modelId: string, initiatorId: string, context: any) => set((st) => {
+                                      const ritual = await propagationEngine.startInitiation(modelId, initiatorId, context)
+                                      return { initiations: [...st.initiations, ritual] }
+                                    }),
+                                    executeInitiationStep: async (ritualId: string, stepId: string, executorId: string) => set((st) => {
+                                      const success = await propagationEngine.executeStep(ritualId, stepId, executorId)
+                                      return {}
+                                    }),
+                                    initiateHandshake: async (parentNodeId: string, childNodeId: string, parentPresentation: any, childPresentation: any) => set((st) => {
+                                      const handshake = await propagationEngine.initiateHandshake(parentNodeId, childNodeId, parentPresentation, childPresentation)
+                                      return { handshakes: [...st.handshakes, handshake] }
+                                    }),
+                                    advanceHandshakePhase: async (handshakeId: string, phase: any) => set((st) => {
+                                      const success = await propagationEngine.advanceHandshakePhase(handshakeId, phase)
+                                      return {}
+                                    }),
+                                    initiateMitosis: async (parentNodeId: string, daughterConfig: any) => set((st) => {
+                                      const mitosis = await propagationEngine.initiateMitosis(parentNodeId, daughterConfig)
+                                      return { mitoses: [...st.mitoses, mitosis] }
+                                    }),
+                                    // ===== TQ (Transducción Quántica - Capa 1) =====
+                                    tqCreateAccount: (agentId: string) => set((st) => {
+                                      tqEngine.createAccount(agentId)
+                                      return { tq: tqEngine.getState() }
+                                    }),
+                                    tqAddCatalogEntry: (entry: any) => set((st) => {
+                                      const catalogEntry = tqEngine.addCatalogEntry(entry)
+                                      return { tq: tqEngine.getState() }
+                                    }),
+                                    tqExecuteTransaction: (fromAgentId: string, toAgentId: string, catalogEntryId: string, quantity: number) => set((st) => {
+                                      const tx = tqEngine.executeTransaction(fromAgentId, toAgentId, catalogEntryId, quantity)
+                                      return { tq: tqEngine.getState() }
+                                    }),
+                                    tqCreateProposal: (proposal: any) => set((st) => {
+                                      const p = tqEngine.createProposal(proposal)
+                                      return { tq: tqEngine.getState() }
+                                    }),
+                                    tqVote: (proposalId: number, voterId: string, vote: 'yes' | 'no' | 'abstain') => set((st) => {
+                                      tqEngine.vote(proposalId, voterId, vote)
+                                      return { tq: tqEngine.getState() }
+                                    }),
+                                    tqCheckBoundaryViolation: (attempt: any) => {
+                                      return tqEngine.checkBoundaryViolation(attempt)
+                                    },
+                                    tqGenerateVisibleLink: (catalogEntryId: string) => {
+                                      return tqEngine.generateVisibleLink(catalogEntryId)
+                                    },
+                                    tqGetCatalog: () => {
+                                      return tqEngine.getCatalog()
+                                    },
+                                    tqGetAccount: (agentId: string) => {
+                                      return tqEngine.getAccount(agentId)
+                                    },
+                                    // ===== ZNU (Zeitnus Native Unit - Capa 5 Anfibio) =====
+                                    znuCreateAccount: (memberId: string) => set((st) => {
+                                      znuEngine.createAccount(memberId)
+                                      return { znu: znuEngine.getState() }
+                                    }),
+                                    znuTransfer: (from: string, to: string, amount: number, description: string) => set((st) => {
+                                      znuEngine.transfer(from, to, amount, description)
+                                      return { znu: znuEngine.getState() }
+                                    }),
+                                    znuApplyDemurrage: () => set((st) => {
+                                      znuEngine.applyDemurrage()
+                                      return { znu: znuEngine.getState() }
+                                    }),
+                                    znuUpdatePriceParity: (price: number, source?: any) => set((st) => {
+                                      znuEngine.updatePriceParity(price, source)
+                                      return { znu: znuEngine.getState() }
+                                    }),
+                                    znuConvertToUSDC: (memberId: string, znuAmount: number) => set((st) => {
+                                      const result = znuEngine.convertZNUtoUSDC(memberId, znuAmount)
+                                      return { znu: znuEngine.getState() }
+                                    }),
+                                    znuCalculateCaasPayout: (memberId: string, autVectors: any, cdsScore: number) => set((st) => {
+                                      const amount = znuEngine.calculateCaasPayout(memberId, autVectors, cdsScore)
+                                      return { znu: znuEngine.getState() }
+                                    }),
+                                    znuSetNodeMode: (mode: 'postmonetario' | 'conectado') => set((st) => {
+                                      znuEngine.setNodeMode(mode)
+                                      return { znu: znuEngine.getState(), nodeMode: mode }
+                                    }),
+                                    znuGetPriceParity: () => {
+                                      return znuEngine.getPriceParity()
+                                    },
+                                    znuGetAccount: (memberId: string) => {
+                                      return znuEngine.getAccount(memberId)
+                                    },
+                                    // ===== Conector de flujo (auto-llenado entre pantallas) =====
+                                    seedStage: (target, params) => set((st) => ({
+                                      stageSeeds: { ...st.stageSeeds, [target]: params },
+                                    })),
       // ===== Pipeline: actuator (CIERRA el loop) =====
             pipeDispatch: (needTitle, assignee) => set((st) => {
               const next = dispatchMatch(st.integral, needTitle, assignee)
