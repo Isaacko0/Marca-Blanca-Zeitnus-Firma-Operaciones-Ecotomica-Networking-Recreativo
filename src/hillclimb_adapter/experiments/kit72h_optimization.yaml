@@ -1,0 +1,21 @@
+# src/hillclimb_adapter/experiments/kit72h_optimization.yaml
+experiment: "zeitnus_kit72h_optimization"
+description: "Optimize Kit 72H v2.0 for Spirulina handshake validation (Zeitnus v15.1)"
+problem: "zeitnus_kit72h_optimization"
+climbers:
+  - "gepa"
+  - "openevolve"
+  - "automaton_e2r"
+budget:
+  max_evaluations: 20
+  timeout_hours: 120
+verifier: "xi_verifier"
+config:
+  targets:
+    min_xi: 0.15
+    verbalized_kwh_biomass: true
+    biomass_doubling: true
+metadata:
+  phase: "Zeitnus_v15.1_Handshake"
+  zeitnus_version: "v15.1"
+  hillclimb_version: "0.8.1"

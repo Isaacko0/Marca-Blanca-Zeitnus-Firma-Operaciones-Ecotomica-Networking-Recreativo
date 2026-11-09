@@ -1,0 +1,22 @@
+# src/hillclimb_adapter/experiments/governance_policy_search.yaml
+experiment: "hscsg_governance_policy_search"
+description: "Optimize CDS_Jurados weights (W_i) + Symbiosky parameters via 1000 decision simulation"
+problem: "hscsg_governance_policy_search"
+climbers:
+  - "greedy"
+  - "gepa"
+  - "automaton_e2r"
+budget:
+  max_evaluations: 25
+  timeout_hours: 6
+verifier: "governance_verifier"
+config:
+  scenarios_count: 1000
+  targets:
+    max_decision_reversal_rate: 0.15
+    min_evidence_verified_rate: 0.8
+    max_capture_events: 0
+    min_autonomy_growth: 0.1
+metadata:
+  phase: "Continuous"
+  hscsg_version: "v15.1"

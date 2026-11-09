@@ -1,0 +1,43 @@
+# src/hillclimb_adapter/climbers/gepa_hscsg.yaml
+# GEPA Climber Configuration for HSCSG
+# Genetic-Pareto Optimization for Prompt Engineering
+
+climber: "gepa"
+config:
+  # Population settings
+  population_size: 20
+  generations: 50
+  
+  # Pareto selection
+  pareto_objectives: 
+    - "score"
+    - "diversity"
+  
+  # Mutation operators
+  mutation_rate: 0.3
+  crossover_rate: 0.7
+  
+  # Prompt-specific settings (GEPA specializes in prompt optimization)
+  prompt_template: |
+    You are optimizing HSCSG {module_name} parameters.
+    Current config: {current_config}
+    Feedback: {feedback}
+    Generate improved configuration:
+  
+  # HSCSG-specific prompt modules
+  modules:
+    - "colaberry_onboarding"
+    - "nutritional_optimizer_prompts"
+    - "governance_proposal_generation"
+    - "fabshep_module_documentation"
+    - "autonomous_agent_instructions"
+  
+  # Evaluation budget
+  eval_budget_per_generation: 10
+  
+  # Diversity preservation
+  niching: true
+  niche_radius: 0.1
+
+---
+# Usage: hillclimb run --problem hscsg_fsi_optimization --climber gepa --budget max_evaluations=100

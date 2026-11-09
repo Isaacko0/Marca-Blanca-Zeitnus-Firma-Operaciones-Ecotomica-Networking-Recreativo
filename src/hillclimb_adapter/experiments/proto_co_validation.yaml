@@ -1,0 +1,26 @@
+# src/hillclimb_adapter/experiments/proto_co_validation.yaml
+experiment: "hscsg_phase0_proto_co_validation"
+description: "Validate HSCSG Phase 0: 10 beta cases, 90 days, FSI>30, ξ>0, servitude reduction"
+problem: "hscsg_phase0_proto_co_validation"
+climbers:
+  - "greedy"
+  - "gepa"
+  - "openevolve"
+  - "automaton_e2r"
+budget:
+  max_evaluations: 10
+  timeout_hours: 2160
+verifier: "proto_co_verifier"
+config:
+  beta_cases: 10
+  duration_days: 90
+  targets:
+    min_fsi: 30
+    min_xi: 0.1
+    max_real_dependency: 0.5
+    min_servitude_reduction: 0.2
+    min_mortality_reduction: 0.1
+metadata:
+  phase: "Phase_0_ProtoCO"
+  hscsg_version: "v15.1"
+  hillclimb_version: "0.8.1"

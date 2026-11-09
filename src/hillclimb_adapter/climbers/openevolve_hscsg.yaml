@@ -1,0 +1,75 @@
+# src/hillclimb_adapter/climbers/openevolve_hscsg.yaml
+# OpenEvolve Climber Configuration for HSCSG
+# Open-Ended Evolution for Code Generation
+
+climber: "openevolve"
+config:
+  # Population
+  population_size: 30
+  generations: 100
+  
+  # Code evolution settings
+  language: "typescript"
+  file_extensions: [".ts"]
+  
+  # Mutation operators for code
+  mutation_operators:
+    - "insert_statement"
+    - "delete_statement"
+    - "replace_expression"
+    - "modify_literal"
+    - "add_function"
+    - "modify_function_signature"
+    - "add_import"
+    - "refactor_block"
+  
+  # Crossover
+  crossover_rate: 0.6
+  
+  # Evaluation
+  evaluation_timeout_seconds: 120
+  max_evaluations_per_generation: 15
+  
+  # HSCSG-specific code templates
+  templates:
+    fabshep_module: |
+      // src/core/lib/fabshepNutricia.ts - {module_name} module
+      export interface {ModuleName}Module {{
+        id: string;
+        type: '{module_type}';
+        name: string;
+        energySource: 'solar' | 'wind' | 'biogas' | 'hybrid';
+        automationLevel: 'semi' | 'full' | 'autonomous';
+        nutritionalYield: NutritionalProfile;
+        cycleClosure: number;
+        entropicEfficiency: number;
+      }}
+    
+    nutritional_optimizer: |
+      // src/core/lib/nutritionalOptimizer.ts
+      export interface NutritionalPlan {{
+        communityId: string;
+        targets: NutritionalTargets;
+        productionSchedule: ProductionTask[];
+      }}
+    
+    governance_policy: |
+      // src/core/lib/governancePolicy.ts
+      export interface GovernanceConfig {{
+        cds_jurados_weights: Record<string, number>;
+        symbiosky_params: SymbioskyParams;
+      }}
+  
+  # Fitness evaluation
+  fitness_weights:
+    compilation_success: 0.3
+    test_pass_rate: 0.3
+    fsi_score: 0.25
+    xi_score: 0.15
+  
+  # Diversity
+  diversity_metric: "ast_edit_distance"
+  diversity_weight: 0.2
+
+---
+# Usage: hillclimb run --problem hscsg_fabshep_spirulina_design --climber openevolve --budget max_evaluations=50

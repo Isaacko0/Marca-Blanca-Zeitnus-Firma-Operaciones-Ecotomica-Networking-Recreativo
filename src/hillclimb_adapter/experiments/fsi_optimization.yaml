@@ -1,0 +1,23 @@
+# src/hillclimb_adapter/experiments/fsi_optimization.yaml
+experiment: "hscsg_fsi_optimization"
+description: "Maximize Food Sovereignty Index (FSI) subject to ξ > 0.1 and cycleClosure > 0.8"
+problem: "hscsg_fsi_optimization"
+climbers:
+  - "greedy"
+  - "gepa"
+  - "openevolve"
+  - "automaton_e2r"
+budget:
+  max_evaluations: 50
+  timeout_hours: 4
+verifier: "fsi_verifier"
+config:
+  community_state: {}  # Filled at runtime
+  targets:
+    min_fsi: 65
+    min_xi: 0.15
+    min_cycle_closure: 0.85
+metadata:
+  phase: "Phase_B_Estructurado"
+  hscsg_version: "v15.1"
+  hillclimb_version: "0.8.1"
