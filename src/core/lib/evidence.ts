@@ -178,3 +178,410 @@ export function scoreSchelling(values: number[], tolerancePct = 10): SchellingRe
     winners,
   }
 }
+
+
+// ============================================
+// MATRIOSKA FACT BAND EXTENSION (ESP-D8, ESP-D11)
+// Costos externalizados, fallos hardware, anti-fragilidad
+// Basado en Matrioska System: externalized_cost, verified, escalated
+// ============================================
+
+/** Bandas de hechos estilo Matrioska (nested verification) */
+export type MatrioskaFactBand = 
+  | 'VERIFIED'           // Verificado por múltiples fuentes independientes + RAO
+  | 'PROBABLE'           // Evidencia fuerte pero single-source
+  | 'POSSIBLE'           // Evidencia débil o indirecta
+  | 'EXTERNALIZED_COST'  // FALLO REAL: costo externalizado al entorno (hardware roto, bacteria muerta, sensor falla)
+  | 'ESCALATED'          // Escalado a gobernanza humana (CDS_Jurados)
+  | 'SUPERSEDED'         // Superado por nueva evidencia
+  | 'CONTRADICTED'       // Contradicción activa
+  | null;                // Sin evidencia
+
+/** Tipo de evidencia para Matrioska */
+export type MatrioskaEvidenceKind = 
+  | 'sensor.reading'           // Lectura sensor SVD v2
+  | 'actuator.execution'       // Ejecución actuador (bomba, motor, LED)
+  | 'hardware.failure'         // FALLO HARDWARE: sensor roto, bomba quemada, fuga MFC
+  | 'biology.failure'          // FALLO BIOLÓGICO: bacteria muere, contaminación Spirulina, MFC se seca
+  | 'protocol.deviation'       // Desviación protocolo (no alimentó a tiempo, temperatura fuera rango)
+  | 'human.observation'        // Observación humana (hoja 3 columnas, verbalización)
+  | 'rao.entry'                // Entry RAO (origen, permiso, estado, revocación)
+  | 'cds.consensus'            // Consenso CDS_Jurados
+  | 'automaton.decision'       // Decisión Autómata E²R (EXPLORE->MJ Gate->EXECUTE->REVIEW)
+  | 'external.audit'           // Auditoría externa independiente
+  | 'cost.externalized';       // COSTO EXTERNALIZADO: fallo que el entorno absorbe
+
+/** Evidencia Matrioska con trazabilidad completa */
+export interface MatrioskaEvidence {
+  id: string;
+  kind: MatrioskaEvidenceKind;
+  source: string;                    // Device ID, agent ID, "human_observer_1", "cds_jurados"
+  timestamp: number;
+  data: Record<string, unknown>;
+  // Trazabilidad
+  hash: string;                      // Hash datos para inmutabilidad
+  signatures: string[];              // Firmas criptográficas (opcional)
+  raoRef?: string;                   // Referencia RAO entry
+  // Matrioska nesting
+  parentEvidenceId?: string;         // Evidencia padre (si nested)
+  childEvidenceIds: string[];        // Evidencias hijas
+  // Verificación
+  verifiedBy?: string;               // Quién verificó
+  verifiedAt?: number;
+  verificationMethod?: 'automated' | 'human' | 'cross_reference' | 'statistical';
+}
+
+/** Hecho con banda Matrioska */
+export interface MatrioskaFact {
+  id: string;
+  claim: string;                     // Afirmación: "MFC_1 voltaje > 0.3V sostenido 24h"
+  domain: 'hardware' | 'biology' | 'protocol' | 'governance' | 'economics' | 'social';
+  band: MatrioskaFactBand;
+  confidence: number;                // 0-1
+  evidence: MatrioskaEvidence[];     // Evidencias soportando
+  // Matrioska nesting
+  parentFactId?: string;             // Hecho padre
+  childFactIds: string[];            // Hechos hijos (desglose)
+  // Lifecycle
+  createdAt: number;
+  updatedAt: number;
+  supersededAt?: number;
+  supersededBy?: string;
+  // Contexto
+  context: {
+    experimentId?: string;           // "kit72h_run_001"
+    nodeId?: string;                 // "kit72h_node_1"
+    automatonCycle?: number;         // Ciclo E²R
+    relatedMetrics?: string[];       // ["xi", "CAC", "FSI"]
+  };
+}
+
+/** Externalized Cost Record - Registro de costo externalizado (fallo real) */
+export interface ExternalizedCostRecord {
+  id: string;
+  factId: string;                    // Hecho que externalizó costo
+  type: 'hardware_failure' | 'biology_failure' | 'sensor_drift' | 'actuator_failure' | 'protocol_deviation' | 'contamination' | 'power_loss' | 'communication_loss';
+  description: string;               // "Bomba peristáltica MFC quemada tras 48h operación continua"
+  // Impacto
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  costEstimate: {
+    monetary_EUR?: number;           // Costo reparación/reemplazo (€)
+    timeHours?: number;              // Tiempo reparación (horas)
+    autonomyImpact?: number;         // Impacto AUT (0-1)
+    regenerationImpact?: number;     // Impacto regeneración (0-1)
+    dataLoss?: boolean;              // Pérdida datos
+  };
+  // Quién absorbe el costo
+  absorbedBy: 'environment' | 'node_resources' | 'federation_pool' | 'insurance' | 'community_labor' | 'unknown';
+  // Mitigación
+  mitigation: {
+    immediate: string;               // Acción inmediata: "Switch to backup pump"
+    shortTerm: string;               // Corto plazo: "Replace pump within 24h"
+    longTerm: string;                // Largo plazo: "Redesign pump driver circuit"
+    prevention: string;              // Prevención: "Add current monitoring + thermal cutoff"
+  };
+  // Trazabilidad
+  detectedAt: number;
+  detectedBy: 'sensor' | 'automaton' | 'human' | 'external_audit';
+  resolvedAt?: number;
+  resolvedBy?: string;
+  // Matrioska
+  parentCostId?: string;
+  childCostIds: string[];
+  // Aprendizaje
+  lessonsLearned: string[];
+  patternTag?: string;               // Tag para pattern matching: "pump_overheating", "membrane_fouling"
+}
+
+/** Matrioska Fact Ledger - Libro de hechos anidados */
+export class MatrioskaFactLedger {
+  private facts: Map<string, MatrioskaFact> = new Map();
+  private evidence: Map<string, MatrioskaEvidence> = new Map();
+  private externalizedCosts: Map<string, ExternalizedCostRecord> = new Map();
+  private indexes: {
+    byBand: Map<MatrioskaFactBand, Set<string>>;
+    byDomain: Map<string, Set<string>>;
+    byPatternTag: Map<string, Set<string>>;
+    byNode: Map<string, Set<string>>;
+  };
+
+  constructor() {
+    this.indexes = {
+      byBand: new Map(),
+      byDomain: new Map(),
+      byPatternTag: new Map(),
+      byNode: new Map()
+    };
+    // Inicializar bandas
+    const bands: MatrioskaFactBand[] = ['VERIFIED', 'PROBABLE', 'POSSIBLE', 'EXTERNALIZED_COST', 'ESCALATED', 'SUPERSEDED', 'CONTRADICTED', null];
+    for (const band of bands) {
+      this.indexes.byBand.set(band, new Set());
+    }
+  }
+
+  /** Añade hecho */
+  addFact(fact: MatrioskaFact): void {
+    this.facts.set(fact.id, fact);
+    this.updateIndexes(fact);
+  }
+
+  /** Añade evidencia */
+  addEvidence(evidence: MatrioskaEvidence): void {
+    this.evidence.set(evidence.id, evidence);
+  }
+
+  /** Registra costo externalizado (FALLO REAL) */
+  externalizeCost(record: ExternalizedCostRecord): void {
+    this.externalizedCosts.set(record.id, record);
+    
+    // Crear/actualizar hecho EXTERNALIZED_COST
+    const factId = `fact_ec_${record.id}`;
+    let fact = this.facts.get(factId);
+    
+    if (!fact) {
+      fact = {
+        id: factId,
+        claim: `Externalized cost: ${record.description}`,
+        domain: this.inferDomain(record.type),
+        band: 'EXTERNALIZED_COST',
+        confidence: 0.9, // Fallo real = alta confianza que ocurrió
+        evidence: [],
+        childFactIds: [],
+        createdAt: record.detectedAt,
+        updatedAt: record.detectedAt,
+        context: { nodeId: record.mitigation.immediate }
+      };
+      this.facts.set(factId, fact);
+    }
+    
+    fact.band = 'EXTERNALIZED_COST';
+    fact.updatedAt = Date.now();
+    fact.context.relatedMetrics = ['autonomyImpact', 'regenerationImpact'];
+    this.updateIndexes(fact);
+    
+    // Indexar por pattern tag
+    if (record.patternTag) {
+      const set = this.indexes.byPatternTag.get(record.patternTag) || new Set();
+      set.add(record.id);
+      this.indexes.byPatternTag.set(record.patternTag, set);
+    }
+    
+    // Emitir evento para retroalimentar autómata
+    this.emitExternalizedCost(record);
+  }
+
+  private inferDomain(type: ExternalizedCostRecord['type']): MatrioskaFact['domain'] {
+    if (type.includes('hardware') || type.includes('sensor') || type.includes('actuator') || type.includes('power') || type.includes('communication')) return 'hardware';
+    if (type.includes('biology') || type.includes('contamination')) return 'biology';
+    if (type.includes('protocol')) return 'protocol';
+    return 'hardware';
+  }
+
+  private updateIndexes(fact: MatrioskaFact): void {
+    // By band
+    const bandSet = this.indexes.byBand.get(fact.band) || new Set();
+    bandSet.add(fact.id);
+    this.indexes.byBand.set(fact.band, bandSet);
+    
+    // By domain
+    const domainSet = this.indexes.byDomain.get(fact.domain) || new Set();
+    domainSet.add(fact.id);
+    this.indexes.byDomain.set(fact.domain, domainSet);
+    
+    // By node
+    if (fact.context.nodeId) {
+      const nodeSet = this.indexes.byNode.get(fact.context.nodeId) || new Set();
+      nodeSet.add(fact.id);
+      this.indexes.byNode.set(fact.context.nodeId, nodeSet);
+    }
+  }
+
+  private emitExternalizedCost(record: ExternalizedCostRecord): void {
+    // En producción: emitir evento para automaton.ts retroalimentar
+    // this.emit('externalized_cost', record);
+  }
+
+  /** Obtiene hechos por banda */
+  getFactsByBand(band: MatrioskaFactBand): MatrioskaFact[] {
+    const ids = this.indexes.byBand.get(band) || new Set();
+    return Array.from(ids).map(id => this.facts.get(id)!).filter(Boolean);
+  }
+
+  /** Obtiene hechos por dominio */
+  getFactsByDomain(domain: MatrioskaFact['domain']): MatrioskaFact[] {
+    const ids = this.indexes.byDomain.get(domain) || new Set();
+    return Array.from(ids).map(id => this.facts.get(id)!).filter(Boolean);
+  }
+
+  /** Obtiene costos externalizados por pattern tag */
+  getExternalizedCostsByPattern(patternTag: string): ExternalizedCostRecord[] {
+    const ids = this.indexes.byPatternTag.get(patternTag) || new Set();
+    return Array.from(ids).map(id => this.externalizedCosts.get(id)!).filter(Boolean);
+  }
+
+  /** Obtiene costos externalizados por nodo */
+  getExternalizedCostsByNode(nodeId: string): ExternalizedCostRecord[] {
+    const factIds = this.indexes.byNode.get(nodeId) || new Set();
+    const costs: ExternalizedCostRecord[] = [];
+    for (const factId of factIds) {
+      const fact = this.facts.get(factId);
+      if (fact && fact.band === 'EXTERNALIZED_COST') {
+        // Buscar costo correspondiente
+        for (const cost of this.externalizedCosts.values()) {
+          if (cost.id.includes(factId.replace('fact_ec_', ''))) {
+            costs.push(cost);
+          }
+        }
+      }
+    }
+    return costs;
+  }
+
+  /** Estadísticas de anti-fragilidad */
+  getAntifragilityStats(nodeId?: string): {
+    totalFacts: number;
+    byBand: Record<MatrioskaFactBand, number>;
+    externalizedCosts: number;
+    totalExternalizedCost_EUR: number;
+    avgTimeToResolve_hours: number;
+    patternFrequency: Record<string, number>;
+    mostCommonFailureType: string;
+    antifragilityIndex: number; // 0-1: qué tan bien el sistema aprende de fallos
+  } {
+    let facts = Array.from(this.facts.values());
+    if (nodeId) {
+      facts = facts.filter(f => f.context.nodeId === nodeId);
+    }
+    
+    const costs = nodeId 
+      ? this.getExternalizedCostsByNode(nodeId)
+      : Array.from(this.externalizedCosts.values());
+    
+    const byBand: Record<MatrioskaFactBand, number> = {
+      VERIFIED: 0, PROBABLE: 0, POSSIBLE: 0, EXTERNALIZED_COST: 0, ESCALATED: 0, SUPERSEDED: 0, CONTRADICTED: 0, null: 0
+    };
+    
+    for (const fact of facts) {
+      byBand[fact.band]++;
+    }
+    
+    const patternFreq: Record<string, number> = {};
+    let totalCost = 0;
+    let totalResolveTime = 0;
+    let resolvedCount = 0;
+    const typeFreq: Record<string, number> = {};
+    
+    for (const cost of costs) {
+      totalCost += cost.costEstimate.monetary_EUR || 0;
+      if (cost.resolvedAt && cost.detectedAt) {
+        totalResolveTime += (cost.resolvedAt - cost.detectedAt) / 3600000;
+        resolvedCount++;
+      }
+      if (cost.patternTag) {
+        patternFreq[cost.patternTag] = (patternFreq[cost.patternTag] || 0) + 1;
+      }
+      typeFreq[cost.type] = (typeFreq[cost.type] || 0) + 1;
+    }
+    
+    // Antifragility index: ratio de fallos con mitigación documentada / total fallos
+    const mitigatedCosts = costs.filter(c => c.mitigation.prevention.length > 20).length;
+    const antifragilityIndex = costs.length > 0 ? mitigatedCosts / costs.length : 1;
+    
+    const mostCommonType = Object.entries(typeFreq).sort((a, b) => b[1] - a[1])[0]?.[0] || 'none';
+    
+    return {
+      totalFacts: facts.length,
+      byBand,
+      externalizedCosts: costs.length,
+      totalExternalizedCost_EUR: totalCost,
+      avgTimeToResolve_hours: resolvedCount > 0 ? totalResolveTime / resolvedCount : 0,
+      patternFrequency: patternFreq,
+      mostCommonFailureType: mostCommonType,
+      antifragilityIndex
+    };
+  }
+
+  /** Genera reporte para Entropic Auditor (ξ) */
+  generateAuditorReport(nodeId?: string): {
+    nodeId?: string;
+    timestamp: number;
+    antifragilityStats: any;
+    recentExternalizedCosts: ExternalizedCostRecord[];
+    recommendations: string[];
+  } {
+    const stats = this.getAntifragilityStats(nodeId);
+    const recentCosts = (nodeId 
+      ? this.getExternalizedCostsByNode(nodeId)
+      : Array.from(this.externalizedCosts.values())
+    ).sort((a, b) => b.detectedAt - a.detectedAt).slice(0, 10);
+    
+    const recommendations: string[] = [];
+    
+    if (stats.antifragilityIndex < 0.5) {
+      recommendations.push("BAJA ANTIFRAGILIDAD: Menos del 50% de fallos tienen prevención documentada. Priorizar post-mortems.");
+    }
+    
+    if (stats.mostCommonFailureType !== 'none') {
+      recommendations.push(`PATRÓN DOMINANTE: ${stats.mostCommonFailureType}. Implementar mitigación sistémica.`);
+    }
+    
+    if (stats.totalExternalizedCost_EUR > 100) {
+      recommendations.push(`COSTO EXTERNALIZADO ALTO: €${stats.totalExternalizedCost_EUR.toFixed(2)}. Revisar diseño hardware.`);
+    }
+    
+    if (stats.avgTimeToResolve_hours > 24) {
+      recommendations.push(`TIEMPO RESOLUCIÓN LENTO: ${stats.avgTimeToResolve_hours.toFixed(1)}h promedio. Mejorar repuestos/procedimientos.`);
+    }
+    
+    return {
+      nodeId,
+      timestamp: Date.now(),
+      antifragilityStats: stats,
+      recentExternalizedCosts: recentCosts,
+      recommendations
+    };
+  }
+
+  /** Serializa para persistencia */
+  toJSON(): string {
+    return JSON.stringify({
+      facts: Array.from(this.facts.entries()),
+      evidence: Array.from(this.evidence.entries()),
+      externalizedCosts: Array.from(this.externalizedCosts.entries()),
+      indexes: {
+        byBand: Array.from(this.indexes.byBand.entries()).map(([k, v]) => [k, Array.from(v)]),
+        byDomain: Array.from(this.indexes.byDomain.entries()).map(([k, v]) => [k, Array.from(v)]),
+        byPatternTag: Array.from(this.indexes.byPatternTag.entries()).map(([k, v]) => [k, Array.from(v)]),
+        byNode: Array.from(this.indexes.byNode.entries()).map(([k, v]) => [k, Array.from(v)])
+      }
+    }, null, 2);
+  }
+
+  /** Carga desde JSON */
+  static fromJSON(json: string): MatrioskaFactLedger {
+    const data = JSON.parse(json);
+    const ledger = new MatrioskaFactLedger();
+    ledger.facts = new Map(data.facts);
+    ledger.evidence = new Map(data.evidence);
+    ledger.externalizedCosts = new Map(data.externalizedCosts);
+    ledger.indexes.byBand = new Map(data.indexes.byBand.map(([k, v]: [any, any[]]) => [k, new Set(v)]));
+    ledger.indexes.byDomain = new Map(data.indexes.byDomain.map(([k, v]: [any, any[]]) => [k, new Set(v)]));
+    ledger.indexes.byPatternTag = new Map(data.indexes.byPatternTag.map(([k, v]: [any, any[]]) => [k, new Set(v)]));
+    ledger.indexes.byNode = new Map(data.indexes.byNode.map(([k, v]: [any, any[]]) => [k, new Set(v)]));
+    return ledger;
+  }
+}
+
+/** Instancia singleton global */
+let globalMatrioskaLedger: MatrioskaFactLedger | null = null;
+
+export function getMatrioskaLedger(): MatrioskaFactLedger {
+  if (!globalMatrioskaLedger) {
+    globalMatrioskaLedger = new MatrioskaFactLedger();
+  }
+  return globalMatrioskaLedger;
+}
+
+export function setMatrioskaLedger(ledger: MatrioskaFactLedger): void {
+  globalMatrioskaLedger = ledger;
+}

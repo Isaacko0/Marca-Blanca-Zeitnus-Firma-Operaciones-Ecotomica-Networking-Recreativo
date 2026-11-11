@@ -941,3 +941,503 @@ export class PropagationEngine {
 // ============================================
 
 export const propagationEngine = new PropagationEngine()
+
+// ============================================
+// KIT 72H v2.0 PHYSICAL (ESP-D6)
+// Hardware + Biology + Protocol + Validation for Handshake Generativo
+// ============================================
+
+/** Kit 72H v2.0 Physical Specification */
+export interface Kit72Hv2Physical {
+  // Hardware specification
+  hardware: {
+    // MFC (Microbial Fuel Cell)
+    mfc: {
+      electrodeMaterial: "graphite" | "carbon_cloth" | "carbon_brush";
+      electrodeArea_cm2: number;          // 20 cm² (4 barras 10x1x0.5cm en paralelo)
+      membraneType: "nafion_117" | "ceramic" | "none";
+      anodeCathodeDistance_cm: number;    // 2 cm
+      externalResistance_ohm: number;     // 1000 Ω
+      containerVolume_ml: number;         // 5000 mL (botella PET 5L)
+      inoculumVolume_ml: number;          // 100 mL
+      inoculumSource: "river_sludge" | "reserve_culture" | "commercial";
+    };
+    // Microcontrolador
+    microcontroller: {
+      model: "ESP32" | "ESP32-S3" | "Arduino_Nano" | "RP2040";
+      firmwareVersion: string;            // "2.0.0"
+      capabilities: string[];             // ["GPIO", "ADC", "PWM", "I2C", "UART", "WiFi", "BLE"]
+      deepSleep: boolean;                 // true
+      voltageThresholdSleep_V: number;    // 0.2V
+      voltageThresholdWake_V: number;     // 0.4V
+    };
+    // Sensores (SVD v2 químico mínimo)
+    sensors: {
+      voltage: {
+        model: "ADS1115";                 // 16-bit ADC I2C
+        channel: number;                  // 0
+        gain: number;                     // 1
+        range_V: [number, number];        // [0, 1]
+        resolution_mV: number;            // 0.1
+      };
+      ph: {
+        model: "pH-4502C";                // Módulo pH analógico
+        pin: number;                      // ESP32 ADC1_CH6 (GPIO34)
+        calibration: { slope: number; offset: number };
+        range: [number, number];          // [0, 14]
+      };
+      temperature: {
+        model: "DS18B20";                 // Digital 1-Wire
+        pin: number;                      // GPIO4
+        resolution: 9 | 10 | 11 | 12;     // bits
+        range_C: [number, number];        // [-10, 60]
+      };
+      // Opcionales para versión completa
+      orp?: {
+        model: "ORP-4502C";
+        pin: number;
+        range_mV: [number, number];
+      };
+      dissolvedOxygen?: {
+        model: "SensoLyt_OPTICAL";
+        interface: "UART";
+      };
+      opticalDensity?: {
+        model: "LED_680nm_PHOTODIODE";
+        pin: number;
+      };
+    };
+    // Actuadores
+    actuators: {
+      feedPump: {
+        type: "peristaltic_6V";
+        flowRate_mL_min: number;          // 100
+        pin: number;                      // GPIO13
+      };
+      reinoculatePump: {
+        type: "peristaltic_6V";
+        flowRate_mL_min: number;
+        pin: number;                      // GPIO14
+      };
+      harvestPump?: {
+        type: "peristaltic_12V";
+        flowRate_mL_min: number;
+        pin: number;
+      };
+      leds?: {
+        red: { pin: number; wavelength_nm: number };      // GPIO16, 660nm
+        blue: { pin: number; wavelength_nm: number };     // GPIO17, 450nm
+      };
+      relays?: {
+        cooling: { pin: number };          // GPIO23
+        heating: { pin: number };          // GPIO25
+      };
+    };
+    // Comunicación
+    communication: {
+      wifi: {
+        ssid: string;
+        password: string;
+        apMode: boolean;                  // true para configuración inicial
+      };
+      bluetooth: {
+        enabled: boolean;                 // true para provisioning
+        name: string;
+      };
+      websocket: {
+        port: number;                     // 8080
+        path: string;                     // "/bridge"
+      };
+    };
+  };
+
+  // Biology specification
+  biology: {
+    // MFC inoculum
+    mfcInoculum: {
+      strain: "Geobacter_sulfurreducens" | "mixed_consortium" | "river_sludge_wild";
+      source: "river_lerma" | "river_local" | "lab_reserve" | "commercial";
+      volume_ml: number;                  // 100 mL
+      concentration_cells_ml: number;     // estimado
+      viabilityPct: number;               // >80%
+    };
+    // Spirulina culture
+    spirulina: {
+      strain: "Arthrospira_platensis" | "Arthrospira_maxima" | "local_wild";
+      source: "lab_culture" | "commercial" | "community_shared";
+      inoculumVolume_ml: number;          // 50-100 mL
+      initialOD750: number;               // 0.1-0.3
+      mediaType: "zarrouk" | "bg11" | "waste_based" | "custom";
+      mediaVolume_L: number;              // 2-5 L (botella PET)
+      targetConcentration_g_L: number;    // 1.0 g/L peso seco
+    };
+    // Contenedores
+    containers: {
+      mfc: "PET_5L" | "glass_5L" | "HDPE_5L";
+      spirulina: "PET_2L" | "glass_2L" | "bag_5L";
+    };
+  };
+
+  // Protocol specification
+  protocol: {
+    durationHours: number;                // 72
+    phases: Kit72HPhase[];
+    measurementIntervalMinutes: number;   // 15
+    successCriteria: Kit72HSuccessCriteria;
+    documentation: {
+      photosRequired: number;             // 10+
+      videoSummaryMinutes: number;        // 2
+      dataExportFormat: "csv" | "json" | "both";
+      RAOEntriesMinimum: number;          // 10
+    };
+  };
+
+  // Validation specification
+  validation: {
+    // Criterio principal Zeitnus v15.1: verbalized_kwh_biomass
+    verbalizedKWhBiomass: {
+      required: boolean;                  // true
+      description: "Persona verbaliza equivalencia kWh <-> biomasa sin explicación";
+      evaluator: "human_observer" | "automated";
+    };
+    // Métricas cuantitativas
+    quantitative: {
+      minVoltageSustainedHours: number;   // 24h > 0.3V
+      minBiomassDoubling: boolean;        // true
+      minXiThreshold: number;             // 0.1
+      minPowerDensity_mW_m2: number;      // 100
+      maxInternalResistance_ohm: number;  // 5000
+    };
+    // Evidence collection
+    evidence: {
+      sensorLogs: boolean;                // CSV/JSON completo
+      photos: string[];                   // paths
+      video: string;                      // path
+      RAOEntries: string[];               // IDs
+      witnessStatement: string;           // observador pasivo
+    };
+  };
+}
+
+export interface Kit72HPhase {
+  id: string;
+  name: string;
+  description: string;
+  durationHours: number;
+  steps: Kit72HStep[];
+  entryCriteria: string[];
+  exitCriteria: string[];
+  responsible: "human" | "automated" | "both";
+}
+
+export interface Kit72HStep {
+  id: string;
+  name: string;
+  description: string;
+  type: "hardware" | "biology" | "protocol" | "validation" | "documentation";
+  estimatedMinutes: number;
+  prerequisites: string[];
+  successCondition: string;
+  rollback?: string;
+}
+
+export interface Kit72HSuccessCriteria {
+  primary: "verbalized_kwh_biomass";
+  secondary: string[];
+  quantitativeThresholds: Record<string, number>;
+  evidenceRequired: string[];
+}
+
+/** Kit 72H v2.0 Standard Configuration (€30 mínima) */
+export const KIT72H_V2_MINIMAL_CONFIG: Kit72Hv2Physical = {
+  hardware: {
+    mfc: {
+      electrodeMaterial: "graphite",
+      electrodeArea_cm2: 20,
+      membraneType: "nafion_117",
+      anodeCathodeDistance_cm: 2,
+      externalResistance_ohm: 1000,
+      containerVolume_ml: 5000,
+      inoculumVolume_ml: 100,
+      inoculumSource: "river_sludge"
+    },
+    microcontroller: {
+      model: "ESP32",
+      firmwareVersion: "2.0.0",
+      capabilities: ["GPIO", "ADC", "PWM", "I2C", "UART", "WiFi", "BLE"],
+      deepSleep: true,
+      voltageThresholdSleep_V: 0.2,
+      voltageThresholdWake_V: 0.4
+    },
+    sensors: {
+      voltage: {
+        model: "ADS1115",
+        channel: 0,
+        gain: 1,
+        range_V: [0, 1],
+        resolution_mV: 0.1
+      },
+      ph: {
+        model: "pH-4502C",
+        pin: 34,
+        calibration: { slope: -5.7, offset: 21.3 },
+        range: [0, 14]
+      },
+      temperature: {
+        model: "DS18B20",
+        pin: 4,
+        resolution: 12,
+        range_C: [-10, 60]
+      }
+    },
+    actuators: {
+      feedPump: { type: "peristaltic_6V", flowRate_mL_min: 100, pin: 13 },
+      reinoculatePump: { type: "peristaltic_6V", flowRate_mL_min: 100, pin: 14 }
+    },
+    communication: {
+      wifi: { ssid: "HSCSG_Kit72H", password: "auto-generated", apMode: true },
+      bluetooth: { enabled: true, name: "Kit72H_Provisioning" },
+      websocket: { port: 8080, path: "/bridge" }
+    }
+  },
+  biology: {
+    mfcInoculum: {
+      strain: "river_sludge_wild",
+      source: "river_local",
+      volume_ml: 100,
+      concentration_cells_ml: 1e8,
+      viabilityPct: 85
+    },
+    spirulina: {
+      strain: "Arthrospira_platensis",
+      source: "commercial",
+      inoculumVolume_ml: 50,
+      initialOD750: 0.1,
+      mediaType: "zarrouk",
+      mediaVolume_L: 2,
+      targetConcentration_g_L: 1.0
+    },
+    containers: {
+      mfc: "PET_5L",
+      spirulina: "PET_2L"
+    }
+  },
+  protocol: {
+    durationHours: 72,
+    phases: [
+      {
+        id: "setup",
+        name: "Setup & Inoculation",
+        description: "Armar hardware, preparar medios, inocular MFC y Spirulina",
+        durationHours: 4,
+        steps: [
+          { id: "assemble_mfc", name: "Ensamblar MFC", description: "Conectar electrodos, membrana, contenedor", type: "hardware", estimatedMinutes: 60, prerequisites: [], successCondition: "MFC sellada y sin fugas" },
+          { id: "prepare_media", name: "Preparar medios", description: "Zarrouk para Spirulina, acetato 20mM para MFC", type: "biology", estimatedMinutes: 30, prerequisites: [], successCondition: "Medios preparados y esterilizados" },
+          { id: "inoculate_mfc", name: "Inocular MFC", description: "Añadir 100mL lodo río + 50mL acetato", type: "biology", estimatedMinutes: 15, prerequisites: ["assemble_mfc", "prepare_media"], successCondition: "MFC inoculada" },
+          { id: "inoculate_spirulina", name: "Inocular Spirulina", description: "Añadir 50mL Spirulina densa a 2L medio", type: "biology", estimatedMinutes: 15, prerequisites: ["prepare_media"], successCondition: "Biorreactor inoculado" },
+          { id: "connect_sensors", name: "Conectar sensores", description: "ADS1115, pH, DS18B20, bombas", type: "hardware", estimatedMinutes: 30, prerequisites: ["assemble_mfc"], successCondition: "Sensores reportan datos" },
+          { id: "start_monitoring", name: "Iniciar monitoreo", description: "Activar ESP32, bridge, logging", type: "protocol", estimatedMinutes: 10, prerequisites: ["connect_sensors"], successCondition: "Datos fluyendo a bridge" }
+        ],
+        entryCriteria: ["Hardware completo", "Materiales biológicos listos", "Entorno seguro"],
+        exitCriteria: ["MFC y Spirulina inoculados", "Sensores operativos", "Logging activo"],
+        responsible: "both"
+      },
+      {
+        id: "run",
+        name: "Run 72h",
+        description: "Monitoreo autónomo 72 horas con alimentación programada",
+        durationHours: 68,
+        steps: [
+          { id: "auto_monitor", name: "Monitoreo autónomo", description: "ESP32 mide cada 15min, deep sleep entre mediciones", type: "protocol", estimatedMinutes: 68*60, prerequisites: ["start_monitoring"], successCondition: "72h completados sin intervención" },
+          { id: "scheduled_feed", name: "Alimentación programada MFC", description: "Cada 24h: bomba 50mL acetato 20mM", type: "biology", estimatedMinutes: 5, prerequisites: ["auto_monitor"], successCondition: "3 alimentaciones completadas" },
+          { id: "human_observation", name: "Observación humana pasiva", description: "Registro hoja 3 columnas: hora, qué pasó, qué dijo/conectó", type: "validation", estimatedMinutes: 10, prerequisites: [], successCondition: "Registro completo" }
+        ],
+        entryCriteria: ["Setup completado", "Sistemas operativos"],
+        exitCriteria: ["72h transcurridos", "Datos completos", "Observador ha registrado"],
+        responsible: "automated"
+      },
+      {
+        id: "validation",
+        name: "Validación Handshake Generativo",
+        description: "Verificar criterios éxito: verbalized_kwh_biomass + métricas cuantitativas",
+        durationHours: 4,
+        steps: [
+          { id: "data_export", name: "Exportar datos", description: "CSV/JSON sensores + fotos + video", type: "documentation", estimatedMinutes: 30, prerequisites: ["auto_monitor"], successCondition: "Archivos exportados" },
+          { id: "verbalization_test", name: "Test verbalización", description: "Observador pregunta: '¿Qué equivalencia ves entre electricidad y biomasa?'", type: "validation", estimatedMinutes: 15, prerequisites: ["human_observation"], successCondition: "Persona verbaliza kWh <-> biomasa sin explicación" },
+          { id: "quantitative_check", name: "Verificación cuantitativa", description: "ξ > 0.1, voltaje > 0.3V por 24h, duplicación biomasa", type: "validation", estimatedMinutes: 30, prerequisites: ["data_export"], successCondition: "Todos thresholds cumplidos" },
+          { id: "rao_documentation", name: "Documentación RAO", description: "10+ entries RAO: hardware, biología, fallos, métricas", type: "documentation", estimatedMinutes: 60, prerequisites: ["data_export"], successCondition: "RAO entries creadas" }
+        ],
+        entryCriteria: ["72h completados", "Datos disponibles"],
+        exitCriteria: ["Criterios primarios y secundarios cumplidos", "Evidencia documentada"],
+        responsible: "human"
+      }
+    ],
+    measurementIntervalMinutes: 15,
+    successCriteria: {
+      primary: "verbalized_kwh_biomass",
+      secondary: ["biomass_doubling", "xi_threshold", "voltage_sustained"],
+      quantitativeThresholds: {
+        minVoltageSustainedHours: 24,
+        minVoltage_V: 0.3,
+        minXi: 0.1,
+        minPowerDensity_mW_m2: 100,
+        maxInternalResistance_ohm: 5000,
+        minBiomassDoubling: 1
+      },
+      evidenceRequired: ["sensor_logs", "photos", "video", "RAO_entries", "witness_statement"]
+    },
+    documentation: {
+      photosRequired: 10,
+      videoSummaryMinutes: 2,
+      dataExportFormat: "both",
+      RAOEntriesMinimum: 10
+    }
+  },
+  validation: {
+    verbalizedKWhBiomass: {
+      required: true,
+      description: "Persona verbaliza equivalencia kWh <-> biomasa sin explicación",
+      evaluator: "human_observer"
+    },
+    quantitative: {
+      minVoltageSustainedHours: 24,
+      minBiomassDoubling: true,
+      minXiThreshold: 0.1,
+      minPowerDensity_mW_m2: 100,
+      maxInternalResistance_ohm: 5000
+    },
+    evidence: {
+      sensorLogs: true,
+      photos: [],
+      video: "",
+      RAOEntries: [],
+      witnessStatement: ""
+    }
+  }
+};
+
+/** Kit 72H v2.0 Full Configuration (€114 completa) */
+export const KIT72H_V2_FULL_CONFIG: Kit72Hv2Physical = {
+  ...KIT72H_V2_MINIMAL_CONFIG,
+  hardware: {
+    ...KIT72H_V2_MINIMAL_CONFIG.hardware,
+    sensors: {
+      ...KIT72H_V2_MINIMAL_CONFIG.hardware.sensors,
+      orp: { model: "ORP-4502C", pin: 36, range_mV: [-500, 500] },
+      dissolvedOxygen: { model: "SensoLyt_OPTICAL", interface: "UART" },
+      opticalDensity: { model: "LED_680nm_PHOTODIODE", pin: 35 }
+    },
+    actuators: {
+      ...KIT72H_V2_MINIMAL_CONFIG.hardware.actuators,
+      harvestPump: { type: "peristaltic_12V", flowRate_mL_min: 200, pin: 15 },
+      leds: {
+        red: { pin: 16, wavelength_nm: 660 },
+        blue: { pin: 17, wavelength_nm: 450 }
+      },
+      relays: {
+        cooling: { pin: 23 },
+        heating: { pin: 25 }
+      }
+    }
+  },
+  biology: {
+    ...KIT72H_V2_MINIMAL_CONFIG.biology,
+    spirulina: {
+      ...KIT72H_V2_MINIMAL_CONFIG.biology.spirulina,
+      mediaVolume_L: 5,
+      targetConcentration_g_L: 1.5
+    }
+  },
+  protocol: {
+    ...KIT72H_V2_MINIMAL_CONFIG.protocol,
+    phases: [
+      ...KIT72H_V2_MINIMAL_CONFIG.protocol.phases,
+      {
+        id: "optimization",
+        name: "Optimization Cycles",
+        description: "Ciclos de optimización GEPA/OpenEvolve para parámetros",
+        durationHours: 168, // 1 semana adicional
+        steps: [
+          { id: "gepa_optimize", name: "GEPA Prompt Optimization", description: "Optimizar protocolos via GEPA", type: "protocol", estimatedMinutes: 60, prerequisites: ["validation"], successCondition: "Prompts mejorados" },
+          { id: "openevolve_hardware", name: "OpenEvolve Hardware Config", description: "Evolucionar configuración hardware", type: "hardware", estimatedMinutes: 120, prerequisites: ["validation"], successCondition: "Config hardware v2.1" }
+        ],
+        entryCriteria: ["Validación v2.0 completada"],
+        exitCriteria: ["Optimizaciones documentadas", "Nueva versión lista"],
+        responsible: "automated"
+      }
+    ]
+  }
+};
+
+/** Validación física del handshake generativo */
+export async function validatePhysicalHandshake(kit: Kit72Hv2Physical): Promise<HandshakeValidationResult> {
+  // 1. Verificar hardware deployado
+  const hardwareOk = await verifyHardwareDeployment(kit.hardware);
+  
+  // 2. Verificar biología inoculada
+  const biologyOk = await verifyBiologyInoculation(kit.biology);
+  
+  // 3. Ejecutar protocolo 72h
+  const protocolResult = await executeProtocol72h(kit.protocol);
+  
+  // 4. Validar criterios éxito
+  const validationResult = await validateSuccessCriteria(kit.validation, protocolResult);
+  
+  // 5. Verificar handshake generativo: verbalized_kwh_biomass
+  const handshakeValid = validationResult.verbalizedKWhBiomass && validationResult.quantitativePassed;
+  
+  return {
+    valid: handshakeValid,
+    hardwareOk,
+    biologyOk,
+    protocolResult,
+    validationResult,
+    timestamp: Date.now(),
+    kitConfig: kit
+  };
+}
+
+export interface HandshakeValidationResult {
+  valid: boolean;
+  hardwareOk: boolean;
+  biologyOk: boolean;
+  protocolResult: any;
+  validationResult: {
+    verbalizedKWhBiomass: boolean;
+    quantitativePassed: boolean;
+    thresholdsMet: Record<string, boolean>;
+    evidenceComplete: boolean;
+  };
+  timestamp: number;
+  kitConfig: Kit72Hv2Physical;
+}
+
+async function verifyHardwareDeployment(hardware: Kit72Hv2Physical["hardware"]): Promise<boolean> {
+  // En producción: verificar via bridge.ts que todos los dispositivos responden
+  return true; // Simulado
+}
+
+async function verifyBiologyInoculation(biology: Kit72Hv2Physical["biology"]): Promise<boolean> {
+  // En producción: verificar OD750 inicial, voltaje inicial MFC
+  return true; // Simulado
+}
+
+async function executeProtocol72h(protocol: Kit72Hv2Physical["protocol"]): Promise<any> {
+  // En producción: ejecutar via automaton.ts SovereignAutomaton
+  return { completed: true, dataLogs: [], observations: [] };
+}
+
+async function validateSuccessCriteria(validation: Kit72Hv2Physical["validation"], protocolResult: any): Promise<any> {
+  return {
+    verbalizedKWhBiomass: true, // Simulado: observador confirma
+    quantitativePassed: true,
+    thresholdsMet: {
+      minVoltageSustainedHours: true,
+      minBiomassDoubling: true,
+      minXiThreshold: true,
+      minPowerDensity_mW_m2: true,
+      maxInternalResistance_ohm: true
+    },
+    evidenceComplete: true
+  };
+}
