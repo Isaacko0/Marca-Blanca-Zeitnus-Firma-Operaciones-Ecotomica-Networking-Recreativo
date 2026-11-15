@@ -3,9 +3,9 @@
 ## Overview
 This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regenerative economics stack. Each spec maps external sources (OASA, DisCO, Closer, ElizaOS, ValueFlows, Aragon, etc.) to TypeScript implementations in `src/core/lib/`.
 
-**Total Specs:** 41 (25 original + 12 external scraping + 4 Norberto assimilation)
-**Implemented:** 27 (19 original + 4 Fase 1-2 + Pilot + 4 Norberto)
-**Designed:** 4 (Fase 3+ pending implementation)
+**Total Specs:** 49 (28 original + 12 external scraping + 4 Norberto assimilation + 3 Fase 3 + 1 IAL)  
+**Implemented:** 27 (19 original + 4 Fase 1-2 + Pilot + 4 Norberto)  
+**Designed:** 5 (Fase 3+ pending implementation + IAL)
 
 ---
 
@@ -104,15 +104,20 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 | 44 | `alrac-tq-desmercantilizacion.md` | Esping-Andersen → CaaS/ZNU | `tq-valueflows.ts` + types | ~1,700 | ✅ |
 
 ### **Fase 3: Advanced Integration** 📋 Designed (Pending Implementation)
-| # | Spec | Source | Target | Status |
-|---|------|--------|--------|--------|
-| 45 | `alrac-tq-virginia.md` | Virginia Network | `tq-virginia.ts` | 📋 |
-| 46 | `alrac-tq-colony.md` | Colony Protocol | `tq-colony.ts` | 📋 |
-| 47 | `alrac-tq-berry-vesting.md` | Berry Vesting | `tq-berry-vesting.ts` | 📋 |
+|| # | Spec | Source | Target | Status |
+||---|------|--------|--------|--------|
+|| 45 | `alrac-tq-virginia.md` | Virginia Network | `tq-virginia.ts` | 📋 |
+|| 46 | `alrac-tq-colony.md` | Colony Protocol | `tq-colony.ts` | 📋 |
+|| 47 | `alrac-tq-berry-vesting.md` | Berry Vesting | `tq-berry-vesting.ts` | 📋 |
+
+### **Capa 1+5: Métricas de Control Regenerativo** (Nueva - Asimilación)
+|| # | Spec | Source | Target | Status |
+||---|------|--------|--------|--------|
+|| 48 | `alrac-ial-autotrofia-longeva.md` | IAL Master Document | `ial.ts` | 📋 Diseñado |
 
 ---
 
-## Complete Specification Catalog (48 Total)
+## Complete Specification Catalog (49 Total)
 
 | # | Spec | Layer | Source | Target | Status |
 |---|------|-------|--------|--------|--------|
@@ -142,24 +147,26 @@ This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regener
 | 41 | alrac-tq-mohenjodaro.md | 1+ | Mohenjo-Daro Historical | tq-pilot-tdf.ts + types | ✅ |
 | 42 | alrac-tq-ebr-venus.md | 1+ | EBR/Proyecto Venus | tq-eliza.ts + tq-uhi-engine.ts | ✅ |
 | 43 | alrac-tq-economic-calculation.md | 1+ | IA Economic Calculation | tq-uhi-engine.ts + tq-eliza.ts | ✅ |
-| 44 | alrac-tq-desmercantilizacion.md | 2+ | Desmercantilización → CaaS | tq-valueflows.ts + types | ✅ |
-| 45 | alrac-tq-virginia.md | 1+ | Virginia Network | tq-virginia.ts | 📋 |
-| 46 | alrac-tq-colony.md | 1+ | Colony Protocol | tq-colony.ts | 📋 |
-| 47 | alrac-tq-berry-vesting.md | 1+ | Berry Vesting | tq-berry-vesting.ts | 📋 |
+|| 44 | alrac-tq-desmercantilizacion.md | 2+ | Desmercantilización → CaaS | tq-valueflows.ts + types | ✅ |
+|| 45 | alrac-tq-virginia.md | 1+ | Virginia Network | tq-virginia.ts | 📋 |
+|| 46 | alrac-tq-colony.md | 1+ | Colony Protocol | tq-colony.ts | 📋 |
+|| 47 | alrac-tq-berry-vesting.md | 1+ | Berry Vesting | tq-berry-vesting.ts | 📋 |
+|| 48 | alrac-ial-autotrofia-longeva.md | 1+5 | IAL Master Document | ial.ts | 📋 Diseñado |
 
 ---
 
 ## Implementation Status Summary
 
-| Phase | Specs | Lines | Status |
-|-------|-------|-------|--------|
-| Original ALRAC | 25 | ~8,000 | ✅ Complete |
-| Fase 1 Core Integration | 6 | ~4,050 | ✅ Complete |
-| Fase 2 Verifiable Governance | 5 | ~3,700 | ✅ Complete |
-| Pilot TDF | 1 | ~3,800 | ✅ Complete |
-| **Norberto Assimilation** | **4** | **~5,500** | **✅ Complete** |
-| Fase 3 Advanced | 3 | ~0 | 📋 Designed |
-| **Total** | **44** | **~25,050** | **27/48 Implemented** |
+|| Phase | Specs | Lines | Status |
+||-------|-------|-------|--------|
+|| Original ALRAC | 25 | ~8,000 | ✅ Complete |
+|| Fase 1 Core Integration | 6 | ~4,050 | ✅ Complete |
+|| Fase 2 Verifiable Governance | 5 | ~3,700 | ✅ Complete |
+|| Pilot TDF | 1 | ~3,800 | ✅ Complete |
+|| **Norberto Assimilation** | **4** | **~5,500** | **✅ Complete** |
+|| Fase 3 Advanced | 3 | ~0 | 📋 Designed |
+|| Capa 1+5 Métricas Control | 1 | ~0 | 📋 Diseñado |
+|| **Total** | **49** | **~25,050** | **27/49 Implemented** |
 
 ---
 
@@ -174,20 +181,23 @@ tq-types-extended.ts (Core Types - All Specs)
     └── Pilot (40) ◄──────────────────────────────────┘
            │
            ▼
-    Fase 3 Advanced (41-43) 📋
+    Fase 3 Advanced (45-47) 📋
+    IAL (48) 📋 ◄─────────────────────────────────────┐
+                 (depends on: alrac-governance-holonic, tq.ts, valueDual.ts)
 ```
 
 ---
 
 ## Cross-Spec Integration Matrix
 
-| Integration | Specs Involved | Engines |
-|-------------|----------------|---------|
-| TDF 3-Track | 36, 39, 34, 35, 33, 31, 30, 29, 37, 38 | TDFEngine |
-| Virginia N3 Weight | 29, 30, 31, 32, 33, 34, 37, 41, 42, 43 | VirginiaGateway |
-| DisCO 3 Flows → Virginia | 30, 29, 41 | DisCO_CAT_Engine |
-| Autómata Soberano | 32, 29, 30, 31, 33, 34, 35, 42, 43 | ElizaOS Runtime |
-| Pilot TDF | All 1-40 | PilotTDFEngine |
+|| Integration | Specs Involved | Engines |
+||-------------|----------------|---------|
+|| TDF 3-Track | 36, 39, 34, 35, 33, 31, 30, 29, 37, 38 | TDFEngine |
+|| Virginia N3 Weight | 29, 30, 31, 32, 33, 34, 37, 41, 42, 43 | VirginiaGateway |
+|| DisCO 3 Flows → Virginia | 30, 29, 41 | DisCO_CAT_Engine |
+|| Autómata Soberano | 32, 29, 30, 31, 33, 34, 35, 42, 43 | ElizaOS Runtime |
+|| Pilot TDF | All 1-40 | PilotTDFEngine |
+|| IAL Control Loop | 28, 48, 7-16, 26, 3 | IAL Engine |
 
 ---
 
@@ -212,7 +222,8 @@ Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo/
 │   ├── tq-pilot-tdf.ts          # Spec 40 ✅
 │   ├── tq-virginia.ts           # Spec 45 📋
 │   ├── tq-colony.ts             # Spec 46 📋
-│   └── tq-berry-vesting.ts      # Spec 47 📋
+│   ├── tq-berry-vesting.ts      # Spec 47 📋
+│   └── ial.ts                   # Spec 48 📋
 └── openspec/specs/
     ├── SPEC_INDEXER.md          # This file
     ├── alrac-architecture.md    # Spec 1
@@ -261,15 +272,17 @@ Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo/
     ├── alrac-tq-desmercantilizacion.md # Spec 44
     ├── alrac-tq-virginia.md          # Spec 45
     ├── alrac-tq-colony.md            # Spec 46
-    └── alrac-tq-berry-vesting.md     # Spec 47
+    ├── alrac-tq-berry-vesting.md     # Spec 47
+    └── alrac-ial-autotrofia-longeva.md # Spec 48
 ```
 
 ---
 
 ## Changelog
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 4.0.0 | 2026-10-19 | Added 4 Norberto assimilation specs (Mohenjo-Daro, EBR/Venus, Economic Calculation, Desmercantilización), total 48 specs |
-| 3.0.0 | 2026-10-18 | Added 12 new specs from external scraping assimilation (Fase 1-2 + Pilot), updated catalog to 43 total specs |
-| 2.1 | 2026-10-07 | Original catalog with 25 specs |
+|| Version | Date | Changes |
+||---------|------|---------|
+|| 4.1.0 | 2026-11-14 | Added IAL spec (Índice de Autotrofia Longeva) — Capa 1+5, total 49 specs |
+|| 4.0.0 | 2026-10-19 | Added 4 Norberto assimilation specs (Mohenjo-Daro, EBR/Venus, Economic Calculation, Desmercantilización), total 48 specs |
+|| 3.0.0 | 2026-10-18 | Added 12 new specs from external scraping assimilation (Fase 1-2 + Pilot), updated catalog to 43 total specs |
+|| 2.1 | 2026-10-07 | Original catalog with 25 specs |

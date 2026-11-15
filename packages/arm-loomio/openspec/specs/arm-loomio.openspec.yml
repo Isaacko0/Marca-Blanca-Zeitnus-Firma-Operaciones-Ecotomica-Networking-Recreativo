@@ -1,0 +1,674 @@
+version: "1.0"
+domain: "Collaborative Decision Making"
+package: "@hscsg/arm-loomio"
+description: "Loomio collaborative decision-making patterns for ARM - Proposal types, STV, weighted voting, anonymous ballots"
+license: "AGPL-3.0"
+
+invariants:
+  LOO-001:
+    id: "LOO-001"
+    description: "Every proposal traces to authenticated affiliate in eligible group"
+    rationale: "Ensures accountability and eligibility for decision-making"
+    operations: ["createProposal"]
+    entities: ["Proposal", "Affiliate", "Group"]
+    traceability: "authorId, groupId, proposalType, createdAt"
+    acceptanceCriteria:
+      - "Proposal must have valid authorId"
+      - "Author must be accepted member of group"
+      - "Proposal type must be valid"
+      - "CreatedAt timestamp recorded"
+
+  LOO-002:
+    id: "LOO-002"
+    description: "Vote tally equals sum of valid cast votes (identified + anonymous)"
+    rationale: "Ensures vote counting integrity and transparency"
+    operations: ["castVote", "castAnonymousVote", "computeTally"]
+    entities: ["Proposal", "Vote", "AnonymousVote", "Tally"]
+    traceability: "proposalId, voteId, anonymousVoteId, countedAt"
+    acceptanceCriteria:
+      - "Total votes = identified votes + anonymous ballots"
+      - "Each vote counted once"
+      - "Weight applied correctly"
+      - "Tally updated in real-time"
+
+  LOO-003:
+    id: "LOO-003"
+    description: "STV count conserves votes across all rounds; elected <= seats"
+    rationale: "Mathematical integrity of STV algorithm"
+    operations: ["countSTV"]
+    entities: ["Proposal", "STVResult", "Ballot"]
+    traceability: "proposalId, method, quota, seats, rounds[], elected[], nonTransferable[]"
+    acceptanceCriteria:
+      - "Sum of all round votes = initial valid ballots"
+      - "Elected candidates <= seats"
+      - "Quota calculated correctly (Droop/Hare)"
+      - "Surplus transfers preserve vote value"
+      - "Elimination transfers preserve vote value"
+      - "Non-transferable + exhausted tracked"
+
+  LOO-004:
+    id: "LOO-004"
+    description: "Anonymous ballot configuration frozen after first ballot cast"
+    rationale: "Privacy guarantee - config changes could deanonymize"
+    operations: ["castAnonymousVote", "updateProposalConfig"]
+    entities: ["Proposal", "AnonymousBallot"]
+    traceability: "proposalId, anonymous, hideResults, pollType, frozenAt"
+    acceptanceCriteria:
+      - "First ballot triggers config freeze"
+      - "Subsequent config changes rejected"
+      - "Frozen config includes: anonymous, hideResults, pollType, STV params"
+      - "Freeze timestamp recorded"
+
+  LOO-005:
+    id: "LOO-005"
+    description: "Vote weights validated (3 decimals, non-negative) before persistence"
+    rationale: "Precision and fairness in weighted voting"
+    operations: ["setVoteWeight", "bulkSetVoteWeights"]
+    entities: ["Affiliate", "Group", "VoteWeight"]
+    traceability: "affiliateId, groupId, weight, setBy, validatedAt"
+    acceptanceCriteria:
+      - "Weight rounded to 3 decimal places"
+      - "Weight >= 0 and <= 999.999"
+      - "Bulk update atomic - all or nothing"
+      - "Audit trail with previous/new weight"
+      - "Gini coefficient calculable"
+
+  LOO-006:
+    id: "LOO-006"
+    description: "Proposal type constraints enforced: options, duration, voting method"
+    rationale: "Ensures proposal validity for chosen decision method"
+    operations: ["createProposal", "updateProposal"]
+    entities: ["Proposal", "ProposalTypeConfig"]
+    traceability: "proposalId, type, constraints{}, validatedAt"
+    acceptanceCriteria:
+      - "Correct option count for type"
+      - "Duration within limits"
+      - "Voting method matches type"
+      - "Anonymous/weighted constraints respected"
+      - "STV seats < candidates"
+
+  LOO-007:
+    id: "LOO-007"
+    description: "Thread sequence IDs monotonically increasing; RangeSet consistent"
+    rationale: "Efficient ordering and synchronization of thread contributions"
+    operations: ["addThreadItem", "reorderThreadItems", "deleteThreadItem"]
+    entities: ["Thread", "ThreadItem", "RangeSet"]
+    traceability: "threadId, sequenceId, rangesString, updatedAt"
+    acceptanceCriteria:
+      - "Sequence IDs strictly increasing"
+      - "RangeSet accurately represents all IDs"
+      - "Reorder maintains consistency"
+      - "Deletion removes from RangeSet"
+      - "Concurrent additions handled atomically"
+
+  LOO-008:
+    id: "LOO-008"
+    description: "Group hierarchy permissions inherit: subgroup members see parent per config"
+    rationale: "Organizational structure with configurable visibility"
+    operations: ["createGroup", "updateGroupPermissions", "checkAccess"]
+    entities: ["Group", "Membership", "TopicReader"]
+    traceability: "groupId, parentId, isVisibleToParentMembers, parentMembersCanSeeDiscussions"
+    acceptanceCriteria:
+      - "Parent groups visible to subgroup members if configured"
+      - "Subgroup discussions visible to parent if configured"
+      - "Subscription inherited from root"
+      - "Thread limits apply at organization level"
+      - "Permissions cascade correctly"
+
+  LOO-009:
+    id: "LOO-009"
+    description: "Outcome recording restricted to thread admins; proposal must be closed"
+    rationale: "Governance integrity - only authorized can record decisions"
+    operations: ["recordOutcome"]
+    entities: ["Proposal", "Outcome", "Thread"]
+    traceability: "proposalId, outcomeId, recordedBy, recordedAt, proposalClosedAt"
+    acceptanceCriteria:
+      - "Only thread admins can record outcome"
+      - "Proposal must be closed"
+      - "Outcome links to proposal"
+      - "Decision type recorded"
+      - "STV result attached if applicable"
+
+  LOO-010:
+    id: "LOO-010"
+    description: "Legal acceptance tracked per affiliate with timestamp; required for participation"
+    rationale: "Compliance and audit trail for terms acceptance"
+    operations: ["acceptLegalTerms", "checkLegalCompliance"]
+    entities: ["Affiliate", "LegalAcceptance"]
+    traceability: "affiliateId, acceptedAt, version, requiredAt"
+    acceptanceCriteria:
+      - "Version tracking with content hash"
+      - "Acceptance timestamp recorded"
+      - "Method tracked (explicit/implicit/admin)"
+      - "Grace period enforced"
+      - "Non-acceptance blocks participation"
+
+  LOO-011:
+    id: "LOO-011"
+    description: "Anonymous ballot cryptographically separated from identity"
+    rationale: "Privacy guarantee - ballot cannot be linked to voter"
+    operations: ["castAnonymousVote", "verifyBallotIntegrity"]
+    entities: ["AnonymousBallot", "AnonymousPollVoter"]
+    traceability: "proposalId, ballotHash, voterTokenHash, submittedAt"
+    acceptanceCriteria:
+      - "Voter token hashed before storage"
+      - "Ballot hash includes secret + proposal + choices"
+      - "No identity linkage in ballot"
+      - "Token single-use enforced"
+      - "Integrity verifiable by voter"
+
+  LOO-012:
+    id: "LOO-012"
+    description: "Notification routing respects volume preferences per channel"
+    rationale: "User control over notification delivery"
+    operations: ["notify", "calculateDeliveryChannels"]
+    entities: ["NotificationEvent", "RecipientDeliveryPrefs"]
+    traceability: "eventId, recipientId, channels[], priority"
+    acceptanceCriteria:
+      - "Email volume: quiet/normal/loud"
+      - "Push volume: quiet/normal/loud"
+      - "In-app always delivered"
+      - "Thread-specific overrides work"
+      - "Mentions always notify"
+      - "Priority urgent overrides volume"
+
+  LOO-013:
+    id: "LOO-013"
+    description: "Decision patterns detected and signaled for intervention"
+    rationale: "Proactive governance support"
+    operations: ["detectAllPatterns"]
+    entities: ["DetectionContext", "LoomioSignal"]
+    traceability: "patternType, severity, timestamp, metadata"
+    acceptanceCriteria:
+      - "Stalled proposals detected"
+      - "Emerging consensus detected"
+      - "Persistent blocks detected"
+      - "Low participation detected"
+      - "Weight concentration detected"
+      - "Subgroup isolation detected"
+      - "Anonymity anomalies detected"
+      - "Complex STV detected"
+      - "Missing outcomes detected"
+      - "Abandoned threads detected"
+
+entities:
+  - name: "Proposal"
+    attributes:
+      - "id: string"
+      - "groupId: string"
+      - "threadId: string?"
+      - "type: ProposalType"
+      - "title: string"
+      - "description: string"
+      - "config: ProposalTypeConfig"
+      - "anonymous: boolean"
+      - "hideResults: HideResults"
+      - "stanceReasonRequired: StanceReasonRequired"
+      - "weightedVoting: boolean"
+      - "voteWeights: Map<string, number>"
+      - "options: ProposalOption[]"
+      - "authorId: string"
+      - "createdAt: number"
+      - "updatedAt: number"
+      - "closedAt: number?"
+      - "closedBy: string?"
+      - "tally: ProposalTally?"
+      - "stvResult: STVResult?"
+      - "outcomeRecorded: boolean"
+      - "outcomeId: string?"
+
+  - name: "Vote"
+    attributes:
+      - "id: string"
+      - "proposalId: string"
+      - "proposalType: ProposalType"
+      - "affiliateId: string"
+      - "choices: VoteChoice[]"
+      - "reason: string?"
+      - "reasonFormat: 'html' | 'md'"
+      - "weight: number"
+      - "anonymous: boolean"
+      - "castAt: number"
+      - "updatedAt: number?"
+
+  - name: "AnonymousVote"
+    attributes:
+      - "id: string"
+      - "proposalId: string"
+      - "proposalType: ProposalType"
+      - "ballotHash: string"
+      - "choices: AnonymousBallotChoice[]"
+      - "submittedAt: number"
+      - "verified: boolean"
+
+  - name: "Thread"
+    attributes:
+      - "id: string"
+      - "groupId: string"
+      - "title: string"
+      - "description: string?"
+      - "private: boolean"
+      - "pinned: boolean"
+      - "locked: boolean"
+      - "lockedAt: number?"
+      - "lockedBy: string?"
+      - "allowComments: boolean"
+      - "allowReactions: boolean"
+      - "attachmentsAdminOnly: boolean"
+      - "tags: string[]"
+      - "itemsCount: number"
+      - "rangesString: string"
+      - "lastActivityAt: number"
+      - "createdAt: number"
+      - "updatedAt: number"
+
+  - name: "ThreadItem"
+    attributes:
+      - "id: string"
+      - "threadId: string"
+      - "sequenceId: number"
+      - "kind: ThreadItemKind"
+      - "authorId: string"
+      - "createdAt: number"
+      - "itemableId: string"
+      - "itemableType: string"
+      - "content: string?"
+      - "contentFormat: 'html' | 'md'"
+      - "metadata: Record<string, any>?"
+
+  - name: "Group"
+    attributes:
+      - "id: string"
+      - "name: string"
+      - "description: string?"
+      - "parentId: string?"
+      - "handle: string?"
+      - "isVisibleToPublic: boolean"
+      - "isVisibleToParentMembers: boolean"
+      - "parentMembersCanSeeDiscussions: boolean"
+      - "permissions: GroupPermissions"
+      - "subscriptionId: string?"
+      - "subscriptionActive: boolean"
+      - "subscriptionMaxThreads: number?"
+      - "createdAt: number"
+      - "updatedAt: number"
+
+  - name: "Membership"
+    attributes:
+      - "id: string"
+      - "groupId: string"
+      - "affiliateId: string"
+      - "role: 'member' | 'admin' | 'delegate' | 'guest'"
+      - "status: 'pending' | 'accepted' | 'revoked'"
+      - "voteWeight: number"
+      - "emailVolume: VolumeLevel"
+      - "pushVolume: VolumeLevel"
+      - "threadEmailVolume: VolumeLevel?"
+      - "threadPushVolume: VolumeLevel?"
+      - "invitedBy: string?"
+      - "acceptedAt: number?"
+      - "revokedAt: number?"
+      - "revokedBy: string?"
+
+  - name: "ProposalTemplate"
+    attributes:
+      - "id: string"
+      - "groupId: string"
+      - "name: string"
+      - "description: string?"
+      - "type: ProposalType"
+      - "config: Partial<ProposalTypeConfig>"
+      - "createdBy: string"
+      - "createdAt: number"
+      - "updatedAt: number"
+      - "discarded: boolean"
+      - "position: number"
+
+  - name: "STVResult"
+    attributes:
+      - "quota: number"
+      - "seats: number"
+      - "method: 'scottish' | 'meek'"
+      - "quotaType: 'droop' | 'hare'"
+      - "elected: string[]"
+      - "tied: string[]"
+      - "rounds: STVRound[]"
+      - "totalBallots: number"
+      - "validBallots: number"
+      - "exhaustedBallots: number"
+
+  - name: "STVRound"
+    attributes:
+      - "round: number"
+      - "quota: number"
+      - "candidates: STVCandidate[]"
+      - "elected: string[]"
+      - "eliminated: string[]"
+      - "nonTransferable: number"
+      - "exhaustedVotes: number"
+      - "transfers: TransferEvent[]"
+
+operations:
+  - name: "createProposal"
+    input: "CreateProposalInput"
+    output: "LoomioProposal"
+    invariants: ["LOO-001", "LOO-006"]
+
+  - name: "castVote"
+    input: "CastVoteInput"
+    output: "LoomioVote"
+    invariants: ["LOO-002"]
+
+  - name: "castAnonymousVote"
+    input: "CastAnonymousVoteInput"
+    output: "LoomioAnonymousVote"
+    invariants: ["LOO-002", "LOO-004", "LOO-011"]
+
+  - name: "closeProposal"
+    input: "{ proposalId, closedBy, reason? }"
+    output: "LoomioProposal"
+
+  - name: "recordOutcome"
+    input: "{ proposalId, decision, summary, details?, recordedBy }"
+    output: "LoomioOutcome"
+    invariants: ["LOO-009"]
+
+  - name: "createThread"
+    input: "{ groupId, title, description?, private?, allowComments?, allowReactions?, attachmentsAdminOnly?, tags?, authorId }"
+    output: "LoomioThread"
+
+  - name: "addThreadItem"
+    input: "AddThreadItemInput"
+    output: "LoomioThreadItem"
+    invariants: ["LOO-007"]
+
+  - name: "lockThread"
+    input: "{ threadId, lockedBy, reason? }"
+    output: "LoomioThread"
+
+  - name: "unlockThread"
+    input: "{ threadId, unlockedBy }"
+    output: "LoomioThread"
+
+  - name: "createGroup"
+    input: "CreateGroupInput"
+    output: "LoomioGroup"
+    invariants: ["LOO-008"]
+
+  - name: "updateGroupPermissions"
+    input: "{ groupId, permissions, updatedBy }"
+    output: "LoomioGroup"
+    invariants: ["LOO-008"]
+
+  - name: "inviteMember"
+    input: "InviteMemberInput"
+    output: "{ invitationId, membershipId }"
+
+  - name: "acceptInvitation"
+    input: "{ invitationId, affiliateId }"
+    output: "LoomioMembership"
+
+  - name: "revokeMembership"
+    input: "{ membershipId, revokedBy, reason? }"
+    output: "LoomioMembership"
+
+  - name: "updateVoteWeight"
+    input: "{ groupId, affiliateId, weight, setBy, reason? }"
+    output: "{ weight, auditEntryId }"
+    invariants: ["LOO-005"]
+
+  - name: "bulkUpdateVoteWeights"
+    input: "{ groupId, weights[], setBy }"
+    output: "{ updated[], failed[] }"
+    invariants: ["LOO-005"]
+
+  - name: "createProposalTemplate"
+    input: "{ groupId, name, description?, type, config, createdBy }"
+    output: "LoomioProposalTemplate"
+
+  - name: "publishProposalTemplate"
+    input: "{ templateId, publishedBy }"
+    output: "LoomioProposalTemplate"
+
+  - name: "acceptLegalTerms"
+    input: "{ affiliateId, version?, ipAddress?, userAgent?, method? }"
+    output: "LegalAcceptance"
+    invariants: ["LOO-010"]
+
+  - name: "checkLegalCompliance"
+    input: "{ affiliateId, action }"
+    output: "LegalComplianceCheck"
+    invariants: ["LOO-010"]
+
+  - name: "countSTV"
+    input: "{ proposalId }"
+    output: "STVResult"
+    invariants: ["LOO-003"]
+
+  - name: "detectPatterns"
+    input: "{ groupId, timeRange? }"
+    output: "LoomioSignal[]"
+    invariants: ["LOO-013"]
+
+  - name: "analyzeParticipation"
+    input: "{ groupId, days? }"
+    output: "ParticipationAnalytics"
+
+  - name: "analyzeWeightDistribution"
+    input: "{ groupId }"
+    output: "WeightDistributionAnalysis"
+
+  - name: "createProposalTemplate"
+    input: "{ proposalId, name, groupId }"
+    output: "LoomioProposalTemplate"
+
+  - name: "recommendTemplate"
+    input: "{ context, groupId }"
+    output: "LoomioProposalTemplate"
+
+  - name: "groupHealth"
+    input: "{ groupId }"
+    output: "GroupHealthMetrics"
+
+  - name: "subgroupIntegration"
+    input: "{ groupId }"
+    output: "SubgroupIntegrationMetrics"
+
+  - name: "acceptLegalTerms"
+    input: "{ affiliateId, version?, ipAddress?, userAgent?, method? }"
+    output: "LegalAcceptance"
+    invariants: ["LOO-010"]
+
+  - name: "checkLegalCompliance"
+    input: "{ affiliateId, action }"
+    output: "LegalComplianceCheck"
+    invariants: ["LOO-010"]
+
+  - name: "notify"
+    input: "NotificationEvent"
+    output: "void"
+    invariants: ["LOO-012"]
+
+  - name: "simulateSTV"
+    input: "{ seats, candidates[], ballots[][], method?, quota? }"
+    output: "STVResult"
+    invariants: ["LOO-003"]
+
+  - name: "explainSTV"
+    input: "{ proposalId }"
+    output: "string"
+
+types:
+  ProposalType: 
+    enum: ["proposal", "check", "advice", "consent", "consensus", "poll", "score", "dot_vote", "ranked_choice", "stv", "meeting"]
+  
+  VotingMethod:
+    enum: ["majority", "consensus", "consent", "plurality", "scoring", "dot_voting", "irv", "stv", "scheduling"]
+  
+  HideResults:
+    enum: ["never", "until_closed", "always"]
+  
+  StanceReasonRequired:
+    enum: ["disabled", "required", "required_for_disagree_or_block", "required_for_block"]
+  
+  VolumeLevel:
+    enum: ["quiet", "normal", "loud"]
+  
+  ThreadItemKind:
+    enum: ["discussion_created", "discussion_updated", "proposal_created", "proposal_updated", "vote_cast", "vote_updated", "outcome_recorded", "comment_created", "comment_updated", "attachment_added", "tag_added", "tag_removed"]
+  
+  ProposalTypeConfig:
+    properties:
+      key: { type: "string", enum: "ProposalType" }
+      label: { type: "string" }
+      description: { type: "string" }
+      votingMethod: { type: "string", enum: "VotingMethod" }
+      defaults: { type: "object", properties: {} }
+      constraints: { type: "object", properties: {} }
+      icon: { type: "string" }
+      category: { type: "string", enum: ["decision", "consultation", "election", "scheduling", "prioritization"] }
+      complexity: { type: "string", enum: ["simple", "moderate", "complex"] }
+  
+  ProposalOption:
+    properties:
+      id: { type: "string" }
+      name: { type: "string" }
+      description: { type: "string" }
+      icon: { type: "string" }
+      priority: { type: "number" }
+  
+  ProposalTally:
+    properties:
+      totalVotes: { type: "number" }
+      totalWeight: { type: "number" }
+      byOption: { type: "object" }
+      consensusReached: { type: "boolean" }
+      consensusLevel: { type: "number" }
+      blocks: { type: "number" }
+      abstentions: { type: "number" }
+  
+  VoteChoice:
+    properties:
+      optionId: { type: "string" }
+      score: { type: "number" }
+      rank: { type: "number" }
+      position: { type: "number" }
+  
+  AnonymousBallotChoice:
+    properties:
+      id: { type: "string" }
+      ballotId: { type: "string" }
+      proposalOptionId: { type: "string" }
+      score: { type: "number" }
+      position: { type: "number" }
+  
+  GroupPermissions:
+    properties:
+      isVisibleToPublic: { type: "boolean" }
+      isVisibleToParentMembers: { type: "boolean" }
+      parentMembersCanSeeDiscussions: { type: "boolean" }
+      discussionPrivacyOptions: { type: "array", items: { type: "string" } }
+      membersCanStartDiscussions: { type: "boolean" }
+      nonMembersCanStartDiscussions: { type: "boolean" }
+      membersCanEditDiscussions: { type: "boolean" }
+      membersCanEditComments: { type: "boolean" }
+      membersCanDeleteComments: { type: "boolean" }
+      membersCanRaiseMotions: { type: "boolean" }
+      membersCanAnnounce: { type: "boolean" }
+      attachmentsAdminOnly: { type: "boolean" }
+      membersCanAddMembers: { type: "boolean" }
+      membersCanAddGuests: { type: "boolean" }
+      membersCanCreateSubgroups: { type: "boolean" }
+      membersCanCreateTags: { type: "boolean" }
+      membersCanCreateTemplates: { type: "boolean" }
+      adminsCanEditUserContent: { type: "boolean" }
+      membersCanVote: { type: "boolean" }
+      listedInExplore: { type: "boolean" }
+
+  LegalComplianceCheck:
+    properties:
+      affiliateId: { type: "string" }
+      canParticipate: { type: "boolean" }
+      required: { type: "boolean" }
+      acceptedVersion: { type: "string" }
+      currentVersion: { type: "string" }
+      gracePeriodEnd: { type: "number" }
+      reason: { type: "string" }
+
+  LegalAcceptance:
+    properties:
+      id: { type: "string" }
+      affiliateId: { type: "string" }
+      version: { type: "string" }
+      acceptedAt: { type: "number" }
+      acceptedVersion: { type: "string" }
+      ipAddress: { type: "string" }
+      userAgent: { type: "string" }
+      method: { type: "string", enum: ["explicit", "implicit", "admin_action"] }
+
+  STVCandidate:
+    properties:
+      id: { type: "string" }
+      name: { type: "string" }
+      elected: { type: "boolean" }
+      eliminated: { type: "boolean" }
+      votes: { type: "number" }
+      keepValue: { type: "number" }
+
+  TransferEvent:
+    properties:
+      from: { type: "string" }
+      to: { type: "string" }
+      value: { type: "number" }
+      reason: { type: "string", enum: ["surplus", "elimination"] }
+
+  LegalAcceptanceStatus:
+    properties:
+      affiliateId: { type: "string" }
+      currentVersion: { type: "string" }
+      acceptedVersion: { type: "string" }
+      acceptedAt: { type: "number" }
+      isCurrent: { type: "boolean" }
+      required: { type: "boolean" }
+      requiredAt: { type: "number" }
+
+  DecisionAnalytics:
+    properties:
+      groupId: { type: "string" }
+      period: { type: "object" }
+      proposalsCreated: { type: "number" }
+      proposalsClosed: { type: "number" }
+      proposalsWithOutcome: { type: "number" }
+      averageParticipationRate: { type: "number" }
+      consensusRate: { type: "number" }
+      blockRate: { type: "number" }
+      proposalTypesUsed: { type: "object" }
+      averageTimeToDecision: { type: "number" }
+      voteWeightDistribution: { type: "object" }
+      anonymousVoteRate: { type: "number" }
+      stvElectionsCount: { type: "number" }
+
+  GroupHealthMetrics:
+    properties:
+      groupId: { type: "string" }
+      memberCount: { type: "number" }
+      activeMemberCount: { type: "number" }
+      proposalCount: { type: "number" }
+      threadCount: { type: "number" }
+      participationRate: { type: "number" }
+      decisionVelocity: { type: "number" }
+      consensusHealth: { type: "number" }
+      weightFairness: { type: "number" }
+      subgroupIntegration: { type: "number" }
+      templateUsageRate: { type: "number" }
+      legalCompliance: { type: "number" }
+
+  LoomioSignal:
+    properties:
+      id: { type: "string" }
+      domain: { type: "string", const: "loomio" }
+      pattern: { type: "string" }
+      severity: { type: "string", enum: ["info", "warning", "critical"] }
+      timestamp: { type: "number" }
+      source: { type: "string" }
+      metadata: { type: "object" }
