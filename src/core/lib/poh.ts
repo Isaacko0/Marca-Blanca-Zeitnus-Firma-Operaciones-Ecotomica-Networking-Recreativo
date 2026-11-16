@@ -651,6 +651,28 @@ export function assignChallengeToCourt(st: PohState, challengeId: string, courtI
   }
 }
 
+// ===== JUROR REPUTATION =====
+export function updateJurorReputation(
+  st: PohState,
+  jurorId: string,
+  delta: number,
+  reason: string
+): PohState {
+  const juror = st.jurors.find(j => j.id === jurorId)
+  if (!juror) throw new Error('Juror not found')
+
+  const newReputation = Math.max(0, Math.min(100, juror.reputation + delta))
+
+  return {
+    ...st,
+    jurors: st.jurors.map(j =>
+      j.id === jurorId
+        ? { ...j, reputation: newReputation, lastActivity: now(), lastReputationChange: { delta, reason, timestamp: now() } }
+        : j
+    ),
+  }
+}
+
 // ===== CONFIG UPDATE =====
 export function updatePohConfig(st: PohState, updates: Partial<PohConfig>): PohState {
   return {

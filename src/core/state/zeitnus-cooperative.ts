@@ -215,3 +215,7 @@ export const I18N_KEYS = {
   'circular.transparencia': 'zeitnusCooperative.circular.transparencia',
   'circular.recursos': 'zeitnusCooperative.circular.recursos',
 };
+/** Factory for initial cooperative state */
+export function createInitialCooperativeState(): CooperativeState {
+  return { ...INITIAL_COOPERATIVE_STATE };
+}

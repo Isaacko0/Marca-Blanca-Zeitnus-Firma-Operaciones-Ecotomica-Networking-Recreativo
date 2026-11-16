@@ -231,3 +231,16 @@ export const rbeTypes = {
   RBE_PRESETS,
   RBE_VALIDATORS,
 };
+
+/** Factory for initial RBE state */
+export function makeRBEState(): RBEState {
+  return {
+    ...INITIAL_RBE_STATE,
+    // Ensure Maps are initialized (spread doesn't copy Map properly)
+    tq: {
+      ...INITIAL_RBE_STATE.tq,
+      balances: new Map<string, number>(),
+      iceCache: new Map<string, ICEEntry>(),
+    },
+  };
+}

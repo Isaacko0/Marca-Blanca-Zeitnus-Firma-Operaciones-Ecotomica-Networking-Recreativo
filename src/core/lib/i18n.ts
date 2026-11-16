@@ -212,7 +212,6 @@ export const I18N: Dict = {
   'ie.class': { es: 'clase', en: 'class', pt: 'classe' },
   'ie.stakeBonus': { es: 'stake', en: 'stake', pt: 'stake' },
   'ie.giveBonus': { es: 'pares', en: 'peers', pt: 'pares' },
-  'ie.stake': { es: 'Stake', en: 'Stake', pt: 'Stake' },
   'ie.giveReceived': { es: 'GIVE recibido', en: 'GIVE received', pt: 'GIVE recebido' },
   'ie.projectedPayouts': { es: 'Pagos proyectados', en: 'Projected payouts', pt: 'Pagamentos projetados' },
   'ie.a3AtRelease': { es: 'A3 al liberar', en: 'A3 at release', pt: 'A3 na liberação' },
@@ -229,7 +228,6 @@ export const I18N: Dict = {
   'ie.noMilestones': { es: 'Sin hitos definidos.', en: 'No milestones defined.', pt: 'Sem marcos definidos.' },
   'ie.readyToRelease': { es: 'Listo para liberar', en: 'Ready to release', pt: 'Pronto para liberar' },
   'ie.milestonesReleased': { es: 'hitos liberados', en: 'milestones released', pt: 'marcos liberados' },
-  'ie.approve': { es: 'Aprobar', en: 'Approve', pt: 'Aprovar' },
   'ie.releaseAndDistribute': { es: 'Liberar y repartir', en: 'Release & distribute', pt: 'Liberar e distribuir' },
   'ie.aiFacilitator': { es: 'Facilitador de consenso (IA)', en: 'Consensus facilitator (AI)', pt: 'Facilitador de consenso (IA)' },
   'ie.aiDescription': { es: 'La IA sintetiza los aportes del grupo y propone una decisión sobre el hito \"{milestoneTitle}\", o redacta el informe que los coordinadores presentan a las entidades financiadoras. Es una propuesta: la aprobación on-chain siempre la hacen las personas.', en: 'AI synthesizes group contributions and proposes a decision on milestone \"{milestoneTitle}\", or drafts the report coordinators present to funders. It is a proposal: on-chain approval is always made by people.', pt: 'A IA sintetiza as contribuições do grupo e propõe uma decisão sobre o marco \"{milestoneTitle}\", ou redige o relatório que os coordenadores apresentam aos financiadores. É uma proposta: a aprovação on-chain sempre é feita pelas pessoas.' },
@@ -258,8 +256,6 @@ export const I18N: Dict = {
   'ie.earnByCompleting': { es: 'Ganálos completando hitos en desafíos.', en: 'Earn them by completing milestones in challenges.', pt: 'Ganhe-os completando marcos em desafios.' },
   'ie.noAttestations': { es: 'Sin atestaciones de {schema} aún.', en: 'No {schema} attestations yet.', pt: 'Sem atestações de {schema} ainda.' },
   'ie.workURI': { es: 'URI de trabajo', en: 'Work URI', pt: 'URI de trabalho' },
-  'ie.challenge': { es: 'Desafío', en: 'Challenge', pt: 'Desafio' },
-  'ie.milestone': { es: 'Hito', en: 'Milestone', pt: 'Marco' },
   'ie.role': { es: 'Rol', en: 'Role', pt: 'Papel' },
   'ie.valid': { es: 'Válida', en: 'Valid', pt: 'Válida' },
   'ie.revoked': { es: 'Revocada', en: 'Revoked', pt: 'Revogada' },
@@ -277,7 +273,6 @@ export const I18N: Dict = {
   'ie.milestoneTitle': { es: 'Título del hito', en: 'Milestone title', pt: 'Título do marco' },
   'ie.milestoneAmount': { es: 'Monto (USD)', en: 'Amount (USD)', pt: 'Valor (USD)' },
   'ie.approvalsRequired': { es: 'Aprobaciones requeridas', en: 'Approvals required', pt: 'Aprovações necessárias' },
-  'ie.contribute': { es: 'Aportar', en: 'Contribute', pt: 'Contribuir' },
   'ie.joinBelow': { es: 'Unirme debajo', en: 'Join below', pt: 'Entrar abaixo' },
   'ie.full': { es: 'Completo (3/3)', en: 'Full (3/3)', pt: 'Cheio (3/3)' },
   'ie.myStatus': { es: 'Mi estado', en: 'My status', pt: 'Meu estado' },
@@ -301,9 +296,12 @@ export const I18N: Dict = {
   'ie.showTable': { es: 'Mostrar tabla', en: 'Show table', pt: 'Mostrar tabela' },
   'ie.showChart': { es: 'Mostrar gráfico', en: 'Show chart', pt: 'Mostrar gráfico' },
   'ie.rceProjection': { es: 'Proyección RCE', en: 'RCE projection', pt: 'Projeção RCE' },
-  'ie.exponentialScaleTitle': { es: 'Escala exponencial', en: 'Exponential scale', pt: 'Escala exponencial' },
-  'ie.scaleNote': { es: 'El crecimiento es teórico (3^n); el factor real de reclutamiento suele ser 1.5-2.5x.', en: 'Growth is theoretical (3^n); real recruitment factor is typically 1.5-2.5x.', pt: 'O crescimento é teórico (3^n); o fator real de recrutamento é tipicamente 1.5-2.5x.' },
   'ie.calibrationDetail': { es: 'Calibrado contra prototipo WhatMatters: $288.008 → 1 RCE = $1.000.03 en L5 (±1 centavo).', en: 'Calibrated against WhatMatters prototype: $288.008 → 1 RCE = $1.000.03 at L5 (±1 cent).', pt: 'Calibrado contra protótipo WhatMatters: $288.008 → 1 RCE = $1.000,03 no N5 (±1 centavo).' },
   'ie.dashboardSubtitle': { es: 'Coordiná masivamente, financá y recompensá la resolución colaborativa de grandes desafíos con Inteligencia Exponencial.', en: 'Massively coordinate, fund and reward collaborative resolution of grand challenges with Exponential Intelligence.', pt: 'Coordene massivamente, financie e recompense a resolução colaborativa de grandes desafios com Inteligência Exponencial.' },
   'ie.challengeCreated': { es: 'Desafío creado', en: 'Challenge created', pt: 'Desafio criado' }
   }
+
+/** Translation function */
+export function t(key: string, lang: Lang = 'es'): string {
+  return I18N[key]?.[lang] ?? key
+}

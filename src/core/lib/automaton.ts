@@ -3,7 +3,45 @@
 // EXTENSION: Automata Soberano E2R Fisico -- Control MFC + Biorreactor real
 // EBD: ESP-D3, ESP-D6, ESP-D10, ESP-D11
 
-import { EventEmitter } from "events";
+// Browser-compatible EventEmitter shim
+class EventEmitter {
+  private events: Map<string, Function[]> = new Map();
+
+  on(event: string, listener: Function): this {
+    const listeners = this.events.get(event) || [];
+    listeners.push(listener);
+    this.events.set(event, listeners);
+    return this;
+  }
+
+  off(event: string, listener: Function): this {
+    const listeners = this.events.get(event) || [];
+    const idx = listeners.indexOf(listener);
+    if (idx !== -1) listeners.splice(idx, 1);
+    return this;
+  }
+
+  emit(event: string, ...args: unknown[]): boolean {
+    const listeners = this.events.get(event) || [];
+    listeners.forEach(l => l(...args));
+    return listeners.length > 0;
+  }
+
+  once(event: string, listener: Function): this {
+    const wrapper = (...args: unknown[]) => {
+      listener(...args);
+      this.off(event, wrapper);
+    };
+    return this.on(event, wrapper);
+  }
+
+  removeAllListeners(event?: string): this {
+    if (event) this.events.delete(event);
+    else this.events.clear();
+    return this;
+  }
+}
+
 import type {
   SoulState, BotAction, HeartbeatTask, BotChild, BotAuditEntry, SurvivalTier,
 } from "@core/state/automaton"

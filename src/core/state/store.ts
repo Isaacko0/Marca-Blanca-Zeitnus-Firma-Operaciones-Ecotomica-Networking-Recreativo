@@ -1671,7 +1671,6 @@ export const useAppStore = create<AppState>()(
                                                 talents: initialTalents,
                                                 plans: initialPlans,
                                                 pvsos: [],
-                                                znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
                                                 agents: [], goals: [], tasks: [], audit: [],
                                                 // Story (MuMuAINovel)
                                                 story: makeStoryState(),
@@ -1831,7 +1830,6 @@ export const useAppStore = create<AppState>()(
                                                     talents: st.talents,
                                                     plans: st.plans,
                                                     pvsos: st.pvsos,
-                                                    znu: st.znu,
                                                     agents: st.agents,
                                                     goals: st.goals,
                                                     tasks: st.tasks,
