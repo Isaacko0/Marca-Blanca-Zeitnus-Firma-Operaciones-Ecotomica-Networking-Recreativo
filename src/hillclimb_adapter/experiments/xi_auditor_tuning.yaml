@@ -1,0 +1,22 @@
+# src/hillclimb_adapter/experiments/xi_auditor_tuning.yaml
+experiment: "hscsg_xi_auditor_tuning"
+description: "Minimize ξ auditor false positive/negative rate via SVD v2 ground truth"
+problem: "hscsg_xi_auditor_tuning"
+climbers:
+  - "greedy"
+  - "gepa"
+  - "automaton_e2r"
+budget:
+  max_evaluations: 30
+  timeout_hours: 2
+verifier: "xi_verifier"
+config:
+  community_state: {}
+  ground_truth_data: {}  # Filled at runtime
+  targets:
+    max_error: 0.1
+    min_confidence: 0.9
+    min_passed_rate: 0.95
+metadata:
+  phase: "Continuous"
+  hscsg_version: "v15.1"

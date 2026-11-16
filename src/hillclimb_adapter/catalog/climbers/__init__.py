@@ -1,0 +1,1 @@
+# HSCSG Hillclimb Adapter
