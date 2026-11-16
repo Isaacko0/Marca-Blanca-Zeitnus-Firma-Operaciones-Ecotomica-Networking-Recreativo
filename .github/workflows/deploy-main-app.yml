@@ -1,0 +1,182 @@
+# GitHub Actions Workflow for Main Vite App Deploy to Vercel
+# Deploys the root Vite application (not tool-forge)
+
+name: Deploy Main App to Vercel
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'tool-forge/**'
+      - '.github/workflows/tool-forge.yml'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'tool-forge/**'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  # ══════════════════════════════════════════════════════════════════
+  # LINT & TYPE CHECK (Main App)
+  # ══════════════════════════════════════════════════════════════════
+  lint-and-typecheck:
+    name: Lint & Type Check (Main App)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript type check
+        run: npm run typecheck
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Prettier check
+        run: npx prettier --check .
+
+  # ══════════════════════════════════════════════════════════════════
+  # BUILD MAIN APP (Vite)
+  # ══════════════════════════════════════════════════════════════════
+  build:
+    name: Build Vite App
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Vite application
+        run: npm run build
+        env:
+          VITE_VERCEL_URL: ${{ secrets.VERCEL_URL }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vite-build
+          path: dist
+          retention-days: 1
+
+  # ══════════════════════════════════════════════════════════════════
+  # DEPLOY TO VERCEL (Preview on PR, Production on main)
+  # ══════════════════════════════════════════════════════════════════
+  deploy-vercel:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: vite-build
+          path: ./dist
+
+      - name: Deploy to Vercel (Production)
+        if: github.ref == 'refs/heads/main'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Preview to Vercel
+        if: github.ref != 'refs/heads/main'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Comment PR with Preview URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment: 'preview',
+              per_page: 1
+            });
+            if (deployments.length > 0) {
+              const url = deployments[0].url;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: `🚀 **Main App Preview Deployment Ready!**\n\n🔗 **URL:** ${url}\n\nThis preview will update automatically on new commits.`
+              });
+            }
+
+  # ══════════════════════════════════════════════════════════════════
+  # NOTIFICATIONS
+  # ══════════════════════════════════════════════════════════════════
+  notify-success:
+    name: Notify Success
+    runs-on: ubuntu-latest
+    needs: deploy-vercel
+    if: always() && needs.deploy-vercel.result == 'success'
+    steps:
+      - name: Notify Discord
+        if: env.DISCORD_WEBHOOK != ''
+        run: |
+          curl -X POST ${{ secrets.DISCORD_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d '{"content": "🚀 **Main App Deployed to Vercel!**\n🔗 **Production:** https://marca-blanca-zeitnus.vercel.app\n📦 **Commit:** ${{ github.sha }}" }'
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build, deploy-vercel]
+    if: always() && (needs.lint-and-typecheck.result == 'failure' || needs.build.result == 'failure' || needs.deploy-vercel.result == 'failure')
+    steps:
+      - name: Create Failure Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '❌ Main App Pipeline Failed',
+              body: `Pipeline failed at ${new Date().toISOString()}. Check the workflow run for details.`,
+              labels: ['bug', 'ci-failure', 'main-app']
+            });
+      - name: Notify Discord
+        if: env.DISCORD_WEBHOOK != ''
+        run: |
+          curl -X POST ${{ secrets.DISCORD_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d '{"content": "❌ **Main App Pipeline Failed!** Check GitHub Actions for details."}'
