@@ -199,7 +199,7 @@ export const ZeitnusCooperativeDashboard: React.FC = () => {
               icon="Wallet"
               color="var(--genio)"
               trend={calculateAssetTrend()}
-              subtitle={t('zeitnusCooperative.dashboard.capital')}: {formatCurrency(capital)}
+              subtitle={`${t('zeitnusCooperative.dashboard.capital')}: ${formatCurrency(capital)}`}
             />
             <MetricCard
               title={t('zeitnusCooperative.dashboard.liquidity')}
@@ -207,7 +207,7 @@ export const ZeitnusCooperativeDashboard: React.FC = () => {
               icon="Droplets"
               color={liquidityRatio > 1 ? 'var(--genio)' : liquidityRatio > 0.5 ? 'var(--acero)' : 'var(--haiti)'}
               trend={liquidityRatio > 1 ? 'up' : liquidityRatio > 0.5 ? 'neutral' : 'down'}
-              subtitle={t('zeitnusCooperative.dashboard.ratio')}: {liquidityRatio.toFixed(2)}x
+              subtitle={`${t('zeitnusCooperative.dashboard.ratio')}: ${liquidityRatio.toFixed(2)}x`}
             />
             <MetricCard
               title={t('zeitnusCooperative.dashboard.nplRatio')}
@@ -215,7 +215,7 @@ export const ZeitnusCooperativeDashboard: React.FC = () => {
               icon="AlertTriangle"
               color={nplRatio < 0.03 ? 'var(--genio)' : nplRatio < 0.08 ? 'var(--acero)' : 'var(--haiti)'}
               trend={nplRatio < 0.03 ? 'up' : nplRatio < 0.08 ? 'neutral' : 'down'}
-              subtitle={t('zeitnusCooperative.dashboard.npl')}: {(nplRatio * 100).toFixed(2)}%
+              subtitle={`${t('zeitnusCooperative.dashboard.npl')}: ${(nplRatio * 100).toFixed(2)}%`}
             />
             <MetricCard
               title={t('zeitnusCooperative.dashboard.surplus')}

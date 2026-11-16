@@ -457,7 +457,7 @@ const TransparencyTab: React.FC<{
         </div>
       </div>
     )}
-    </div>
+
   </div>
 );
 

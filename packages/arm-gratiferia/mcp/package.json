@@ -1,0 +1,28 @@
+{
+  "name": "@hscsg/arm-gratiferia-mcp",
+  "version": "0.1.0",
+  "description": "Gratifieria MCP Server - Model Context Protocol for gift economy matchmaking",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Isaacko0/Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo.git",
+    "directory": "packages/arm-gratiferia"
+  },
+  "type": "module",
+  "main": "./dist/mcp/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/**/*.test.ts"
+  },
+  "dependencies": {
+    "@hscsg/arm-core": "file:../../../arm-core",
+    "@hscsg/arm-cli": "file:../../../arm-cli",
+    "@hscsg/arm-gratiferia": "file:../.."
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0"
+  },
+  "files": ["dist"]
+}

@@ -1,0 +1,141 @@
+# ARM API OpenSpec Specification
+
+spec_version: "1.0"
+name: "@hscsg/arm-api"
+version: "0.1.0"
+description: "ARM Loopback API - HTTP API and server for ARM workspace in folder mode. 127.0.0.1 only, SSE for external changes."
+
+domain:
+  entities:
+    - name: LoopbackServer
+      description: "Serves ARM UI bundle and JSON API on 127.0.0.1"
+      fields:
+        - name: port
+          type: number
+          required: true
+          default: 5178
+        - name: workspaceDir
+          type: string
+          required: true
+        - name: distDir
+          type: string
+          required: true
+
+    - name: APIEndpoints
+      description: "REST-like endpoints over the workspace"
+      fields:
+        - name: getWorkspace
+          type: string
+          description: "GET /api/workspace - Full workspace JSON"
+        - name: getStatus
+          type: string
+          description: "GET /api/status - Daily brief (arm-core buildBrief)"
+        - name: getAccounts
+          type: string
+          description: "GET /api/accounts - List accounts"
+        - name: getAccount
+          type: string
+          description: "GET /api/accounts/:id - Show account"
+        - name: getBrief
+          type: string
+          description: "GET /api/brief/:id - Pre-conversation brief"
+        - name: getWhy
+          type: string
+          description: "GET /api/why/:id - Trace record"
+        - name: getPatterns
+          type: string
+          description: "GET /api/patterns - Cross-account patterns"
+        - name: getSignals
+          type: string
+          description: "GET /api/signals - Signals bundle export"
+        - name: getLint
+          type: string
+          description: "GET /api/lint - Memory audit"
+        - name: postOps
+          type: string
+          description: "POST /api/ops - Submit operation (Change) with review gating"
+        - name: getProposals
+          type: string
+          description: "GET /api/proposals - List proposals"
+        - name: postProposalDecide
+          type: string
+          description: "POST /api/proposals/:id/decide - Approve/reject proposal"
+        - name: getEvents
+          type: string
+          description: "GET /api/events - Server-Sent Events for external changes"
+
+operations:
+  - name: startServer
+    description: "Start the loopback server (UI + API)"
+    input: "ServerOptions"
+    output: "ServerInstance"
+
+  - name: createApi
+    description: "Create the API router for a workspace"
+    input: "ApiOptions"
+    output: "ApiRouter"
+
+functions:
+  - name: startServer
+    module: "server"
+    signature: "(workspaceDir: string, port?: number, distDir?: string) => ServerInstance"
+    description: "Start server serving dist/ and API. Validates Host=localhost, Origin=localhost, JSON body."
+
+  - name: createApi
+    module: "api"
+    signature: "(workspaceDir: string) => ApiRouter"
+    description: "Create API handlers using arm-cli actions and arm-core ops."
+
+  - name: handleRequest
+    module: "api"
+    description: "Handle incoming HTTP request: validate Host/Origin/JSON, route to action, return JSON."
+
+  - name: handleOperation
+    module: "api"
+    description: "POST /api/ops: parse Change, call actions.change with review gating, return result."
+
+  - name: sseStream
+    module: "api"
+    description: "GET /api/events: SSE stream broadcasting workspace changes from external writers."
+
+invariants:
+  - "Binds to 127.0.0.1 only (no external access)"
+  - "Validates Host header is localhost (DNS rebinding protection)"
+  - "Validates Origin is localhost or null (CSRF protection)"
+  - "Requires JSON body (no cross-site form posts)"
+  - "Changes from page recorded as human (kind: 'human')"
+  - "File lock coordinates writers on one host"
+  - "Atomic workspace.json writes via arm-cli store"
+  - "SSE broadcasts external changes to UI"
+  - "Wholesale import/reset requires revision check + backup"
+  - "ARM branding in API responses"
+
+interfaces:
+  - name: ARMUIConsumer
+    description: "ARM UI (React) consumes this API in folder mode"
+    required_functions:
+      - "startServer"
+      - "All /api/* endpoints"
+      - "SSE /api/events"
+
+traceability:
+  - requirement: "ARM-001"
+    description: "One write path"
+    implements: ["POST /api/ops -> actions.change -> core.applyChange"]
+  - requirement: "ARM-003"
+    description: "Review gate"
+    implements: ["POST /api/ops respects review flag", "Proposal endpoints"]
+  - requirement: "ARM-004"
+    description: "User-owned records"
+    implements: ["Local server on user's machine", "Folder workspace"]
+
+testing:
+  unit:
+    - "api.test.ts: handleRequest validation (Host, Origin, JSON), routing, error codes"
+    - "server.test.ts: startServer binds to 127.0.0.1, serves dist/, SSE broadcasts"
+  integration:
+    - "API + arm-cli actions + arm-core ops round-trip"
+    - "Concurrent: UI (page) + agent (MCP) + CLI all writing via API"
+    - "SSE: external write -> broadcast -> UI receives update"
+  e2e:
+    - "arm ui -> browser loads -> folder mode -> agent via MCP -> Review -> approve -> SSE updates UI"

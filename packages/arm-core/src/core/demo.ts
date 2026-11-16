@@ -1,0 +1,47 @@
+import { seedWorkspace } from "../data/seed.ts";
+import type { Workspace } from "../types.ts";
+
+/**
+ * Keep a new demo active and believable instead of letting fixed seed dates
+ * decay. Every date is relative to `now`, and callers that assert on the result
+ * must pass the same clock they assert with: a demo built from the wall clock
+ * and checked against a fixed instant drifts apart as soon as the two land on
+ * different sides of an hour like "due yesterday at 23:00".
+ */
+export function createDemoWorkspace(now: Date = new Date()): Workspace {
+  const demo = structuredClone(seedWorkspace);
+  const atDay = (offset: number, hour = 12) => {
+    const value = new Date(now);
+    value.setHours(hour, 0, 0, 0);
+    value.setDate(value.getDate() + offset);
+    return value.toISOString();
+  };
+  const taskDueOffsets = [1, -1, 2, 5, 3, -4, -6];
+  const dealCloseOffsets = [14, 24, 10, 5, 18, 35, -42];
+  const noteOffsets = [-1, -3, -2, -7, -4, -9, -6];
+
+  demo.updatedAt = now.toISOString();
+  demo.accounts = demo.accounts.map((account, index) => ({
+    ...account,
+    createdAt: atDay(-120 - index * 24),
+    lastTouch: atDay(-1 - index),
+    contacts: account.contacts.map((contact, contactIndex) => ({ ...contact, lastSeen: atDay(-1 - index - contactIndex) })),
+  }));
+  demo.deals = demo.deals.map((deal, index) => ({ ...deal, createdAt: atDay(-35 - index * 4), closeDate: atDay(dealCloseOffsets[index] ?? 30) }));
+  demo.tasks = demo.tasks.map((task, index) => ({
+    ...task,
+    createdAt: atDay(-8 - index),
+    due: atDay(taskDueOffsets[index] ?? 3, 17),
+    completedAt: task.completedAt ? atDay(-2 - index) : undefined,
+  }));
+  demo.notes = demo.notes.map((note, index) => ({ ...note, createdAt: atDay(noteOffsets[index] ?? -10) }));
+  // Commitments: ours is a day overdue so the brief has something to ask about;
+  // theirs are still ahead.
+  demo.claims = (demo.claims ?? []).map((claim, index) => ({
+    ...claim,
+    createdAt: atDay(-2 - (index % 9)),
+    due: claim.due ? atDay(claim.owner === "them" ? 6 + (index % 3) * 4 : -1, 23) : undefined,
+  }));
+  return demo;
+}
+

@@ -1,0 +1,625 @@
+# ARM Core OpenSpec Specification
+
+spec_version: "1.0"
+name: "@hscsg/arm-core"
+version: "0.1.0"
+description: "Pure TypeScript domain logic for Agent Relationship Management (ARM). Zero dependencies. Consumable by CLI, MCP, API, UI, and non-Node runtimes via bindings."
+
+# Domain Model
+domain:
+  entities:
+    - name: Account
+      description: "An organization or entity being tracked in the ARM"
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID (acct_*)"
+        - name: name
+          type: string
+          required: true
+        - name: domain
+          type: string
+          required: true
+        - name: segment
+          type: string
+          required: true
+        - name: stage
+          type: AccountStage
+          required: true
+        - name: priority
+          type: Priority
+          required: true
+        - name: arr
+          type: number
+          required: true
+          description: "Annual recurring revenue in ZNU (postmonetario) or USD (conectado)"
+        - name: health
+          type: "number|null"
+          required: true
+          description: "0-100 health score, null = unknown"
+        - name: fit
+          type: "number|null"
+          required: true
+          description: "0-100 fit score, null = unknown"
+        - name: sourceConfidence
+          type: "number|null"
+          required: true
+          description: "0-100 evidence confidence, null = unknown"
+        - name: owner
+          type: string
+          required: true
+        - name: tags
+          type: "string[]"
+          required: true
+        - name: contacts
+          type: "Contact[]"
+          required: true
+        - name: needs
+          type: "string[]"
+          required: true
+          description: "Derived from active 'need' claims"
+        - name: risks
+          type: "string[]"
+          required: true
+          description: "Derived from active 'risk' claims"
+        - name: lastTouch
+          type: "string|null"
+          required: true
+          description: "ISO timestamp of last verified interaction"
+        - name: archivedAt
+          type: "string?"
+          required: false
+        - name: archiveReason
+          type: "string?"
+          required: false
+        - name: createdAt
+          type: string
+          required: true
+
+    - name: Contact
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID (contact_*)"
+        - name: name
+          type: string
+          required: true
+        - name: role
+          type: string
+          required: true
+        - name: influence
+          type: ContactInfluence
+          required: true
+        - name: email
+          type: "string?"
+          required: false
+        - name: lastSeen
+          type: "string|null"
+          required: true
+
+    - name: Deal
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID (deal_*)"
+        - name: accountId
+          type: string
+          required: true
+        - name: name
+          type: string
+          required: true
+        - name: stage
+          type: DealStage
+          required: true
+        - name: value
+          type: number
+          required: true
+        - name: owner
+          type: string
+          required: true
+        - name: closeDate
+          type: string
+          required: true
+        - name: probability
+          type: number
+          required: true
+        - name: createdAt
+          type: string
+          required: true
+
+    - name: Task
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID (task_*)"
+        - name: title
+          type: string
+          required: true
+        - name: accountId
+          type: "string?"
+          required: false
+        - name: dealId
+          type: "string?"
+          required: false
+        - name: contactId
+          type: "string?"
+          required: false
+        - name: due
+          type: string
+          required: true
+        - name: owner
+          type: string
+          required: true
+        - name: priority
+          type: Priority
+          required: true
+        - name: status
+          type: TaskStatus
+          required: true
+        - name: reason
+          type: "string?"
+          required: false
+          description: "Why this task exists"
+        - name: evidence
+          type: "string[]"
+          required: false
+          description: "Note IDs that ground this task"
+        - name: origin
+          type: "Actor?"
+          required: false
+
+    - name: Note
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID (note_*)"
+        - name: accountId
+          type: string
+          required: true
+        - name: contactId
+          type: "string?"
+          required: false
+        - name: dealId
+          type: "string?"
+          required: false
+        - name: source
+          type: NoteSource
+          required: true
+        - name: title
+          type: string
+          required: true
+        - name: body
+          type: string
+          required: true
+        - name: sentiment
+          type: Sentiment
+          required: true
+        - name: createdAt
+          type: string
+          required: true
+        - name: sourceRef
+          type: "string?"
+          required: false
+        - name: occurredAt
+          type: "string?"
+          required: false
+        - name: interaction
+          type: "boolean?"
+          required: false
+        - name: origin
+          type: "Actor?"
+          required: false
+
+    - name: Claim
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID (claim_*)"
+        - name: accountId
+          type: string
+          required: true
+        - name: kind
+          type: ClaimKind
+          required: true
+        - name: text
+          type: string
+          required: true
+        - name: evidence
+          type: "string[]"
+          required: true
+          description: "Note IDs. Empty = hunch"
+        - name: contactId
+          type: "string?"
+          required: false
+        - name: status
+          type: ClaimStatus
+          required: true
+        - name: createdAt
+          type: string
+          required: true
+        - name: resolvedAt
+          type: "string?"
+          required: false
+        - name: resolvedReason
+          type: "string?"
+          required: false
+        - name: supersededBy
+          type: "string?"
+          required: false
+        - name: owner
+          type: '"us"|"them"?'
+          required: false
+          description: "For commitments only"
+        - name: due
+          type: "string?"
+          required: false
+          description: "For commitments only"
+        - name: origin
+          type: "Actor?"
+          required: false
+
+    - name: Actor
+      fields:
+        - name: kind
+          type: '"human"|"agent"'
+          required: true
+        - name: name
+          type: string
+          required: true
+
+    - name: Workspace
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: edition
+          type: '"Self-Hosted"|"Cloud"'
+          required: true
+        - name: updatedAt
+          type: string
+          required: true
+        - name: agentMode
+          type: '"review"|"direct"'
+          required: false
+          default: "review"
+        - name: accounts
+          type: "Account[]"
+          required: true
+        - name: deals
+          type: "Deal[]"
+          required: true
+        - name: tasks
+          type: "Task[]"
+          required: true
+        - name: notes
+          type: "Note[]"
+          required: true
+        - name: claims
+          type: "Claim[]?"
+          required: false
+        - name: proposals
+          type: "Proposal[]?"
+          required: false
+        - name: activity
+          type: "ActivityEntry[]?"
+          required: false
+        - name: receipts
+          type: "Record<string, Receipt>"
+          required: false
+
+  enums:
+    - name: AccountStage
+      values: ["researching", "active", "expanding", "renewing", "at_risk"]
+    - name: Priority
+      values: ["low", "medium", "high", "urgent"]
+    - name: ContactInfluence
+      values: ["economic", "champion", "technical", "user"]
+    - name: DealStage
+      values: ["lead", "qualified", "proposal", "negotiation", "won", "lost"]
+    - name: NoteSource
+      values: ["note", "call", "email", "meeting", "support", "review", "community", "github", "usage", "market"]
+    - name: Sentiment
+      values: ["positive", "mixed", "negative", "neutral"]
+    - name: TaskStatus
+      values: ["open", "waiting", "done", "cancelled"]
+    - name: ClaimKind
+      values: ["need", "risk", "goal", "objection", "commitment", "fact"]
+    - name: ClaimStatus
+      values: ["active", "resolved", "superseded"]
+    - name: AgentMode
+      values: ["review", "direct"]
+    - name: MonetaryMode
+      values: ["postmonetario", "conectado"]
+
+# Operations (The One Write Path)
+operations:
+  - name: account.add
+    description: "Create a new account"
+    input: "AccountAddInput"
+    output: "AccountAddOutput"
+    validation: "name required, unique by identity(name)"
+
+  - name: account.update
+    description: "Update account fields"
+    input: "AccountUpdateInput"
+    output: "AccountUpdateOutput"
+    validation: "accountId exists, patch fields valid"
+
+  - name: account.archive
+    description: "Archive or restore an account"
+    input: "AccountArchiveInput"
+    output: "AccountArchiveOutput"
+
+  - name: contact.add
+    description: "Add a contact to an account"
+    input: "ContactAddInput"
+    output: "ContactAddOutput"
+
+  - name: deal.add
+    description: "Create a new deal"
+    input: "DealAddInput"
+    output: "DealAddOutput"
+
+  - name: deal.move
+    description: "Move deal to new stage"
+    input: "DealMoveInput"
+    output: "DealMoveOutput"
+
+  - name: task.add
+    description: "Add a next action with evidence"
+    input: "TaskAddInput"
+    output: "TaskAddOutput"
+
+  - name: task.set_status
+    description: "Change task status"
+    input: "TaskSetStatusInput"
+    output: "TaskSetStatusOutput"
+
+  - name: task.update
+    description: "Update task fields"
+    input: "TaskUpdateInput"
+    output: "TaskUpdateOutput"
+
+  - name: note.add
+    description: "Capture a source note"
+    input: "NoteAddInput"
+    output: "NoteAddOutput"
+
+  - name: claim.add
+    description: "Record a claim with evidence"
+    input: "ClaimAddInput"
+    output: "ClaimAddOutput"
+
+  - name: claim.resolve
+    description: "Resolve a claim with reason and optional replacement"
+    input: "ClaimResolveInput"
+    output: "ClaimResolveOutput"
+
+# Core Functions
+functions:
+  # ops.ts
+  - name: applyChange
+    module: "core/ops"
+    signature: "(workspace: Workspace, change: Change) => Applied"
+    description: "Pure, deterministic application of a change. Throws OpError on validation failure."
+    properties:
+      - pure: true
+      - deterministic: true
+      - throws: OpError
+
+  - name: submitChange
+    module: "core/ops"
+    signature: "(workspace: Workspace, change: Change) => SubmitResult"
+    description: "Submit a change for review or direct application based on agentMode and change.review flag."
+    properties:
+      - review_gate: true
+      - idempotent_via_key: true
+
+  - name: resolveProposal
+    module: "core/ops"
+    signature: "(workspace: Workspace, proposalId: string, decision: 'approve'|'reject', resolvedBy: string, at?: string) => ResolveResult"
+    description: "Approve or reject a pending proposal. Approval replays stored change against current records."
+    properties:
+      - baseline_conflict_check: true
+      - dependent_proposal_handling: true
+
+  - name: proposalConflict
+    module: "core/ops"
+    signature: "(workspace: Workspace, proposal: Proposal) => string|undefined"
+    description: "Check if proposal's baseline matches current record state."
+
+  # validate.ts
+  - name: validateWorkspace
+    module: "core/validate"
+    signature: "(data: unknown) => string[]"
+    description: "Structural and referential validation. Returns empty array if valid."
+
+  - name: normalizeWorkspace
+    module: "core/validate"
+    signature: "(workspace: Workspace) => Workspace"
+    description: "Fill defaults for older workspaces, migrate legacy claims, drop product-feedback layer."
+
+  - name: parseWorkspace
+    module: "core/validate"
+    signature: "(text: string) => ParseResult"
+    description: "Parse JSON and validate in one step."
+
+  # claims.ts
+  - name: activeClaims
+    module: "core/claims"
+    signature: "(workspace: Workspace, accountId: string, kind?: ClaimKind) => Claim[]"
+
+  - name: deriveAccountLists
+    module: "core/claims"
+    signature: "(workspace: Workspace) => Workspace"
+    description: "Rewrite account.needs/risks from active claims. Run on every read."
+
+  - name: migrateLegacyClaims
+    module: "core/claims"
+    signature: "(workspace: Workspace) => Claim[]"
+    description: "Convert legacy needs/risks strings to claims (hunches, no evidence). Safe to run repeatedly."
+
+  # memory.ts
+  - name: groundClaim
+    module: "core/memory"
+    signature: "(workspace: Workspace, claim: Claim, now: number) => GroundedClaim"
+    description: "Resolve evidence notes, compute latest/age/stale/overdue."
+
+  - name: accountMemory
+    module: "core/memory"
+    signature: "(workspace: Workspace, accountId: string, now?: Date) => AccountMemory"
+    description: "Full computed view: claims by kind, committee, gaps, since, commitments, questions, lint, open tasks/deals."
+
+  - name: lintWorkspace
+    module: "core/memory"
+    signature: "(workspace: Workspace, now: Date, accountId?: string) => LintFinding[]"
+    description: "Hunches, stale evidence (>45d), overdue commitments, no signer, unseen contacts, notes without ref, agent tasks without evidence."
+
+  - name: accountRows
+    module: "core/memory"
+    description: "Comparable table rows. Unknowns (null lastTouch, groundedRatio, nextDue) never sort up."
+
+  - name: sortAccountRows
+    module: "core/memory"
+    description: "Sort table rows. Unknowns never promoted."
+
+  # brief.ts
+  - name: buildBrief
+    module: "core/brief"
+    signature: "(workspace: Workspace, now?: Date) => Brief"
+    description: "Daily brief: ranked attention items. Each item cites recordId."
+
+  # patterns.ts
+  - name: findPatterns
+    module: "core/patterns"
+    signature: "(workspace: Workspace, minAccounts?: number) => Pattern[]"
+    description: "Lexical cross-account recurrence detection (union-find, Jaccard>=0.4 or 3 shared terms)."
+
+  - name: signalsBundle
+    module: "core/patterns"
+    signature: "(workspace: Workspace, options: SignalsOptions) => SignalsBundle"
+    description: "Export sources behind a pattern/account as open-crm-signals.v1 (providerType: 'arm'). Share-safe mode drops PII."
+
+  # markdown.ts
+  - name: buildViewFiles
+    module: "core/markdown"
+    signature: "(workspace: Workspace, layout: ViewLayout, notice?: boolean) => ViewFile[]"
+    description: "Generate INDEX.md and accounts/*.md with YAML frontmatter, record IDs in backticks, ISO dates."
+
+  # investigation.ts
+  - name: investigation types
+    module: "core/investigation"
+    description: "Types for Jev line-by-line investigation: InvestigationRun, InvestigationDecision, investigationBaseline"
+
+  # calls.ts
+  - name: call types
+    module: "core/calls"
+    description: "Types for call processing: CallRecord, CallFinding, CallJob, CallsState, callSpans, callCategories"
+
+  # demo.ts
+  - name: createDemoWorkspace
+    module: "core/demo"
+    signature: "(now?: Date) => Workspace"
+    description: "Synthetic workspace with dates relative to injected clock. Deterministic for testing."
+
+  # valueDual.ts (Amphibious Layer)
+  - name: toDualValue
+    module: "lib/valueDual"
+    signature: "(znu: number, config: DualValueConfig) => DualValue"
+    description: "Convert ZNU to dual representation based on mode (postmonetario/conectado) and oracle."
+
+  - name: formatDual
+    module: "lib/valueDual"
+    signature: "(value: number, config: DualValueConfig, options?) => string"
+
+  - name: computeDualAccountMetrics
+    module: "lib/valueDual"
+    description: "Dual-mode metric computation for accounts."
+
+  - name: computeDualDealMetrics
+    module: "lib/valueDual"
+    description: "Dual-mode metric computation for deals."
+
+  - name: computeDualWeightedPipeline
+    module: "lib/valueDual"
+    description: "Dual-mode weighted pipeline computation."
+
+  - name: detectModeFromEnv
+    module: "lib/valueDual"
+    description: "Mode detection from environment."
+
+  - name: createDualConfig
+    module: "lib/valueDual"
+    description: "Config creation helper."
+
+# Invariants
+invariants:
+  - "Single write path: all mutations via Op -> Change -> applyChange"
+  - "Claims are source of truth; needs/risks derived"
+  - "Evidence-first: empty evidence = hunch (dashed underline)"
+  - "Deterministic applyChange: proposal today = approval tomorrow"
+  - "Review gate by default; direct mode opt-in, logged"
+  - "Unknowns (null) never sort above knowns in tables"
+  - "Only verified interaction (call/email/meeting/support + occurredAt) advances lastTouch/lastSeen"
+  - "Monetary values stored in ZNU; dual-mode presentation only"
+  - "Workspace.json is source of truth; Markdown views generated"
+  - "IDs prefixed by kind: acct_, contact_, deal_, task_, note_, claim_, prop_, act_"
+
+# Interfaces (for consumers)
+interfaces:
+  - name: ARMCoreConsumer
+    description: "Any consumer (CLI, MCP, API, UI, Go binding, Python binding) must use these entry points"
+    required_functions:
+      - "types (all domain types)"
+      - "applyChange, submitChange, resolveProposal"
+      - "validateWorkspace, normalizeWorkspace, parseWorkspace"
+      - "accountMemory, lintWorkspace, buildBrief"
+      - "findPatterns, signalsBundle"
+      - "buildViewFiles"
+      - "createDemoWorkspace"
+      - "toDualValue, formatDual"
+
+# Traceability
+traceability:
+  - requirement: "ARM-001"
+    description: "One write path for humans and agents"
+    implements: ["applyChange", "submitChange", "resolveProposal"]
+  - requirement: "ARM-002"
+    description: "Every fact shows its source"
+    implements: ["Claim.evidence", "groundClaim", "accountMemory"]
+  - requirement: "ARM-003"
+    description: "Nothing lands unapproved"
+    implements: ["submitChange (review mode)", "resolveProposal", "proposalConflict"]
+  - requirement: "ARM-004"
+    description: "Records are user-owned (folder workspace)"
+    implements: ["Workspace format", "buildViewFiles", "store.ts (in arm-cli)"]
+  - requirement: "ARM-005"
+    description: "Amphibious monetary layer"
+    implements: ["toDualValue", "DualValueConfig", "MonetaryMode"]
+  - requirement: "ARM-006"
+    description: "Account work -> Product work via signals"
+    implements: ["findPatterns", "signalsBundle", "signalsMarkdown"]
+
+# Testing Contract
+testing:
+  unit:
+    - "ops.test.ts: applyChange, submitChange, resolveProposal, proposalConflict, receipts"
+    - "validate.test.ts: validateWorkspace, normalizeWorkspace, parseWorkspace (valid/invalid)"
+    - "memory.test.ts: groundClaim, accountMemory, committee, lint, sortAccountRows (unknowns bottom)"
+    - "claims.test.ts: migrateLegacyClaims, deriveAccountLists, activeClaims"
+    - "patterns.test.ts: keyTerms, related, findPatterns, signalsBundle, shareSafe"
+    - "brief.test.ts: buildBrief attention ranking"
+    - "valueDual.test.ts: toDualValue postmonetario/conectado, formatDual, mode detection"
+  integration:
+    - "workspace round-trip: parse -> normalize -> applyChange -> serialize -> parse"
+    - "proposal lifecycle: submit -> conflict check -> approve/reject -> activity log"
+    - "pattern detection -> signals bundle -> share-safe export"
+    - "demo workspace: createDemoWorkspace at different clocks produces same shape"
+  e2e:
+    - "CLI + MCP + API + UI all produce identical results for same operations"

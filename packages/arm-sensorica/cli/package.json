@@ -1,0 +1,26 @@
+{
+  "name": "@hscsg/arm-sensorica-cli",
+  "version": "0.1.0",
+  "description": "CLI for Sensorica OVN ARM package",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "arm-sensorica": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@hscsg/arm-sensorica": "file:..",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

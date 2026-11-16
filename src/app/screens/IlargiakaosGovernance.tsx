@@ -530,7 +530,7 @@ const MalatestaTab: React.FC = () => (
 
 const PACDetailCard: React.FC<{ pac: any }> = ({ pac }) => (
   <Card className="ilargiakaos-pac-detail-card">
-    <h4>{pac.name}</h3>
+    <h4>{pac.name}</h4>
     <div className="ilargiakaos-pac-metrics">
       <Progress value={pac.collectiveViability} max={100} showLabel label={t('ilargiakaos.governance.viability')} />
       <Progress value={pac.ecosocialAlignment} max={100} showLabel label={t('ilargiakaos.governance.ecosocial')} />
@@ -579,7 +579,7 @@ const TechAssessmentCard: React.FC<{ tech: any }> = ({ tech }) => (
       {tech.democraticControl && <Badge variant="success">🟢 Democrática</Badge>}
       {tech.communityOwned && <Badge variant="success">🟢 Comunitaria</Badge>}
     </div>
-  </div>
+  </Card>
 )
 
 const CommMeasurementCard: React.FC<{ comm: any }> = ({ comm }) => (
@@ -599,7 +599,7 @@ const CommMeasurementCard: React.FC<{ comm: any }> = ({ comm }) => (
       <span>Resistencia patriarcal: {comm.patriarchyResistance}%</span>
       <span>Resistencia neoliberal: {comm.neoliberalResistance}%</span>
     </div>
-  </div>
+  </Card>
 )
 
 // ============================================================================

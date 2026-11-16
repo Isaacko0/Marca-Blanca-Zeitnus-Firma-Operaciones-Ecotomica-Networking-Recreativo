@@ -355,18 +355,18 @@ export const useZeitnusCooperativeStore = create<ZeitnusCooperativeStore>()(
         })),
 
       updateCommittees: (updates: Partial<GovernanceStructure['committees']>) =>
-        set((state) => ({
-          governance: { ...state.governance, committees: { ...state.governance.committees, ...updates } },
-          updatedAt: Date.now(),
-        })),
-
-      updateConflictResolution: (updates: Partial<GovernanceStructure['conflictResolution']>) =>
-        set((state) => ({
-          governance: { ...state.governance, conflictResolution: { ...state.governance.conflictResolution, ...updates } },
-          updatedAt: Date.now(),
-        )),
-
-      // ========================================================================
+              set((state) => ({
+                governance: { ...state.governance, committees: { ...state.governance.committees, ...updates } },
+                updatedAt: Date.now(),
+              })),
+      
+            // updateConflictResolution: (updates: Partial<GovernanceStructure['conflictResolution']>) =>
+            //   set((state) => ({
+            //     governance: { ...state.governance, conflictResolution: { ...state.governance.conflictResolution, ...updates } },
+            //     updatedAt: Date.now(),
+            //   })),
+      
+            // ========================================================================
       // RECÁLCULOS DESDE ESTADO
       // ========================================================================
       recalculateRiskProfileFromState: () =>

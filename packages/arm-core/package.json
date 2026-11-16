@@ -1,0 +1,100 @@
+{
+  "name": "@hscsg/arm-core",
+  "version": "0.1.0",
+  "description": "ARM Core - Pure TypeScript domain logic for Agent Relationship Management. Zero dependencies. Consumable by CLI, MCP, API, UI, and non-Node runtimes via bindings.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Isaacko0/Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo.git",
+    "directory": "packages/arm-core"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./model": {
+      "import": "./dist/core/model.js",
+      "types": "./dist/core/model.d.ts"
+    },
+    "./ops": {
+      "import": "./dist/core/ops.js",
+      "types": "./dist/core/ops.d.ts"
+    },
+    "./validate": {
+      "import": "./dist/core/validate.js",
+      "types": "./dist/core/validate.d.ts"
+    },
+    "./claims": {
+      "import": "./dist/core/claims.js",
+      "types": "./dist/core/claims.d.ts"
+    },
+    "./memory": {
+      "import": "./dist/core/memory.js",
+      "types": "./dist/core/memory.d.ts"
+    },
+    "./brief": {
+      "import": "./dist/core/brief.js",
+      "types": "./dist/core/brief.d.ts"
+    },
+    "./patterns": {
+      "import": "./dist/core/patterns.js",
+      "types": "./dist/core/patterns.d.ts"
+    },
+    "./markdown": {
+      "import": "./dist/core/markdown.js",
+      "types": "./dist/core/markdown.d.ts"
+    },
+    "./investigation": {
+      "import": "./dist/core/investigation.js",
+      "types": "./dist/core/investigation.d.ts"
+    },
+    "./calls": {
+      "import": "./dist/core/calls.js",
+      "types": "./dist/core/calls.d.ts"
+    },
+    "./demo": {
+      "import": "./dist/core/demo.js",
+      "types": "./dist/core/demo.d.ts"
+    },
+    "./value-dual": {
+      "import": "./dist/lib/valueDual.js",
+      "types": "./dist/lib/valueDual.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/**/*.test.ts",
+    "test:coverage": "node --test --experimental-test-coverage tests/**/*.test.ts",
+    "spec:validate": "openspec validate --spec openspec/specs/arm-core.openspec.yml",
+    "spec:generate": "openspec generate --spec openspec/specs/arm-core.openspec.yml"
+  },
+  "keywords": [
+    "arm",
+    "agent-relationship-management",
+    "crm",
+    "local-first",
+    "typescript",
+    "zero-dependencies",
+    "hscsg"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist"
+  ]
+}

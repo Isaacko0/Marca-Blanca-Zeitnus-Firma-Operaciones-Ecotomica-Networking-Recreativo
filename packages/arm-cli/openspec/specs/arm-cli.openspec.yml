@@ -1,0 +1,460 @@
+# ARM CLI OpenSpec Specification
+
+spec_version: "1.0"
+name: "@hscsg/arm-cli"
+version: "0.1.0"
+description: "ARM CLI - Workspace folder management, command interface, and agent onboarding. Node.js runtime."
+
+domain:
+  entities:
+    - name: WorkspaceDir
+      description: "A folder containing workspace.json and generated views"
+      fields:
+        - name: path
+          type: string
+          required: true
+        - name: workspaceFile
+          type: string
+          required: true
+          default: "workspace.json"
+        - name: stateDir
+          type: string
+          required: true
+          default: ".open-crm"
+        - name: lockFile
+          type: string
+          required: true
+          default: "lock"
+        - name: backupsDir
+          type: string
+          required: true
+          default: ".open-crm/backups"
+        - name: sourcesDir
+          type: string
+          required: true
+          default: "sources"
+        - name: accountsDir
+          type: string
+          required: true
+          default: "accounts"
+        - name: indexFile
+          type: string
+          required: true
+          default: "INDEX.md"
+
+  enums:
+    - name: SourceKind
+      values: ["transcript", "email", "calendar", "ticket", "export", "document"]
+
+operations:
+  - name: init
+    description: "Create a new workspace folder with synthetic or empty records"
+    input: "InitInput"
+    output: "InitOutput"
+
+  - name: ui
+    description: "Start the visual CRM server on the workspace"
+    input: "UiInput"
+    output: "UiOutput"
+
+  - name: mcp
+    description: "Run MCP server over stdio"
+    input: "McpInput"
+    output: "McpOutput"
+
+  - name: status
+    description: "Daily brief: counts and ranked attention items"
+    input: "StatusInput"
+    output: "Brief"
+
+  - name: accounts
+    description: "List all accounts with key fields"
+    input: "ListAccountsInput"
+    output: "AccountSummary[]"
+
+  - name: show
+    description: "Show one account in full with all records"
+    input: "ShowInput"
+    output: "AccountDetail"
+
+  - name: search
+    description: "Search across accounts, contacts, deals, tasks, notes"
+    input: "SearchInput"
+    output: "SearchHit[]"
+
+  - name: tasks
+    description: "List open tasks"
+    input: "ListTasksInput"
+    output: "Task[]"
+
+  - name: proposals
+    description: "List pending or all proposals"
+    input: "ListProposalsInput"
+    output: "Proposal[]"
+
+  - name: log
+    description: "Activity log of agent actions and decisions"
+    input: "LogInput"
+    output: "ActivityEntry[]"
+
+  - name: brief
+    description: "Pre-conversation brief for one account"
+    input: "BriefInput"
+    output: "Brief"
+
+  - name: claims
+    description: "List claims with grounding info"
+    input: "ListClaimsInput"
+    output: "ClaimWithGrounding[]"
+
+  - name: why
+    description: "Trace a record's sources and dependents"
+    input: "WhyInput"
+    output: "Trace"
+
+  - name: lint
+    description: "Audit memory quality"
+    input: "LintInput"
+    output: "LintFinding[]"
+
+  - name: patterns
+    description: "Cross-account recurrence patterns"
+    input: "PatternsInput"
+    output: "Pattern[]"
+
+  - name: source.add
+    description: "Add a durable source file by content hash"
+    input: "SourceAddInput"
+    output: "SourceAddOutput"
+
+  - name: source.list
+    description: "List all sources"
+    input: "SourceListInput"
+    output: "SourceRecord[]"
+
+  - name: export
+    description: "Export workspace backup or signals bundle"
+    input: "ExportInput"
+    output: "ExportOutput"
+
+  - name: import
+    description: "Replace workspace with a backup (person's decision)"
+    input: "ImportInput"
+    output: "ImportOutput"
+
+  - name: restore
+    description: "Restore from a local backup revision"
+    input: "RestoreInput"
+    output: "RestoreOutput"
+
+  - name: check
+    description: "Validate records and views"
+    input: "CheckInput"
+    output: "CheckResult"
+
+  - name: note.add
+    description: "Capture a source note"
+    input: "NoteAddInput"
+    output: "ChangeResult"
+
+  - name: task.add
+    description: "Add a next action with evidence"
+    input: "TaskAddInput"
+    output: "ChangeResult"
+
+  - name: task.set_status
+    description: "Change task status"
+    input: "TaskSetStatusInput"
+    output: "ChangeResult"
+
+  - name: task.update
+    description: "Update task fields"
+    input: "TaskUpdateInput"
+    output: "ChangeResult"
+
+  - name: account.add
+    description: "Create a new account"
+    input: "AccountAddInput"
+    output: "ChangeResult"
+
+  - name: account.update
+    description: "Update account fields"
+    input: "AccountUpdateInput"
+    output: "ChangeResult"
+
+  - name: account.archive
+    description: "Archive or restore an account"
+    input: "AccountArchiveInput"
+    output: "ChangeResult"
+
+  - name: deal.add
+    description: "Create a new deal"
+    input: "DealAddInput"
+    output: "ChangeResult"
+
+  - name: deal.move
+    description: "Move deal to new stage"
+    input: "DealMoveInput"
+    output: "ChangeResult"
+
+  - name: contact.add
+    description: "Add a contact to an account"
+    input: "ContactAddInput"
+    output: "ChangeResult"
+
+  - name: claim.add
+    description: "Record a claim with evidence"
+    input: "ClaimAddInput"
+    output: "ChangeResult"
+
+  - name: claim.resolve
+    description: "Resolve a claim with reason and optional replacement"
+    input: "ClaimResolveInput"
+    output: "ChangeResult"
+
+  - name: approve
+    description: "Approve a pending proposal (person's decision)"
+    input: "ApproveInput"
+    output: "Proposal[]"
+
+  - name: reject
+    description: "Reject a pending proposal (person's decision)"
+    input: "RejectInput"
+    output: "Proposal[]"
+
+  - name: mode
+    description: "Set workspace agent mode (person's decision)"
+    input: "ModeInput"
+    output: "AgentMode"
+
+functions:
+  # store.ts
+  - name: findWorkspaceDir
+    module: "store"
+    signature: "(start: string) => string|null"
+    description: "Walk up from start to nearest folder holding workspace.json."
+
+  - name: resolveWorkspaceDir
+    module: "store"
+    signature: "(explicit?: string) => string"
+    description: "Resolve workspace dir from explicit arg, env var, or cwd walk."
+
+  - name: readWorkspace
+    module: "store"
+    signature: "(dir: string) => { workspace: Workspace; rev: string }"
+    description: "Read and parse workspace.json, returning content hash (rev)."
+
+  - name: writeWorkspace
+    module: "store"
+    signature: "(dir: string, workspace: Workspace) => { workspace: Workspace; rev: string }"
+    description: "Atomic write with validation, view regeneration, and lock."
+
+  - name: updateWorkspace
+    module: "store"
+    signature: "(dir: string, fn: (loaded: Loaded) => { workspace: Workspace; result: T }) => T"
+    description: "Read-modify-write under lock. All ordinary operations use this."
+
+  - name: replaceWorkspace
+    module: "store"
+    signature: "(dir: string, workspace: Workspace, baseRev: string) => { loaded: Loaded; backupPath: string }"
+    description: "Wholesale replace with revision check and immutable backup."
+
+  - name: restoreWorkspace
+    module: "store"
+    signature: "(dir: string, backupRev: string, baseRev: string) => { loaded: Loaded; backupPath: string }"
+    description: "Restore explicit backup, also backs up current valid workspace."
+
+  - name: repairViews
+    module: "store"
+    signature: "(dir: string) => Loaded"
+    description: "Regenerate Markdown views under lock (for crm check --fix)."
+
+  - name: withWorkspaceLock
+    module: "store"
+    signature: "(dir: string, fn: () => T) => T"
+    description: "Local-process lock via mkdir candidate -> rename. Never steals live owner."
+
+  - name: staleViews
+    module: "store"
+    signature: "(dir: string, workspace: Workspace) => string[]"
+    description: "List generated view files that don't match current workspace.json."
+
+  # actions.ts
+  - name: resolveAccount
+    module: "actions"
+    signature: "(workspace: Workspace, ref: string) => Account"
+    description: "Find account by id, slug, exact name, or unambiguous substring."
+
+  - name: status
+    module: "actions"
+    signature: "(dir: string) => Brief & { agentMode: string }"
+    description: "Daily brief with agentMode."
+
+  - name: listAccounts
+    module: "actions"
+    signature: "(dir: string) => AccountSummary[]"
+
+  - name: showAccount
+    module: "actions"
+    signature: "(dir: string, ref: string) => AccountDetail"
+
+  - name: memory
+    module: "actions"
+    signature: "(dir: string, ref: string) => AccountMemory"
+
+  - name: brief
+    module: "actions"
+    signature: "(dir: string, ref: string) => { memory: AccountMemory; markdown: string }"
+
+  - name: why
+    module: "actions"
+    signature: "(dir: string, id: string) => Trace"
+
+  - name: patterns
+    module: "actions"
+    signature: "(dir: string) => Pattern[]"
+
+  - name: exportSignals
+    module: "actions"
+    signature: "(dir: string, options: ExportSignalsOptions) => ExportSignalsResult"
+
+  - name: sources
+    module: "actions"
+    signature: "(dir: string) => SourceRecord[]"
+
+  - name: sourceAdd
+    module: "actions"
+    signature: "(dir: string, file: string, options: SourceAddOptions) => { source: SourceRecord; existed: boolean }"
+
+  - name: lint
+    module: "actions"
+    signature: "(dir: string, account?: string) => LintFinding[]"
+
+  - name: listClaims
+    module: "actions"
+    signature: "(dir: string, options: ListClaimsOptions) => ClaimWithGrounding[]"
+
+  - name: search
+    module: "actions"
+    signature: "(dir: string, query: string) => SearchHit[]"
+
+  - name: listTasks
+    module: "actions"
+    signature: "(dir: string, options: ListTasksOptions) => Task[]"
+
+  - name: change
+    module: "actions"
+    signature: "(dir: string, actor: Actor, build: (workspace: Workspace) => Op, options: { key?: string; review?: boolean }) => ChangeResult"
+    description: "Submit one operation through the core write path."
+
+  - name: listProposals
+    module: "actions"
+    signature: "(dir: string, all?: boolean) => Proposal[]"
+
+  - name: decide
+    module: "actions"
+    signature: "(dir: string, proposalRef: string, decision: 'approve'|'reject', by: string) => Proposal[]"
+
+  - name: setAgentMode
+    module: "actions"
+    signature: "(dir: string, mode: 'review'|'direct') => 'review'|'direct'"
+
+  - name: activity
+    module: "actions"
+    signature: "(dir: string, limit?: number) => ActivityEntry[]"
+
+  - name: check
+    module: "actions"
+    signature: "(dir: string, fix?: boolean) => CheckResult"
+
+  # templates.ts
+  - name: agentsMd
+    module: "templates"
+    signature: "(workspace: Workspace) => string"
+    description: "Generate AGENTS.md for the workspace."
+
+  - name: claudeMd
+    module: "templates"
+    signature: "string"
+    description: "CLAUDE.md pointing to AGENTS.md."
+
+  - name: agentKitFiles
+    module: "templates"
+    signature: "() => Record<string, string>"
+    description: "All agent onboarding files: skill, setup, routines, automations manifest."
+
+  - name: workspaceReadme / inboxReadme / gitignore
+    module: "templates"
+    description: "Workspace layout docs."
+
+  - name: shWrapper / cmdWrapper / mcpConfig
+    module: "templates"
+    description: "Wrapper scripts for ./crm, crm.cmd, and MCP config."
+
+  # sources.ts
+  - name: addSource
+    module: "sources"
+    signature: "(dir: string, file: string, options: SourceAddOptions) => { source: SourceRecord; existed: boolean }"
+    description: "Copy file to sources/ by sha256, deduplicate by hash or externalId."
+
+  - name: readSources / findSource
+    module: "sources"
+    description: "Read sources index and find by id/externalId/hash prefix."
+
+  # agent-kit.ts
+  - name: agentKitFiles
+    module: "agent-kit"
+    description: "Returns all agent onboarding files for init."
+
+invariants:
+  - "workspace.json is the single source of truth"
+  - "All writes go through updateWorkspace (lock + validate + atomic write + view regen)"
+  - "Generated views (INDEX.md, accounts/*.md) are regenerated on every write"
+  - "Backups are immutable (.open-crm/backups/<rev>.json) and created before replace"
+  - "Lock is local-process only; never distributed; never steals live owner"
+  - "Review gate: agent changes held as proposals by default"
+  - "Stable keys (--key) for idempotent retries; receipts retained"
+  - "Agent onboarding files written by init; refreshed with --refresh"
+  - "Sources stored by content hash; notes cite source:<id>"
+  - "ARM branding throughout (not Zentrik/Open CRM)"
+
+interfaces:
+  - name: ARMCLIConsumer
+    description: "MCP server, API server, and UI server consume these functions"
+    required_functions:
+      - "readWorkspace, updateWorkspace, replaceWorkspace, restoreWorkspace"
+      - "status, listAccounts, showAccount, brief, why, patterns"
+      - "exportSignals, lint, listClaims, search, listTasks"
+      - "change, listProposals, decide, setAgentMode, activity, check"
+      - "sourceAdd, sources"
+
+traceability:
+  - requirement: "ARM-001"
+    description: "One write path"
+    implements: ["updateWorkspace -> actions.change -> core.applyChange"]
+  - requirement: "ARM-003"
+    description: "Review gate"
+    implements: ["actions.change (review flag)", "actions.decide", "actions.setAgentMode"]
+  - requirement: "ARM-004"
+    description: "User-owned records"
+    implements: ["workspace folder", "atomic writes", "immutable backups", "local lock"]
+  - requirement: "ARM-005"
+    description: "Amphibious monetary layer"
+    implements: ["valueDual in core used by actions for dual-mode metrics"]
+
+testing:
+  unit:
+    - "store.test.ts: readWorkspace, writeWorkspace, updateWorkspace, replaceWorkspace, restoreWorkspace, lock, backups, staleViews, repairViews"
+    - "actions.test.ts: resolveAccount, status, listAccounts, showAccount, brief, why, patterns, exportSignals, lint, listClaims, search, listTasks, change, decide, setAgentMode, check"
+    - "sources.test.ts: addSource deduplication, readSources, findSource"
+    - "templates.test.ts: agentsMd, agentKitFiles, wrappers"
+    - "agent-kit.test.ts: agentKitFiles structure"
+  integration:
+    - "init -> ui -> mcp -> status -> show -> brief -> patterns -> export --signals round-trip"
+    - "proposal lifecycle: change -> listProposals -> decide -> activity log"
+    - "import/export backup round-trip with revision check"
+    - "source add -> note add (ref source) -> claim add (evidence note) -> task add (evidence)"
+  e2e:
+    - "crm init --demo -> crm ui (folder mode) -> agent via MCP -> Review -> approve -> verify views"
+    - "Multiple agents (CLI + MCP) concurrent writes under lock"
+    - "crm check --fix regenerates stale views"

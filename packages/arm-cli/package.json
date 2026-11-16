@@ -1,0 +1,71 @@
+{
+  "name": "@hscsg/arm-cli",
+  "version": "0.1.0",
+  "description": "ARM CLI - Workspace folder management, command interface, and agent onboarding. Node.js runtime.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Isaacko0/Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo.git",
+    "directory": "packages/arm-cli"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "arm": "./dist/bin/arm.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./store": {
+      "import": "./dist/store.js",
+      "types": "./dist/store.d.ts"
+    },
+    "./actions": {
+      "import": "./dist/actions.js",
+      "types": "./dist/actions.d.ts"
+    },
+    "./templates": {
+      "import": "./dist/templates.js",
+      "types": "./dist/templates.d.ts"
+    },
+    "./sources": {
+      "import": "./dist/sources.js",
+      "types": "./dist/sources.d.ts"
+    },
+    "./agent-kit": {
+      "import": "./dist/agent-kit.js",
+      "types": "./dist/agent-kit.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/**/*.test.ts",
+    "spec:validate": "openspec validate --spec openspec/specs/arm-cli.openspec.yml"
+  },
+  "keywords": [
+    "arm",
+    "agent-relationship-management",
+    "cli",
+    "workspace",
+    "local-first",
+    "hscsg"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "@hscsg/arm-core": "file:../arm-core"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

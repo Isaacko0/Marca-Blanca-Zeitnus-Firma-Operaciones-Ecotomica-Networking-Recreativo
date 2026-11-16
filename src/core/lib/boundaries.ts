@@ -34,6 +34,7 @@ export type BoundaryPolicy = {
   mode: BoundaryMode
   deny: string[]
   allow: string[]
+  [key: string]: string[] | BoundaryMode
 }
 
 export type BoundaryDecision = {

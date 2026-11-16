@@ -170,10 +170,9 @@ export const I18N: Dict = {
   'offerDesigner.achievement.first_evaluation': { es: 'Evaluada por IA', en: 'Evaluated by AI', pt: 'Avaliada por IA' },
   'offerDesigner.achievement.evaluation_a': { es: 'Calificación A', en: 'Grade A', pt: 'Nota A' },
   'offerDesigner.achievement.migrated_v1': { es: 'Migrante V1', en: 'V1 Migrant', pt: 'Migrante V1' },
-  'offerDesigner.achievement.mode_connected': { es: 'Modo Conectado', en: 'Connected Mode', pt: 'Modo Conectado' }
-// IE Protocol i18n keys (append to i18n.ts)
-  // IE Protocol (Inteligencia Exponencial)
-  'ie.challenge': { es: 'Desafío', en: 'Challenge', pt: 'Desafio' },
+  'offerDesigner.achievement.mode_connected': { es: 'Modo Conectado', en: 'Connected Mode', pt: 'Modo Conectado' },
+    // IE Protocol (Inteligencia Exponencial)
+    'ie.challenge': { es: 'Desafío', en: 'Challenge', pt: 'Desafio' },
   'ie.seed': { es: 'Semilla', en: 'Seed', pt: 'Semente' },
   'ie.join': { es: 'Unirme', en: 'Join', pt: 'Entrar' },
   'ie.contribute': { es: 'Aportar', en: 'Contribute', pt: 'Contribuir' },
@@ -306,5 +305,5 @@ export const I18N: Dict = {
   'ie.scaleNote': { es: 'El crecimiento es teórico (3^n); el factor real de reclutamiento suele ser 1.5-2.5x.', en: 'Growth is theoretical (3^n); real recruitment factor is typically 1.5-2.5x.', pt: 'O crescimento é teórico (3^n); o fator real de recrutamento é tipicamente 1.5-2.5x.' },
   'ie.calibrationDetail': { es: 'Calibrado contra prototipo WhatMatters: $288.008 → 1 RCE = $1.000.03 en L5 (±1 centavo).', en: 'Calibrated against WhatMatters prototype: $288.008 → 1 RCE = $1.000.03 at L5 (±1 cent).', pt: 'Calibrado contra protótipo WhatMatters: $288.008 → 1 RCE = $1.000,03 no N5 (±1 centavo).' },
   'ie.dashboardSubtitle': { es: 'Coordiná masivamente, financá y recompensá la resolución colaborativa de grandes desafíos con Inteligencia Exponencial.', en: 'Massively coordinate, fund and reward collaborative resolution of grand challenges with Exponential Intelligence.', pt: 'Coordene massivamente, financie e recompense a resolução colaborativa de grandes desafios com Inteligência Exponencial.' },
-  'ie.challengeCreated': { es: 'Desafío creado', en: 'Challenge created', pt: 'Desafio criado' },,
-}
+  'ie.challengeCreated': { es: 'Desafío creado', en: 'Challenge created', pt: 'Desafio criado' }
+  }

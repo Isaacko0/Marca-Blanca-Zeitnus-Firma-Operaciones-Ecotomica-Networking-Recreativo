@@ -277,31 +277,35 @@ const GrowthChart: React.FC<{ data: IEGrowthStep[] }> = ({ data }) => {
   const maxCumulative = Math.max(...data.map(d => Number(d.cumulative)));
   const height = 300;
   const width = data.length * 80;
-  
+
+  const areaPath = data.map((d, i) => {
+    const x = 40 + i * 80;
+    const y = height + 20 - (Number(d.cumulative) / maxCumulative) * height;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ') + ` L${width + 40} ${height + 20} L40 ${height + 20} Z`;
+
+  const linePath = data.map((d, i) => {
+    const x = 40 + i * 80;
+    const y = height + 20 - (Number(d.cumulative) / maxCumulative) * height;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
   return (
     <svg width={width + 40} height={height + 40} viewBox={`0 0 ${width + 40} ${height + 40}`} className="ie-growth-chart">
       {/* Ejes */}
       <line x1={40} y1={20} x2={40} y2={height + 20} stroke="var(--border)" />
       <line x1={40} y1={height + 20} x2={width + 40} y2={height + 20} stroke="var(--border)" />
-      
+
       {/* Área acumulada */}
       <path
-        d={data.map((d, i) => {
-          const x = 40 + i * 80;
-          const y = height + 20 - (Number(d.cumulative) / maxCumulative) * height;
-          return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-        }).join(' ')} L${width + 40} ${height + 20} L40 ${height + 20} Z
+        d={areaPath}
         fill="var(--accent-cyan)"
         fillOpacity={0.15}
       />
-      
+
       {/* Línea acumulada */}
       <path
-        d={data.map((d, i) => {
-          const x = 40 + i * 80;
-          const y = height + 20 - (Number(d.cumulative) / maxCumulative) * height;
-          return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-        }).join(' ')}
+        d={linePath}
         stroke="var(--accent-cyan)"
         strokeWidth={2}
         fill="none"

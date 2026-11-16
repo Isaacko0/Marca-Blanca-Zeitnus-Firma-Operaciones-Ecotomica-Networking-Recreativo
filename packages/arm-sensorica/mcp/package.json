@@ -1,0 +1,23 @@
+{
+  "name": "@hscsg/arm-sensorica-mcp",
+  "version": "0.1.0",
+  "description": "MCP Server for Sensorica OVN ARM package",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@hscsg/arm-sensorica": "file:..",
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

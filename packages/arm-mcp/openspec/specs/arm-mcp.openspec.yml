@@ -1,0 +1,213 @@
+# ARM MCP OpenSpec Specification
+
+spec_version: "1.0"
+name: "@hscsg/arm-mcp"
+version: "0.1.0"
+description: "ARM MCP Server - Model Context Protocol server over stdio for ARM workspace operations. Zero SDK dependency."
+
+domain:
+  entities:
+    - name: MCPServer
+      description: "JSON-RPC 2.0 server over stdio exposing ARM operations as tools"
+      fields:
+        - name: protocolVersion
+          type: string
+          required: true
+          default: "2025-06-18"
+        - name: capabilities
+          type: object
+          required: true
+        - name: instructions
+          type: string
+          required: true
+        - name: tools
+          type: "MCPTool[]"
+          required: true
+
+    - name: MCPTool
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: description
+          type: string
+          required: true
+        - name: inputSchema
+          type: object
+          required: true
+
+operations:
+  - name: initialize
+    description: "MCP initialize handshake"
+    input: "MCPInitializeParams"
+    output: "MCPInitializeResult"
+
+  - name: tools/list
+    description: "List available ARM tools"
+    input: "empty"
+    output: "MCPToolsListResult"
+
+  - name: tools/call
+    description: "Execute an ARM tool"
+    input: "MCPToolCallParams"
+    output: "MCPToolCallResult"
+
+  - name: ping
+    description: "Health check"
+    input: "empty"
+    output: "empty"
+
+functions:
+  - name: serveMcp
+    module: "index"
+    signature: "(dir: string) => void"
+    description: "Start MCP server on stdio for the given workspace directory. Reads JSON-RPC from stdin, writes to stdout."
+    properties:
+      - stdio_transport: true
+      - json_rpc_2_0: true
+      - no_sdk_dependency: true
+
+  # MCP Tools (map 1:1 to arm-cli actions + core ops)
+  - name: arm_status
+    description: "Daily brief: counts, pending proposals, agent mode, ranked attention items with recordId and reason"
+    module: "tools"
+    maps_to: "actions.status"
+
+  - name: arm_list_accounts
+    description: "Every account with id, stage, priority, owner, health, open-task and note counts"
+    module: "tools"
+    maps_to: "actions.listAccounts"
+
+  - name: arm_show_account
+    description: "One account in full as Markdown: contacts, deals, open tasks, source notes, each with its id"
+    module: "tools"
+    maps_to: "actions.showAccount"
+
+  - name: arm_search
+    description: "Find accounts, contacts, deals, tasks, notes containing text"
+    module: "tools"
+    maps_to: "actions.search"
+
+  - name: arm_list_tasks
+    description: "Open tasks, soonest first. Optionally for one account, or including completed"
+    module: "tools"
+    maps_to: "actions.listTasks"
+
+  - name: arm_patterns
+    description: "What several accounts are saying: groups of claims that recur across accounts, with accounts, claims, shared terms, and source notes"
+    module: "tools"
+    maps_to: "actions.patterns"
+
+  - name: arm_signals_bundle
+    description: "Source notes behind a pattern or account as open-crm-signals.v1 bundle. Use to hand evidence to a product tool."
+    module: "tools"
+    maps_to: "actions.exportSignals"
+
+  - name: arm_list_sources
+    description: "Files kept under sources/ with their ids, kinds, external ids, and dates"
+    module: "tools"
+    maps_to: "actions.sources"
+
+  - name: arm_list_proposals
+    description: "Changes agents proposed waiting for review"
+    module: "tools"
+    maps_to: "actions.listProposals"
+
+  - name: arm_add_note
+    description: "Capture a source note on an account. Record source kind and reference."
+    module: "tools"
+    maps_to: "actions.change (note.add)"
+
+  - name: arm_add_task
+    description: "Add a next action. Cite note ids in evidence and say why in reason."
+    module: "tools"
+    maps_to: "actions.change (task.add)"
+
+  - name: arm_add_claim
+    description: "Record a claim (need, risk, goal, objection, commitment, fact) with evidence."
+    module: "tools"
+    maps_to: "actions.change (claim.add)"
+
+  - name: arm_add_account
+    description: "Create a new account"
+    module: "tools"
+    maps_to: "actions.change (account.add)"
+
+  - name: arm_update_account
+    description: "Change account stage, priority, owner, scores, needs, risks, tags"
+    module: "tools"
+    maps_to: "actions.change (account.update)"
+
+  - name: arm_add_contact
+    description: "Add a person to an account"
+    module: "tools"
+    maps_to: "actions.change (contact.add)"
+
+  - name: arm_add_deal
+    description: "Create a new deal"
+    module: "tools"
+    maps_to: "actions.change (deal.add)"
+
+  - name: arm_move_deal
+    description: "Move deal to new stage"
+    module: "tools"
+    maps_to: "actions.change (deal.move)"
+
+  - name: arm_investigation
+    description: "Read latest account investigation (Jev). No provider request, no CRM write."
+    module: "tools"
+    maps_to: "actions.investigation"
+
+  - name: arm_list_calls
+    description: "List locally imported calls and processing status"
+    module: "tools"
+    maps_to: "actions.listCalls"
+
+  - name: arm_show_call
+    description: "Inspect a local call's verbatim transcript and classified passages"
+    module: "tools"
+    maps_to: "actions.showCall"
+
+  - name: arm_decide
+    description: "Approve or reject pending proposals (person's decision)"
+    module: "tools"
+    maps_to: "actions.decide"
+
+  - name: arm_set_mode
+    description: "Set workspace agent mode: review or direct (person's decision)"
+    module: "tools"
+    maps_to: "actions.setAgentMode"
+
+invariants:
+  - "JSON-RPC 2.0 over stdio, no SDK dependency"
+  - "Tools map 1:1 to arm-cli actions, which call arm-core ops"
+  - "Agent identity from clientInfo or OPEN_CRM_ACTOR env"
+  - "All writes go through actions.change with review gating"
+  - "Error handling: OpError/StoreError -> isError MCP result"
+  - "Instructions injected on initialize: ARM operating contract"
+  - "ARM branding in tool names and descriptions"
+
+interfaces:
+  - name: ARMMCPConsumer
+    description: "Claude Code, Codex, Cursor, and any MCP client"
+    required_functions:
+      - "serveMcp"
+
+traceability:
+  - requirement: "ARM-001"
+    description: "One write path"
+    implements: ["tools -> actions.change -> core.applyChange"]
+  - requirement: "ARM-003"
+    description: "Review gate"
+    implements: ["All write tools use --review flag via actions.change", "arm_decide for approval", "arm_set_mode for mode change"]
+
+testing:
+  unit:
+    - "mcp.test.ts: initialize handshake, tools/list, tools/call (all tools), error handling, agent detection"
+  integration:
+    - "MCP server + arm-cli actions + arm-core ops round-trip for each tool"
+    - "Proposal lifecycle via MCP: add_note -> list_proposals -> decide -> activity log"
+  e2e:
+    - "Claude Code: approve MCP server -> run daily review -> propose changes -> Review UI approve"
+    - "Codex: mcp add -> run brief -> propose task -> approve"
+    - "Cursor: enable MCP -> run patterns -> signals_bundle"

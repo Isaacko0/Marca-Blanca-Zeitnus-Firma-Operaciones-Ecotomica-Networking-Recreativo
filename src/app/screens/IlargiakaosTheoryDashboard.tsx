@@ -172,7 +172,7 @@ export const IlargiakaosTheoryDashboard: React.FC = () => {
               icon="AlertTriangle"
               color={realismDetected ? severityColor : 'var(--genio)'}
               trend={realismDetected ? 'down' : 'up'}
-              subtitle={t('ilargiakaos.dashboard.severity')}: {realismSeverity}
+              subtitle={`${t('ilargiakaos.dashboard.severity')}: ${realismSeverity}`}
             />
 
             {/* PAC Activo */}
@@ -202,7 +202,7 @@ export const IlargiakaosTheoryDashboard: React.FC = () => {
               icon="Microscope"
               color={liberatingCount > extractiveCount ? 'var(--genio)' : extractiveCount > liberatingCount ? 'var(--haiti)' : 'var(--acero)'}
               trend={liberatingCount > extractiveCount ? 'up' : extractiveCount > liberatingCount ? 'down' : 'neutral'}
-              subtitle={t('ilargiakaos.dashboard.liberating')}: {liberatingCount} | {t('ilargiakaos.dashboard.extractive')}: {extractiveCount}
+              subtitle={`${t('ilargiakaos.dashboard.liberating')}: ${liberatingCount} | ${t('ilargiakaos.dashboard.extractive')}: ${extractiveCount}`}
             />
 
             {/* Audits */}
@@ -212,7 +212,7 @@ export const IlargiakaosTheoryDashboard: React.FC = () => {
               icon="ShieldAlert"
               color={criticalAudits > 0 ? 'var(--haiti)' : 'var(--genio)'}
               trend={criticalAudits > 0 ? 'down' : 'up'}
-              subtitle={t('ilargiakaos.dashboard.critical')}: {criticalAudits}
+              subtitle={`${t('ilargiakaos.dashboard.critical')}: ${criticalAudits}`}
             />
 
             {/* Comms */}
@@ -232,7 +232,7 @@ export const IlargiakaosTheoryDashboard: React.FC = () => {
               icon="Sunrise"
               color={avgViability > 60 ? 'var(--genio)' : avgViability > 30 ? 'var(--acero)' : 'var(--haiti)'}
               trend={avgViability > 60 ? 'up' : avgViability > 30 ? 'neutral' : 'down'}
-              subtitle={t('ilargiakaos.dashboard.avgViability')}: ${Math.round(avgViability)}%
+              subtitle={`${t('ilargiakaos.dashboard.avgViability')}: ${Math.round(avgViability)}%`}
             />
 
             {/* Identity */}

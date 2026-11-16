@@ -1,0 +1,548 @@
+# Gratifieria OpenSpec Specification
+
+spec_version: "1.0"
+name: "@hscsg/arm-gratiferia"
+version: "0.1.0"
+description: "Gratifieria Matchmaking Pool - Tinder de cosas gratis. Gift economy matchmaking with algorithmic transparency, built on ARM architecture."
+
+domain:
+  entities:
+    - name: Listing
+      description: "Primary UX primitive - offer or need in the gift economy"
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID: lst_*"
+        - name: listing_type
+          type: ListingType
+          required: true
+        - name: resource_spec_id
+          type: string
+          required: true
+          description: "References ResourceSpec taxonomy"
+        - name: agent_id
+          type: "string?"
+          required: false
+        - name: anonymous
+          type: boolean
+          required: true
+          default: false
+          description: "GAP-61 anonymous gift flag"
+        - name: location_id
+          type: "string?"
+          required: false
+        - name: quantity
+          type: number
+          required: true
+          default: 1.0
+        - name: unit
+          type: Unit
+          required: true
+          default: "items"
+        - name: available_from
+          type: "string?"
+          required: false
+        - name: available_until
+          type: "string?"
+          required: false
+        - name: title
+          type: "string?"
+          required: false
+        - name: description
+          type: "string?"
+          required: false
+        - name: image_url
+          type: "string?"
+          required: false
+        - name: status
+          type: ListingStatus
+          required: true
+          default: "active"
+        - name: resource_instance_id
+          type: "string?"
+          required: false
+        - name: community_id
+          type: "string?"
+          required: false
+        - name: visibility
+          type: VisibilityScope
+          required: false
+        - name: created_at
+          type: "string?"
+          required: false
+        - name: updated_at
+          type: "string?"
+          required: false
+        - name: author
+          type: "string?"
+          required: false
+        - name: signature
+          type: "string?"
+          required: false
+
+    - name: Match
+      fields:
+        - name: id
+          type: string
+          required: true
+          description: "Stable prefixed ID: mtch_*"
+        - name: offer_id
+          type: string
+          required: true
+        - name: need_id
+          type: string
+          required: true
+        - name: score
+          type: number
+          required: true
+          description: "0-1 composite score"
+        - name: match_data
+          type: MatchData
+          required: true
+        - name: status
+          type: MatchStatus
+          required: true
+          default: "proposed"
+        - name: created_at
+          type: string
+          required: true
+        - name: resolved_at
+          type: "string?"
+          required: false
+        - name: resolved_by
+          type: "string?"
+          required: false
+        - name: suggested_quantity
+          type: number
+          required: true
+        - name: suggested_unit
+          type: Unit
+          required: true
+        - name: suggested_handoff_time
+          type: "string?"
+          required: false
+        - name: suggested_handoff_location
+          type: "string?"
+          required: false
+
+    - name: MatchData
+      fields:
+        - name: category_score
+          type: number
+        - name: category_weight
+          type: number
+        - name: category_match_type
+          type: CategoryMatchType
+        - name: location_score
+          type: number
+        - name: location_weight
+          type: number
+        - name: distance_km
+          type: "number?"
+        - name: distance_description
+          type: "string?"
+        - name: time_score
+          type: number
+        - name: time_weight
+          type: number
+        - name: time_buffer_hours
+          type: "number?"
+        - name: quantity_score
+          type: number
+        - name: quantity_weight
+          type: number
+        - name: quantity_ratio
+          type: "number?"
+
+    - name: MatchWeights
+      description: "Community-configurable matching weights for algorithmic transparency"
+      fields:
+        - name: id
+          type: string
+        - name: community_id
+          type: "string?"
+        - name: category_weight
+          type: number
+          default: 0.4
+        - name: location_weight
+          type: number
+          default: 0.3
+        - name: time_weight
+          type: number
+          default: 0.2
+        - name: quantity_weight
+          type: number
+          default: 0.1
+        - name: min_match_score
+          type: number
+          default: 0.6
+        - name: created_at
+          type: string
+        - name: updated_at
+          type: string
+        - name: is_active
+          type: boolean
+          default: true
+
+    - name: MatchExplanation
+      description: "Detailed explanation for transparency"
+      fields:
+        - name: id
+          type: string
+        - name: match_id
+          type: string
+        - name: category_score
+          type: number
+        - name: location_score
+          type: number
+        - name: time_score
+          type: number
+        - name: quantity_score
+          type: number
+        - name: total_score
+          type: number
+        - name: category_weight
+          type: number
+        - name: location_weight
+          type: number
+        - name: time_weight
+          type: number
+        - name: quantity_weight
+          type: number
+        - name: explanation_text
+          type: string
+        - name: distance_km
+          type: "number?"
+        - name: distance_description
+          type: "string?"
+        - name: category_match_type
+          type: CategoryMatchType
+        - name: time_buffer_hours
+          type: "number?"
+        - name: quantity_ratio
+          type: "number?"
+
+    - name: MatchingAuditLog
+      description: "Audit trail for bias detection"
+      fields:
+        - name: id
+          type: string
+        - name: match_id
+          type: "string?"
+        - name: offer_id
+          type: string
+        - name: need_id
+          type: string
+        - name: match_score
+          type: number
+        - name: threshold_score
+          type: number
+        - name: matched
+          type: boolean
+        - name: weights_config_id
+          type: string
+        - name: provider_zone
+          type: "string?"
+        - name: receiver_zone
+          type: "string?"
+        - name: offer_category
+          type: "string?"
+        - name: need_category
+          type: "string?"
+        - name: agent_version
+          type: string
+
+    - name: KarmaAccount
+      description: "Amphibious reputation account"
+      fields:
+        - name: user_id
+          type: string
+        - name: znu_balance
+          type: number
+        - name: usd_balance
+          type: "number?"
+        - name: total_given
+          type: number
+        - name: total_received
+          type: number
+        - name: matches_fulfilled
+          type: number
+        - name: matches_cancelled
+          type: number
+        - name: trust_score
+          type: number
+        - name: last_activity
+          type: string
+
+    - name: KarmaTransaction
+      fields:
+        - name: id
+          type: string
+        - name: from_user
+          type: string
+        - name: to_user
+          type: string
+        - name: amount_znu
+          type: number
+        - name: amount_usd
+          type: "number?"
+        - name: listing_id
+          type: "string?"
+        - name: match_id
+          type: "string?"
+        - name: type
+          type: string
+          description: "gratitude | fulfillment | bonus | penalty"
+        - name: note
+          type: "string?"
+        - name: created_at
+          type: string
+        - name: oracle_snapshot
+          type: PriceParityOracle
+
+    - name: SwipeRecord
+      fields:
+        - name: id
+          type: string
+        - name: user_id
+          type: string
+        - name: listing_id
+          type: string
+        - name: action
+          type: SwipeAction
+        - name: created_at
+          type: string
+        - name: match_id
+          type: "string?"
+
+    - name: Gratiferia
+      fields:
+        - name: id
+          type: string
+        - name: name
+          type: string
+        - name: description
+          type: "string?"
+        - name: location_id
+          type: "string?"
+        - name: community_id
+          type: "string?"
+        - name: admin_ids
+          type: "string[]"
+        - name: sharing_preference
+          type: VisibilityScope
+        - name: matchmaker_config
+          type: MatchmakerConfig
+        - name: created_at
+          type: string
+        - name: updated_at
+          type: string
+
+  enums:
+    - name: ListingType
+      values: ["offer", "need"]
+    - name: ListingStatus
+      values: ["active", "matched", "fulfilled", "expired", "cancelled"]
+    - name: MatchStatus
+      values: ["proposed", "accepted", "rejected", "fulfilled", "cancelled"]
+    - name: Unit
+      values: ["items", "kg", "g", "l", "ml", "hours", "days", "sessions", "people"]
+    - name: VisibilityScope
+      values: ["my_cell", "my_community", "trusted_network", "anyone_local", "network_wide"]
+    - name: CategoryMatchType
+      values: ["exact", "parent", "semantic", "none"]
+    - name: SwipeAction
+      values: ["like", "pass", "super_like"]
+    - name: MonetaryMode
+      values: ["postmonetario", "conectado"]
+
+operations:
+  - name: listing.create
+    description: "Create a new offer or need"
+    input: CreateListingInput
+    output: Listing
+
+  - name: listing.update_status
+    description: "Update listing status"
+    input: "ListingStatusInput"
+    output: Listing
+
+  - name: match.propose
+    description: "Propose match between offer and need"
+    input: ProposeMatchInput
+    output: Match
+
+  - name: match.accept
+    description: "Accept a proposed match"
+    input: "MatchAcceptInput"
+    output: Match
+
+  - name: match.reject
+    description: "Reject a proposed match"
+    input: "MatchRejectInput"
+    output: Match
+
+  - name: match.fulfill
+    description: "Mark match as fulfilled (awards karma)"
+    input: "MatchFulfillInput"
+    output: Match
+
+  - name: swipe
+    description: "Swipe on a listing (Tinder-like)"
+    input: SwipeInput
+    output: SwipeRecord
+
+  - name: karma.transfer
+    description: "Transfer karma between users"
+    input: KarmaTransferInput
+    output: KarmaTransaction
+
+  - name: karma.reward_fulfillment
+    description: "Reward karma for match fulfillment"
+    input: "KarmaRewardInput"
+    output: KarmaTransaction
+
+  - name: matchmaker.run
+    description: "Run AI matchmaking analysis"
+    input: "MatchmakerRunInput"
+    output: "Match[]"
+
+  - name: weights.update
+    description: "Update matching weights (governance)"
+    input: WeightsUpdateInput
+    output: MatchWeights
+
+functions:
+  - name: scoreMatch
+    module: "agents/matchmaker"
+    signature: "(offer: Listing, need: Listing) => { score: number; match_data: MatchData }"
+    description: "Score a potential match between offer and need"
+
+  - name: findMatches
+    module: "agents/matchmaker"
+    signature: "(offers: Listing[], needs: Listing[]) => MatchResult[]"
+    description: "Find and score all potential matches"
+
+  - name: createMatchProposal
+    module: "agents/matchmaker"
+    signature: "(matchResult: MatchResult) => Match"
+    description: "Create a match proposal from scored match"
+
+  - name: logAuditTrail
+    module: "agents/matchmaker"
+    signature: "(matchResult, matched: boolean, threshold: number) => void"
+    description: "Log matching decision to audit trail"
+
+  - name: createMatchExplanation
+    module: "agents/matchmaker"
+    signature: "(matchId: string, matchResult) => MatchExplanation"
+    description: "Create detailed explanation for transparency"
+
+  - name: analyze
+    module: "agents/matchmaker"
+    signature: "() => Match[]"
+    description: "Run full matchmaking analysis and create proposals"
+
+  - name: getBalance
+    module: "core/karma"
+    signature: "(userId: string) => DualValue"
+    description: "Get karma balance in dual mode"
+
+  - name: transfer
+    module: "core/karma"
+    signature: "(from: string, to: string, amount: number, note: string) => KarmaTransaction"
+    description: "Transfer karma between users"
+
+  - name: rewardFulfillment
+    module: "core/karma"
+    signature: "(userId: string, matchId: string) => KarmaTransaction"
+    description: "Reward karma for match fulfillment"
+
+  - name: penalizeCancellation
+    module: "core/karma"
+    signature: "(userId: string, matchId: string) => KarmaTransaction"
+    description: "Penalize karma for match cancellation"
+
+  - name: rewardAnonymousGift
+    module: "core/karma"
+    signature: "(userId: string, listingId: string) => KarmaTransaction"
+    description: "Reward karma for anonymous gift (GAP-61)"
+
+  - name: formatKarma
+    module: "core/valueDual"
+    signature: "(znu: number, config: GratiferiaDualConfig) => string"
+    description: "Format karma for UI display"
+
+  - name: createGratiferiaDualConfig
+    module: "core/valueDual"
+    signature: "(mode?, oracle?, overrides?) => GratiferiaDualConfig"
+    description: "Create amphibious config for gratifieria"
+
+invariants:
+  - "Listings are the primary UX primitive - simple to create, rich for matching"
+  - "Matches require approval from BOTH parties (proposal-based)"
+  - "Algorithmic transparency: every match decision logged to audit trail"
+  - "Configurable weights per community for governance"
+  - "Detailed explanations for every match (why this match?)"
+  - "Karma is amphibious: ZNU (postmonetario) or USD (conectado via oracle)"
+  - "Anonymous gifts (GAP-61) get bonus karma"
+  - "Cancellation penalizes karma, fulfillment rewards karma"
+  - "Swipe actions (like/pass) create implicit preference data"
+  - "Weights are community-governed, not hardcoded"
+
+interfaces:
+  - name: GratifieriaRepositories
+    required_functions:
+      - "listings: ListingRepository"
+      - "matches: MatchRepository"
+      - "transparency: TransparencyRepository"
+      - "gratiferia: GratiferiaRepository"
+      - "karma: KarmaRepository"
+      - "swipes: SwipeRepository"
+      - "events: EventRepository"
+
+  - name: MatchmakerDeps
+    required_functions:
+      - "listingRepo"
+      - "matchRepo"
+      - "transparencyRepo"
+      - "karmaSystem?"
+      - "oracle?"
+
+traceability:
+  - requirement: "GRAT-001"
+    description: "Tinder-like UX for gift economy"
+    implements: ["Listing entity", "SwipeRecord", "SwipeRepository"]
+  - requirement: "GRAT-002"
+    description: "AI matchmaking with transparency"
+    implements: ["scoreMatch", "findMatches", "logAuditTrail", "createMatchExplanation", "MatchWeights"]
+  - requirement: "GRAT-003"
+    description: "Proposal-based matching (dual approval)"
+    implements: ["Match.status lifecycle", "match.accept", "match.reject"]
+  - requirement: "GRAT-004"
+    description: "Amphibious karma (ZNU/USD)"
+    implements: ["KarmaAccount", "KarmaTransaction", "valueDual", "formatKarma"]
+  - requirement: "GRAT-005"
+    description: "Community-governed weights"
+    implements: ["MatchWeights", "weights.update", "TransparencyRepository"]
+  - requirement: "GRAT-006"
+    description: "GAP-61 anonymous gifts"
+    implements: ["Listing.anonymous", "rewardAnonymousGift", "anonymousGiftBonus"]
+  - requirement: "GRAT-007"
+    description: "Integration with ARM architecture"
+    implements: ["arm-core types/ops/memory", "arm-cli repositories", "arm-mcp tools"]
+
+testing:
+  unit:
+    - "matchmaker.test.ts: scoreMatch (category, location, time, quantity), findMatches, createMatchProposal"
+    - "karma.test.ts: transfer, rewardFulfillment, penalizeCancellation, rewardAnonymousGift, trustScore"
+    - "valueDual.test.ts: formatKarma, createGratiferiaDualConfig, sponsorMatch"
+    - "repository.test.ts: in-memory implementations, filtering"
+  integration:
+    - "Full flow: create offer -> create need -> run matchmaker -> propose -> accept -> fulfill -> karma rewarded"
+    - "Governance: update weights -> matchmaker uses new weights -> audit trail shows change"
+    - "Anonymous gift: create anonymous listing -> match -> fulfill -> bonus karma awarded"
+  e2e:
+    - "MCP: create listing -> swipe like -> match proposed -> accept -> fulfill -> karma transfer"
+    - "CLI: gratiferia listing create -> match propose -> match accept -> karma balance"

@@ -1,0 +1,76 @@
+{
+  "name": "@hscsg/arm-gratiferia",
+  "version": "0.1.0",
+  "description": "Gratifieria Matchmaking Pool - Tinder de cosas gratis. Gift economy matchmaking with algorithmic transparency, built on ARM architecture.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Isaacko0/Marca-Blanca-Zeitnus-Firma-Operaciones-Ecotomica-Networking-Recreativo.git",
+    "directory": "packages/arm-gratiferia"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./agents": {
+      "import": "./dist/agents/index.js",
+      "types": "./dist/agents/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/cli/index.js",
+      "types": "./dist/cli/index.d.ts"
+    },
+    "./mcp": {
+      "import": "./dist/mcp/index.js",
+      "types": "./dist/mcp/index.d.ts"
+    },
+    "./value-dual": {
+      "import": "./dist/lib/valueDual.js",
+      "types": "./dist/lib/valueDual.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/**/*.test.ts",
+    "spec:validate": "openspec validate --spec openspec/specs/arm-gratiferia.openspec.yml",
+    "dev:matchmaker": "node --watch dist/agents/matchmaker.js"
+  },
+  "keywords": [
+    "gratiferia",
+    "gift-economy",
+    "matchmaking",
+    "mutual-aid",
+    "arm",
+    "agent-relationship-management",
+    "solarpunk",
+    "hscsg"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "@hscsg/arm-core": "file:../../arm-core",
+    "@hscsg/arm-cli": "file:../../arm-cli"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

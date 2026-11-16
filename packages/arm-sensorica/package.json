@@ -1,0 +1,49 @@
+{
+  "name": "@hscsg/arm-sensorica",
+  "version": "0.1.0",
+  "description": "Sensorica OVN primitives for ARM - Open Value Network patterns",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.ts",
+    "test:watch": "node --watch --test tests/*.test.ts"
+  },
+  "keywords": [
+    "sensorica",
+    "ovn",
+    "open-value-network",
+    "value-equation",
+    "contribution-accounting",
+    "governance",
+    "arm",
+    "hscsg"
+  ],
+  "author": "HSCSG",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@hscsg/arm-core": "file:../arm-core",
+    "@hscsg/arm-gratiferia": "file:../arm-gratiferia"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.10.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

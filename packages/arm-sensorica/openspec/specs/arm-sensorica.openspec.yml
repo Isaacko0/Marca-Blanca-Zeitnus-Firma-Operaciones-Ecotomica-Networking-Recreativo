@@ -1,0 +1,365 @@
+specVersion: "1.0"
+package: "@hscsg/arm-sensorica"
+version: "0.1.0"
+description: "Sensorica OVN primitives for ARM - Open Value Network patterns with amphibious monetary mode"
+
+domain:
+  entities:
+    - name: Contribution
+      description: "Individual contribution to a project (time, materials, capital, knowledge, space)"
+      attributes:
+        - id: ContributionId
+        - affiliateId: AffiliateId
+        - projectId: ProjectId
+        - type: ContributionType
+        - quantity: Quantity
+        - timestamp: Timestamp
+        - verificationStatus: VerificationStatus
+        - evidence: EvidenceRef[]
+        - metadata: ContributionMetadata
+    - name: Affiliate
+      description: "Participant in OVN (contributor, place keeper, exchange firm rep)"
+      attributes:
+        - id: AffiliateId
+        - profile: AffiliateProfile
+        - contributions: ContributionId[]
+        - earnings: EarningsRecord[]
+        - trustScore: TrustScore
+        - governanceRole: GovernanceRole
+        - joinedAt: Timestamp
+        - projects: ProjectId[]
+    - name: Project
+      description: "Collaborative production unit with value equation and resource pool"
+      attributes:
+        - id: ProjectId
+        - name: string
+        - description: string
+        - valueEquation: ValueEquationConfig
+        - resourcePool: ResourcePoolId
+        - affiliates: AffiliateId[]
+        - status: ProjectStatus
+        - propertyRegime: PropertyRegime
+        - governance: GovernanceConfig
+        - createdAt: Timestamp
+        - updatedAt: Timestamp
+    - name: ValueEquationConfig
+      description: "Amphibious value equation with dual-mode distribution"
+      attributes:
+        - projectId: ProjectId
+        - contributionWeights: Map<ContributionType, Weight>
+        - distributionFormula: DistributionFormulaConfig
+        - minimumThreshold: Quantity?
+        - reservePercentage: Percentage
+        - exchangeFirmConfig: ExchangeFirmConfig?
+        - monetaryMode: MonetaryMode
+        - priceOracle: PriceParityOracle?
+        - contributionValuation: Map<ContributionType, DualValuationRule>
+        - distributionOutput: DualDistributionConfig
+    - name: ResourcePool
+      description: "Mutualized resources (equipment, space, materials) with access rules"
+      attributes:
+        - id: ResourcePoolId
+        - resources: Resource[]
+        - accessRules: AccessRule[]
+        - propertyRegime: PropertyRegime
+        - location: GeoLocation?
+        - stewardId: AffiliateId?
+    - name: Resource
+      description: "Mutualized resource (equipment, space, materials, etc.)"
+      attributes:
+        - id: string
+        - name: string
+        - type: ResourceType
+        - description: string
+        - location: GeoLocation?
+        - capacity: Quantity
+        - currentUsage: Quantity
+        - ownerId: AffiliateId?
+        - metadata: ResourceMetadata
+    - name: Affiliate
+      description: "OVN participant (affiliate, place keeper, exchange firm rep)"
+      attributes:
+        - id: AffiliateId
+        - profile: AffiliateProfile
+        - contributions: ContributionId[]
+        - earnings: EarningsRecord[]
+        - trustScore: TrustScore
+        - governanceRole: GovernanceRole
+        - joinedAt: Timestamp
+        - projects: ProjectId[]
+    - name: ValueEquationConfig
+      description: "Amphibious value equation with dual-mode distribution"
+      attributes:
+        - projectId: ProjectId
+        - contributionWeights: Map<ContributionType, Weight>
+        - distributionFormula: DistributionFormulaConfig
+        - minimumThreshold: Quantity?
+        - reservePercentage: Percentage
+        - exchangeFirmConfig: ExchangeFirmConfig?
+        - monetaryMode: MonetaryMode
+        - priceOracle: PriceParityOracle?
+        - contributionValuation: Map<ContributionType, DualValuationRule>
+        - distributionOutput: DualDistributionConfig
+    - name: ResourcePool
+      description: "Mutualized resources with access rules and property regime"
+      attributes:
+        - id: ResourcePoolId
+        - resources: Resource[]
+        - accessRules: AccessRule[]
+        - propertyRegime: PropertyRegime
+        - location: GeoLocation?
+        - stewardId: AffiliateId?
+    - name: PropertyRegime
+      description: "Property regime governing access (private, public, commons, non-dominium)"
+      attributes:
+        - type: PropertyRegimeType
+        - owner: LegalEntityId? (private)
+        - authority: GovernmentId? (public)
+        - stewards: AffiliateId[]? (commons)
+        - commonsRules: CommonsRules? (commons)
+        - trust: TrustId? (non-dominium)
+        - community: AffiliateId[]? (non-dominium)
+    - name: PlaceKeeper
+      description: "Local trust anchor with direct observation authority"
+      attributes:
+        - affiliateId: AffiliateId
+        - spaceId: SpaceId
+        - permissions: Permission[]
+        - accountability: AccountabilityConfig
+        - observations: Map<AffiliateId, number>
+    - name: TrustScore
+      description: "Local trust score computed from observations, peer reports, compliance"
+      attributes:
+        - value: number (0-1)
+        - lastUpdated: Timestamp
+        - source: string
+        - breakdown: TrustBreakdown?
+    - name: Proposal
+      description: "Governance proposal requiring quorum approval"
+      attributes:
+        - id: ProposalId
+        - projectId: ProjectId
+        - type: ProposalType
+        - title: string
+        - description: string
+        - proposedBy: AffiliateId
+        - createdAt: Timestamp
+        - votingEndsAt: Timestamp
+        - status: string
+        - votes: Vote[]
+        - requiredApprovers: number
+        - executionPayload: unknown?
+    - name: ExchangeFirm
+      description: "Legal interface (empty shell) for OVN to operate in conventional market"
+      attributes:
+        - id: ExchangeFirmId
+        - legalEntity: LegalEntityRef
+        - representedOVN: OVNId
+        - contracts: Contract[]
+        - revenueFlow: RevenueFlowConfig
+        - compliance: ComplianceConfig
+    - name: PropertyRegime
+      description: "Property regime (private, public, commons, non-dominium)"
+      attributes:
+        - type: PropertyRegimeType
+        - owner: LegalEntityId? (private)
+        - authority: GovernmentId? (public)
+        - stewards: AffiliateId[]? (commons)
+        - commonsRules: CommonsRules? (commons)
+        - trust: TrustId? (non-dominium)
+        - community: AffiliateId[]? (non-dominium)
+    - name: AccessRule
+      description: "Access control rule for resource pool"
+      attributes:
+        - id: string
+        - resourceId: string
+        - allowedRoles: GovernanceRole[]
+        - allowedAffiliates: AffiliateId[]?
+        - conditions: AccessCondition[]?
+        - timeRestrictions: TimeRestriction[]?
+        - maxDuration: Duration?
+        - requiresApproval: boolean
+        - approverRoles: GovernanceRole[]?
+    - name: TrustScore
+      description: "Local trust score computed from observations, peer reports, compliance"
+      attributes:
+        - value: number (0-1)
+        - lastUpdated: Timestamp
+        - source: string
+        - breakdown: TrustBreakdown?
+    - name: ExchangeFirm
+      description: "Legal interface for OVN to operate in conventional market"
+      attributes:
+        - id: ExchangeFirmId
+        - legalEntity: LegalEntityRef
+        - representedOVN: OVNId
+        - contracts: Contract[]
+        - revenueFlow: RevenueFlowConfig
+        - compliance: ComplianceConfig
+    - name: Contract
+      description: "External contract managed by exchange firm"
+      attributes:
+        - id: string
+        - clientId: string
+        - value: DualValue
+        - status: string
+        - startDate: Timestamp
+        - endDate: Timestamp?
+        - deliverables: Deliverable[]
+    - name: ResourcePool
+      description: "Mutualized resources with access rules"
+      attributes:
+        - id: ResourcePoolId
+        - resources: Resource[]
+        - accessRules: AccessRule[]
+        - propertyRegime: PropertyRegime
+        - location: GeoLocation?
+        - stewardId: AffiliateId?
+    - name: Resource
+      description: "Mutualized resource (equipment, space, materials)"
+      attributes:
+        - id: string
+        - name: string
+        - type: ResourceType
+        - description: string
+        - location: GeoLocation?
+        - capacity: Quantity
+        - currentUsage: Quantity
+        - ownerId: AffiliateId?
+        - metadata: ResourceMetadata
+
+operations:
+  - name: contribution.submit
+    description: "Submit a new contribution for verification"
+    input: SubmitContribution
+    output: Contribution
+    invariants: [SEN-001]
+  - name: contribution.verify
+    description: "Verify or dispute a pending contribution"
+    input: VerifyContribution
+    output: Contribution
+    invariants: [SEN-001]
+  - name: project.create
+    description: "Create a new collaborative project with value equation and resource pool"
+    input: CreateProject
+    output: Project
+    invariants: [SEN-003, SEN-007]
+  - name: project.join
+    description: "Join an existing project as affiliate"
+    input: JoinProject
+    output: Project
+    invariants: [SEN-001]
+  - name: valueEquation.configure
+    description: "Configure value equation for a project (requires governance approval)"
+    input: ConfigureValueEquation
+    output: ValueEquationConfig
+    invariants: [SEN-003]
+  - name: distribution.execute
+    description: "Execute dual-mode distribution of revenue per value equation (requires approval)"
+    input: ExecuteDistribution
+    output: DistributionResult
+    invariants: [SEN-002, SEN-004]
+  - name: resourcePool.add
+    description: "Add a resource to a resource pool"
+    input: AddResource
+    output: ResourcePool
+    invariants: [SEN-007]
+  - name: resourcePool.access
+    description: "Request access to a resource in a pool"
+    input: RequestResourceAccess
+    output: ResourceAccessRequest
+    invariants: [SEN-007]
+  - name: governance.propose
+    description: "Propose a governance change (value equation, governance, resource allocation, etc.)"
+    input: ProposeGovernanceChange
+    output: Proposal
+    invariants: [SEN-004]
+  - name: governance.vote
+    description: "Vote on a governance proposal"
+    input: VoteOnProposal
+    output: Vote
+    invariants: [SEN-004]
+  - name: affiliate.register
+    description: "Register a new affiliate in the OVN"
+    input: RegisterAffiliate
+    output: Affiliate
+    invariants: [SEN-001]
+  - name: trust.update
+    description: "Update trust score for an affiliate (place keeper only)"
+    input: UpdateTrustScore
+    output: TrustScore
+    invariants: [SEN-005]
+  - name: exchangeFirm.revenueReceived
+    description: "Record external revenue received by exchange firm"
+    input: RecordExternalRevenue
+    output: void
+    invariants: [SEN-006]
+
+invariants:
+  - id: SEN-001
+    description: "Every contribution traces to authenticated affiliate"
+    type: "traceability"
+    operations: ["contribution.submit", "contribution.verify"]
+  - id: SEN-002
+    description: "Distribution amounts sum to revenue input minus reserve"
+    type: "conservation"
+    operations: ["distribution.execute"]
+  - id: SEN-003
+    description: "Value equation weights non-negative; all contribution types have valuation rules"
+    type: "validity"
+    operations: ["valueEquation.configure"]
+  - id: SEN-004
+    description: "Governance proposals require quorum; nothing lands unapproved"
+    type: "governance"
+    operations: ["governance.propose", "governance.vote"]
+  - id: SEN-005
+    description: "Trust scores updated only by authorized place keepers with direct observation"
+    type: "authorization"
+    operations: ["trust.update"]
+  - id: SEN-006
+    description: "Exchange firm revenue flows to OVN per configured split; firm fee deducted"
+    type: "conservation"
+    operations: ["exchangeFirm.revenueReceived"]
+  - id: SEN-007
+    description: "Property regime determines access rules; resources mutualized per regime"
+    type: "authorization"
+    operations: ["project.create", "resourcePool.add", "resourcePool.access"]
+  - id: SEN-008
+    description: "Dual-mode distribution maintains proportional allocation in both modes"
+    type: "consistency"
+    operations: ["distribution.execute"]
+  - id: SEN-009
+    description: "Trust scores computed from local observations (place keeper priority)"
+    type: "locality"
+    operations: ["trust.update"]
+  - id: SEN-010
+    description: "Exchange firm revenue split per config; reserve maintained"
+    type: "conservation"
+    operations: ["exchangeFirm.revenueReceived", "distribution.execute"]
+
+traces:
+  SEN-001: 
+    - contribution.submit
+    - contribution.verify
+  SEN-002:
+    - distribution.execute
+  SEN-003:
+    - valueEquation.configure
+  SEN-004:
+    - governance.propose
+    - governance.vote
+  SEN-005:
+    - trust.update
+  SEN-006:
+    - exchangeFirm.revenueReceived
+  SEN-007:
+    - project.create
+    - resourcePool.add
+    - resourcePool.access
+  SEN-008:
+    - distribution.execute
+  SEN-009:
+    - trust.update
+  SEN-010:
+    - exchangeFirm.revenueReceived
+    - distribution.execute
