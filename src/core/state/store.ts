@@ -1886,7 +1886,7 @@ audit: st.audit,
                                                     zeitnusCooperative: st.zeitnusCooperative,
                                                   };
                                                 }
-    }),
+    },
     {
       name: 'hscsg.v15.os.v1',
       partialize: function(st) {
@@ -1960,4 +1960,5 @@ audit: st.audit,
       },
     }
   )
+)
 )
