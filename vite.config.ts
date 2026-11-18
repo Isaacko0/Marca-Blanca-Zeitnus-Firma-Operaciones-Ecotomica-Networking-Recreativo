@@ -43,16 +43,16 @@ export default defineConfig({
     strictPort: false,
   },
   build: {
-    outDir: 'dist',
-    sourcemap: false,
-    modulePreload: { polyfill: true },
-    rollupOptions: {
-      output: {
-        format: 'es',
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]',
+      outDir: 'dist',
+      sourcemap: false,
+      modulePreload: { polyfill: true },
+      rollupOptions: {
+        output: {
+          format: 'iife',
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash].[ext]',
+        },
       },
     },
-  },
 })
