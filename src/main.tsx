@@ -32,9 +32,19 @@ function TestMount() {
   )
 }
 
+// Outer test to verify React root mounts at all
+function OuterTest() {
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '40px', background: '#FF0000', color: 'white', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 'bold' }}>
+      🔴 OUTER TEST - React root montado
+    </div>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
+      <OuterTest />
       <ErrorBoundary fallback={<TestMount />}>
         <App />
       </ErrorBoundary>
