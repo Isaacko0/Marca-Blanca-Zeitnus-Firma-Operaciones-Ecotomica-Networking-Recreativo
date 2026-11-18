@@ -1,9 +1,29 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
+import fs from 'fs'
+import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'fix-iife-html',
+      closeBundle() {
+        const htmlPath = path.join(__dirname, 'dist', 'index.html')
+        if (fs.existsSync(htmlPath)) {
+          let html = fs.readFileSync(htmlPath, 'utf8')
+          // Remove type="module" from script tag for IIFE bundle
+          html = html.replace(
+            '<script type="module" crossorigin src="/assets/',
+            '<script crossorigin src="/assets/'
+          )
+          fs.writeFileSync(htmlPath, html)
+          console.log('[fix-iife-html] Removed type="module" from generated HTML')
+        }
+      },
+    },
+  ],
   base: '/',
   resolve: {
     alias: {
