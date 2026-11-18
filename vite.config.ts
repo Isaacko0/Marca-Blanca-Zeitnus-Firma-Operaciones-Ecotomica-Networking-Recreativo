@@ -13,13 +13,13 @@ export default defineConfig({
         const htmlPath = path.join(__dirname, 'dist', 'index.html')
         if (fs.existsSync(htmlPath)) {
           let html = fs.readFileSync(htmlPath, 'utf8')
-          // Remove type="module" from script tag for IIFE bundle
+          // Remove type="module" and add defer for IIFE bundle
           html = html.replace(
             '<script type="module" crossorigin src="/assets/',
-            '<script crossorigin src="/assets/'
+            '<script defer crossorigin src="/assets/'
           )
           fs.writeFileSync(htmlPath, html)
-          console.log('[fix-iife-html] Removed type="module" from generated HTML')
+          console.log('[fix-iife-html] Fixed script tag: removed type=module, added defer')
         }
       },
     },
