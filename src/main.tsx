@@ -22,11 +22,22 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { err
   }
 }
 
+// Test component to verify React renders
+function TestMount() {
+  return (
+    <div style={{ padding: '20px', color: 'white', background: '#0A1024', minHeight: '100vh' }}>
+      <h1 style={{ color: '#AFEB00' }}>✅ React montado correctamente</h1>
+      <p>Si ves esto, React funciona. El problema está en App/Store.</p>
+    </div>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <ErrorBoundary>
-        <App />
+        {/* <App /> */}
+        <TestMount />
       </ErrorBoundary>
     </BrowserRouter>
   </React.StrictMode>
