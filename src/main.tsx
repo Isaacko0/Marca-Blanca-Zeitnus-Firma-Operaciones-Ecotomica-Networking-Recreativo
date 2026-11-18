@@ -60,7 +60,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <OuterTest />
       <ErrorBoundary fallback={<TestMount />}>
-        <StoreTest />
+        <App />
       </ErrorBoundary>
     </BrowserRouter>
   </React.StrictMode>
