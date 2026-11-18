@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { App } from './app/App'
+import { useAppStore } from '@core/state/store'
 import './shared/styles/global.css'
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode; fallback?: React.ReactNode }, { error: Error | null }> {
@@ -41,12 +42,25 @@ function OuterTest() {
   )
 }
 
+// Store test component
+function StoreTest() {
+  const { screen, nodeName, base, cac, members } = useAppStore()
+  return (
+    <div style={{ padding: '20px', color: 'white', background: '#0A1024', minHeight: '100vh', border: '2px solid #AFEB00', margin: '20px' }}>
+      <h1 style={{ color: '#AFEB00' }}>🔍 Store Test</h1>
+      <pre style={{ whiteSpace: 'pre-wrap', color: '#AFEB00' }}>
+{JSON.stringify({ screen, nodeName, base, cac, members }, null, 2)}
+      </pre>
+    </div>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <OuterTest />
       <ErrorBoundary fallback={<TestMount />}>
-        <App />
+        <StoreTest />
       </ErrorBoundary>
     </BrowserRouter>
   </React.StrictMode>
