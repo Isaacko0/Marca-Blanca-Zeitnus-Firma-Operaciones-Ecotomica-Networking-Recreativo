@@ -2,12 +2,28 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
 
-// HSCSG v15 OS — Vite config
-// base './' hace el build portable: el index.html de dist/ funciona abriéndolo
-// directamente (file://) y también servido por `vite preview` o cualquier static server.
 export default defineConfig({
-  plugins: [react()],
-  base: './',
+  plugins: [
+    react(),
+    {
+      name: 'html-transform',
+      transformIndexHtml(html) {
+        return html.replace(
+          '<script src="/src/main.tsx"></script>',
+          '<script type="module" src="/src/main.tsx"></script>'
+        )
+      },
+      transformIndexHtml: {
+        enforce: 'post',
+        transform(html) {
+          return html
+            .replace('type="module" crossorigin src="', 'crossorigin src="')
+            .replace('type="module" src="', 'src="')
+        }
+      }
+    },
+  ],
+  base: '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -29,5 +45,14 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    modulePreload: { polyfill: true },
+    rollupOptions: {
+      output: {
+        format: 'es',
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
   },
 })
