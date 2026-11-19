@@ -46,7 +46,7 @@ import {
   Zap,
 } from 'lucide-react';
 
-const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>> = {
+export const iconMap = {
   AlertCircle,
   AlertTriangle,
   ArrowRight,
@@ -93,6 +93,28 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   Zap,
 };
 
+export function getIcon(name: string) {
+  return iconMap[name as keyof typeof iconMap];
+}
+
+// Force all iconMap properties to be retained by the bundler
+function __retainIcons() {
+  return [
+    iconMap.AlertCircle, iconMap.AlertTriangle, iconMap.ArrowRight, iconMap.Award,
+    iconMap.BarChart2, iconMap.BookOpen, iconMap.Bot, iconMap.Brain, iconMap.Building2,
+    iconMap.Calculator, iconMap.Check, iconMap.CheckCircle, iconMap.ChevronDown,
+    iconMap.Coins, iconMap.Copy, iconMap.Cpu, iconMap.Download, iconMap.Eye,
+    iconMap.FileCheck, iconMap.FileJson, iconMap.FileText, iconMap.Film, iconMap.Flag,
+    iconMap.Gavel, iconMap.GitBranch, iconMap.Heart, iconMap.Leaf, iconMap.Map,
+    iconMap.MousePointer2, iconMap.PieChart, iconMap.Plus, iconMap.Recycle,
+    iconMap.RefreshCw, iconMap.Scale, iconMap.ScrollText, iconMap.Search, iconMap.Shield,
+    iconMap.Target, iconMap.TreePine, iconMap.TrendingUp, iconMap.Unlock, iconMap.UserCog,
+    iconMap.Users, iconMap.Zap
+  ];
+}
+// Call at module init to prevent tree-shaking
+__retainIcons();
+
 interface IconProps {
   name: string;
   size?: number;
@@ -101,7 +123,7 @@ interface IconProps {
 }
 
 export function Icon({ name, size = 24, className, style }: IconProps) {
-  const IconComponent = iconMap[name];
+  const IconComponent = getIcon(name);
   
   if (!IconComponent) {
     console.warn(`Icon "${name}" not found in icon map`);

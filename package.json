@@ -4,7 +4,10 @@
   "description": "HSCSG v15 OS / Cosateca — Sistema operativo comunitario postmonetario (Materialismo Jerárquico + CaaS)",
   "type": "module",
   "private": true,
-  "workspaces": [
+    "sideEffects": [
+      "src/core/ui/Icon.tsx"
+    ],
+    "workspaces": [
     "packages/*"
   ],
   "scripts": {

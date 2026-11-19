@@ -4,9 +4,21 @@ import { fileURLToPath, URL } from 'node:url'
 import fs from 'fs'
 import path from 'path'
 
+// Prevent treeshaking of Icon.tsx (dynamic icon lookup)
+const preventIconTreeshake = () => ({
+  name: 'prevent-icon-treeshake',
+  resolveId(source) {
+    if (source.endsWith('core/ui/Icon.tsx') || source.includes('core/ui/Icon')) {
+      return { id: source, moduleSideEffects: true };
+    }
+    return null;
+  },
+});
+
 export default defineConfig({
   plugins: [
     react(),
+    preventIconTreeshake(),
     {
       name: 'fix-iife-html',
       closeBundle() {
@@ -46,6 +58,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    cache: false,
     modulePreload: { polyfill: true },
     rollupOptions: {
       output: {

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { App } from './app/App'
 import { useAppStore } from '@core/state/store'
+// Force Icon module to be included (prevents tree-shaking of lucide icons)
+import '@core/ui/Icon'
 import './shared/styles/global.css'
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode; fallback?: React.ReactNode }, { error: Error | null }> {
