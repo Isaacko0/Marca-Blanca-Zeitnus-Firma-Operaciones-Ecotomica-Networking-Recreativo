@@ -1,21 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-const makeGetStorage = () => () => {
-  if (typeof window === 'undefined') return null
-  return {
-    getItem: (name: string): string | null => {
-      try { return localStorage.getItem(name) } catch { return null }
-    },
-    setItem: (name: string, value: string): void => {
-      try { localStorage.setItem(name, value) } catch {}
-    },
-    removeItem: (name: string): void => {
-      try { localStorage.removeItem(name) } catch {}
-    },
-  }
-}
-
 import type {
   BaseMaterial,
   CACVectors,
@@ -103,12 +86,6 @@ import type { OfferDesignerState as OfferDesignerOfferState } from '@core/state/
 import { createInitialOffer as makeOfferDesignerOfferState } from '@core/state/offer-designer'
 import type { ZeitnusCooperativeState } from '@core/state/zeitnus-cooperative'
 import { createInitialCooperativeState as makeZeitnusCooperativeState } from '@core/state/zeitnus-cooperative'
-import type { IlargiakaosState } from '@core/state/ilargiakaos'
-import { createInitialIlargiakaosState as makeIlargiakaosState } from '@core/state/ilargiakaos'
-import type { UrbanGreenState } from '@core/state/urban-green-governance'
-import { createInitialUrbanGreenState as makeUrbanGreenState } from '@core/state/urban-green-governance'
-import type { IEProtocolState } from '@core/state/ie-protocol'
-import { createInitialIEProtocolState as makeIEProtocolState } from '@core/state/ie-protocol'
 import { autFromCAC, ics, pgsLM } from '@core/lib/metrics'
 import { revenueShare } from '@core/lib/caas'
 import { evaluateAction } from '@core/lib/automaton'
@@ -194,6 +171,12 @@ import { createComposition, addClip, togglePlayback, seekFrame } from '@core/lib
 import { createHighlightProject, addHighlight, exportHighlight } from '@core/lib/highlight'
 
 import type { BrandDNAKey, ICPProfile } from '@core/lib/agencia'
+import * as seed from '@core/state/seed'
+import type { BoundariesState } from '@core/state/boundaries'
+import { initialBoundaries, makeAuditRow } from '@core/state/boundaries'
+import type { CoworkersState } from '@core/state/coworkers'
+import { initialCoworkers, makeCoworker, makeChannel } from '@core/state/coworkers'
+
 export interface AppState {
   // Navigation (reused from Cosateca OS shell)
   screen: string
@@ -720,8 +703,7 @@ const initialPlans: PlanCycle[] = [
 const uid = () => Math.random().toString(36).slice(2, 9)
 
 export const useAppStore = create<AppState>()(
-  persist(
-    (set) => ({
+  (set) => ({
       screen: 'home',
       collapsed: false,
       navOpen: false,
@@ -749,7 +731,7 @@ export const useAppStore = create<AppState>()(
       search: '',
       lang: 'es',
       lucidez: false,
-      toggleLucidez: () => set((st) => {
+      toggleLucidez: () => set(function(st) {
         const v = !st.lucidez
         if (typeof document !== 'undefined') {
           if (v) document.documentElement.dataset.lucidez = 'on'
@@ -786,7 +768,7 @@ export const useAppStore = create<AppState>()(
       toggleAcct: () => set((st) => ({ acct: !st.acct })),
       setAcctMsg: (m) => set({ acctMsg: m }),
       setBrand: (b) => set({ brand: b }),
-      toggleBrandOff: (i) => set((st) => {
+      toggleBrandOff: (i) => set(function(st) {
         const cur = [...st.brandsOff]
         const k = cur.indexOf(i)
         if (k >= 0) cur.splice(k, 1)
@@ -1031,7 +1013,7 @@ export const useAppStore = create<AppState>()(
       addCaasMember: (m) => set((st) => ({ caasMembers: [...st.caasMembers, { ...m, id: uid() }] })),
       toggleCaasStream: (key) => set((st) => ({ caasStreams: st.caasStreams.map((s) => (s.key === key ? { ...s, enabled: !s.enabled } : s)) })),
       setCaasStreamCtx: (key, usdcIn, znuOut, touchesBaseMaterial) => set((st) => ({ caasStreams: st.caasStreams.map((s) => (s.key === key ? { ...s, usdcIn, znuOut, touchesBaseMaterial } : s)) })),
-      runCaasPayout: (baseZNU) => set((st) => {
+      runCaasPayout: (baseZNU) => set(function(st) {
         const aut = autFromCAC(st.cac)
         const cds = ics(st.members, st.flows)
         const payouts = revenueShare(baseZNU, st.caasMembers, aut, cds)
@@ -1040,7 +1022,7 @@ export const useAppStore = create<AppState>()(
       logCaasAudit: (e) => set((st) => ({ caasAudit: [e, ...st.caasAudit].slice(0, 200) })),
       // ---- Automaton (asimilado de Conway Research) ----
       setSoul: (s) => set((st) => ({ soul: { ...st.soul, ...s, updatedAt: Date.now() } })),
-      proposeAction: (a) => set((st) => {
+      proposeAction: (a) => set(function(st) {
         const aut = autFromCAC(st.cac)
         const pgs = pgsLM(aut)
         const pop = Math.max(st.members.filter((m) => m.signedSocialDNA).length, 1)
@@ -1057,7 +1039,7 @@ export const useAppStore = create<AppState>()(
       doExchange: (offerId, needId, medium, znuAmount = 0) => set((st) => ({ solar: { ...st.solar, exchanges: [...st.solar.exchanges, makeExchange(offerId, needId, medium, znuAmount)] } })),
       addVouch: (from, to, weight) => set((st) => ({ solar: { ...st.solar, vouches: [...st.solar.vouches, makeVouch(from, to, weight)] } })),
       setMesh: (online, peers) => set((st) => ({ solar: { ...st.solar, mesh: meshStatus(online, peers) } })),
-      activateSanctuary: (reason, by) => set((st) => {
+      activateSanctuary: (reason, by) => set(function(st) {
         const trust = trustScore(by, st.solar.vouches)
         const gate = evaluateSanctuary(reason, trust)
         if (!gate.pass) return {}
@@ -1084,17 +1066,17 @@ export const useAppStore = create<AppState>()(
         prio: { ...st.prio, feedbacks: [...st.prio.feedbacks, { id: uid(), proposalId, rating, confidence, comment }] },
       })),
       // ---- Vesting (asimilado de sepu85/collabberry-berry-vesting) ----
-      setVestingBeneficiary: (beneficiary) => set((st) => {
+      setVestingBeneficiary: (beneficiary) => set(function(st) {
         const r = setBeneficiary(st.vesting, beneficiary, Date.now())
         if (!r.ok) return {} // rechaza si ya asignado o vencido (isomorfo al contrato)
         return { vesting: { ...st.vesting, beneficiary } }
       }),
-      claimVesting: () => set((st) => {
+      claimVesting: () => set(function(st) {
         const amt = releasable(st.vesting.schedule, st.vesting.claimed, Date.now())
         if (amt <= 0 || !st.vesting.beneficiary) return {}
         return { vesting: { ...st.vesting, claimed: st.vesting.claimed + amt } }
       }),
-      renounceVestingOwner: () => set((st) => {
+      renounceVestingOwner: () => set(function(st) {
         const r = canRenounce(st.vesting)
         if (!r.ok) return {}
         return { vesting: { ...st.vesting, ownerRenounced: true } }
@@ -1106,7 +1088,7 @@ export const useAppStore = create<AppState>()(
       increaseTrustDebt: (a, creditor, value) => set((st) => ({
         trust: { ...st.trust, debts: increaseDebt(st.trust.debts, a, creditor, value) },
       })),
-      doDebitTransfer: (path, value, maxFee = 0) => set((st) => {
+      doDebitTransfer: (path, value, maxFee = 0) => set(function(st) {
         const r = debitTransfer(st.trust, path, value, maxFee)
         if (!r.ok || !r.debts || !r.transfer) return {}
         return { trust: { ...st.trust, debts: r.debts, transfers: [...st.trust.transfers, r.transfer] } }
@@ -1115,7 +1097,7 @@ export const useAppStore = create<AppState>()(
       createProject: (title, goal, ownerId, coinsGoal = 1000) => set((st) => ({
         tekitl: { ...st.tekitl, projects: [...st.tekitl.projects, createProject(title, goal, ownerId, coinsGoal)] },
       })),
-      transitionProjectStage: (projectId, to) => set((st) => {
+      transitionProjectStage: (projectId, to) => set(function(st) {
         const proj = st.tekitl.projects.find(p => p.id === projectId)
         if (!proj) return {}
         const r = transitionStage(proj, to as 'planning' | 'execution' | 'completed' | 'aborted')
@@ -1129,12 +1111,12 @@ export const useAppStore = create<AppState>()(
           timeline: [...st.tekitl.timeline, appendTimeline({ projectId, type: 'role_created', actorId: st.nodeName, payload: { occupation, hoursEstimated } })],
         },
       })),
-      applyToProjectRole: (roleId, userId) => set((st) => {
+      applyToProjectRole: (roleId, userId) => set(function(st) {
         const vol = applyToRole(st.tekitl.volunteers, roleId, userId)
         if (!vol) return {}
         return { tekitl: { ...st.tekitl, volunteers: [...st.tekitl.volunteers, vol] } }
       }),
-      acceptVolunteer: (volunteerId) => set((st) => {
+      acceptVolunteer: (volunteerId) => set(function(st) {
         const idx = st.tekitl.volunteers.findIndex(v => v.id === volunteerId)
         if (idx === -1) return {}
         const vol = st.tekitl.volunteers[idx]
@@ -1149,7 +1131,7 @@ export const useAppStore = create<AppState>()(
           },
         }
       }),
-      logVolunteerHours: (volunteerId, hours) => set((st) => {
+      logVolunteerHours: (volunteerId, hours) => set(function(st) {
         const idx = st.tekitl.volunteers.findIndex(v => v.id === volunteerId)
         if (idx === -1) return {}
         const vol = st.tekitl.volunteers[idx]
@@ -1158,7 +1140,7 @@ export const useAppStore = create<AppState>()(
         v2[idx] = updated
         return { tekitl: { ...st.tekitl, volunteers: v2 } }
       }),
-      completeVolunteer: (volunteerId) => set((st) => {
+      completeVolunteer: (volunteerId) => set(function(st) {
         const idx = st.tekitl.volunteers.findIndex(v => v.id === volunteerId)
         if (idx === -1) return {}
         const vol = st.tekitl.volunteers[idx]
@@ -1194,7 +1176,7 @@ export const useAppStore = create<AppState>()(
         },
       })),
       // ---- Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui) ----
-      setSovereigntyAnswer: (pillar, layer, phase) => set((st) => {
+      setSovereigntyAnswer: (pillar, layer, phase) => set(function(st) {
         const key = cellKey(pillar, layer)
         const answers = { ...st.sovereignty.answers, [key]: phase }
         return { sovereignty: { ...st.sovereignty, answers, patternScore: patternTheoryScore(answers) } }
@@ -1209,7 +1191,7 @@ export const useAppStore = create<AppState>()(
       raiseIntegralIssueWithEvidence: (title, raisedBy, evidence) => set((st) => ({
         integral: { ...st.integral, issues: [...st.integral.issues, raiseIssueWithEvidence(title, raisedBy, evidence)] },
       })),
-      ratifyIntegralDecision: (issueId, decision, context, reasoning, supersedes) => set((st) => {
+      ratifyIntegralDecision: (issueId, decision, context, reasoning, supersedes) => set(function(st) {
         const r = ratifyDecision(st.integral.issues, issueId, decision, context, reasoning, supersedes)
         const issues = r.issue
           ? st.integral.issues.map((i) => (i.id === issueId ? r.issue! : i))
@@ -1231,7 +1213,7 @@ export const useAppStore = create<AppState>()(
       recommendIntegral: (finding, target) => set((st) => ({
         integral: { ...st.integral, recommendations: [...st.integral.recommendations, recommend(finding, target)] },
       })),
-      promoteRecommendation: (recId) => set((st) => {
+      promoteRecommendation: (recId) => set(function(st) {
         const rec = st.integral.recommendations.find((r) => r.id === recId)
         if (!rec || rec.promotedToIssue) return {}
         const p = promoteRecommendation(rec)
@@ -1280,7 +1262,7 @@ export const useAppStore = create<AppState>()(
             addPohChallengeEvidence: (challengeId: string, evidence: any) => set((st) => addChallengeEvidence(st, challengeId, evidence)),
             seatPohJuror: (input: { name: string; stake: number; courtId?: string }) => set((st) => seatPohJuror(st, input).state),
             castPohVote: (challengeId: string, jurorId: string, verdict: JurorVerdict) => set((st) => castPohVote(st, challengeId, jurorId, verdict)),
-            resolvePohChallenge: (challengeId: string, resolution: string) => set((st) => {
+            resolvePohChallenge: (challengeId: string, resolution: string) => set(function(st) {
               const resolved = resolveChallenge(st, challengeId, resolution)
               return updatePohJurorReputation(resolved, challengeId, 'a_favor')
             }),
@@ -1342,7 +1324,7 @@ export const useAppStore = create<AppState>()(
         symbiosky: symRevealVoteFn(st.symbiosky, proposalId, voter, score, conviction, salt),
       })),
       // ===== Voto por Mérito (Shivarthu en CDS) =====
-      validateIntegralMerit: (issueId, reputation, experience, externality) => set((st) => {
+      validateIntegralMerit: (issueId, reputation, experience, externality) => set(function(st) {
         const { weight } = validateProposalScore(reputation, experience, externality)
         return {
           integral: {
@@ -1526,7 +1508,7 @@ export const useAppStore = create<AppState>()(
       // ===== Oráculo de hechos (Kleros/Realitio) -> lo cableo como alias de oracle =====
       askOracle: (question, outcomes) => set((st) => ({ oraculo: askQuery(st.oraculo, question, outcomes) })),
       castOracleVote: (queryId, juror, outcome, stake) => set((st) => ({ oraculo: castOracleVote(st.oraculo, queryId, juror, outcome, stake) })),
-      resolveOracleQuery: (queryId) => set((st) => {
+      resolveOracleQuery: (queryId) => set(function(st) {
         const r = resolveOracle(st.oraculo, queryId)
         return { oraculo: r.state }
       }),
@@ -1548,21 +1530,21 @@ export const useAppStore = create<AppState>()(
         stageSeeds: { ...st.stageSeeds, [target]: params },
       })),
       // ===== Pipeline: actuator (CIERRA el loop) =====
-            pipeDispatch: (needTitle, assignee) => set((st) => {
+            pipeDispatch: (needTitle, assignee) => set(function(st) {
               const next = dispatchMatch(st.integral, needTitle, assignee)
               return { integral: next }
             }),
-            pipeAdvisory: (finding, severity = 'warning') => set((st) => {
+            pipeAdvisory: (finding, severity = 'warning') => set(function(st) {
               const { state } = autoAdvisory(st.integral, finding, severity)
               // P1: si es concentración, aplica decay al balance derivado (anti-acumulación real)
               // znuBalanceFrom es computado desde credits (no duplica estado) -> no desincroniza
               return { integral: state }
             }),
-            pipeApply: (drId) => set((st) => {
+            pipeApply: (drId) => set(function(st) {
               const next = applyDecisionTo(st.integral, drId)
               return { integral: next }
             }),
-            pipeDecay: () => set((st) => {
+            pipeDecay: () => set(function(st) {
               const decayed = znuDecayOnBalance(st.integral)
               // el decay es informativo (el balance es derivado de credits); se registra señal FRS
               const sig = ingestSignal('ITC', 'info', `decay ZNU aplicado → balance ${Math.round(decayed)}`)
@@ -1610,7 +1592,7 @@ export const useAppStore = create<AppState>()(
                                                 setBoundaryPolicy: (policy) => set((st) => ({
                                                   boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, ...policy } },
                                                 })),
-                                                addBoundaryRule: (list, expr) => set((st) => {
+                                                addBoundaryRule: (list, expr) => set(function(st) {
                                                   if (!expr.trim()) return {}
                                                   return {
                                                     boundaries: {
@@ -1621,58 +1603,113 @@ export const useAppStore = create<AppState>()(
                                                 }),
                                                 removeBoundaryRule: (list, index) => set(function(st) {
                                                   const next = st.boundaries.policy[list].filter((_, i) => i !== index)
-                                                  return { boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, [list]: next } } };
+                                                  return {
+                                                    boundaries: { ...st.boundaries, policy: { ...st.boundaries.policy, [list]: next } },
+                                                  }
                                                 }),
-                                                clearBoundaryAudit: () => set(function(st) { return { boundaries: { ...st.boundaries, audit: [] } }; }),
+                                                clearBoundaryAudit: () => set((st) => ({ boundaries: { ...st.boundaries, audit: [] } })),
                                                 logBoundaryAudit: (row) => set(function(st) {
                                                   const full = makeAuditRow(row)
-                                                  return { boundaries: { ...st.boundaries, audit: [full, ...st.boundaries.audit].slice(0, st.boundaries.maxAudit) } };
+                                                  return {
+                                                    boundaries: { ...st.boundaries, audit: [full, ...st.boundaries.audit].slice(0, st.boundaries.maxAudit) },
+                                                  }
                                                 }),
 
                                                 // ===== Coworkers (inspirado en OpenBot) =====
-                                                addCoworker: (input) => set(function(st) { return { coworkers: { ...st.coworkers, coworkers: [...st.coworkers.coworkers, makeCoworker(input)] } }; }),
-                                                toggleCoworkerHidden: (id) => set(function(st) { return { coworkers: { ...st.coworkers, coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, hidden: !c.hidden } : c)) } }; }),
-                                                setCoworkerControl: (id, control) => set(function(st) { return { coworkers: { ...st.coworkers, coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, control } : c)) } }; }),
-                                                startChannel: (coworkerId) => {
+                                                addCoworker: (input) => set((st) => ({
+                                                  coworkers: { ...st.coworkers, coworkers: [...st.coworkers.coworkers, makeCoworker(input)] },
+                                                })),
+                                                toggleCoworkerHidden: (id) => set((st) => ({
+                                                  coworkers: {
+                                                      ...st.coworkers,
+                                                      coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, hidden: !c.hidden } : c)),
+                                                  },
+                                                })),
+                                                setCoworkerControl: (id, control) => set((st) => ({
+                                                  coworkers: {
+                                                      ...st.coworkers,
+                                                      coworkers: st.coworkers.coworkers.map((c) => (c.id === id ? { ...c, control } : c)),
+                                                  },
+                                                })),
+                                                startChannel: (coworkerId) => set(function(st) {
                                                   const ch = makeChannel(coworkerId)
-                                                  set(function(st) { return { coworkers: { ...st.coworkers, channels: [...st.coworkers.channels, ch] } }; })
+                                                  set((st) => ({ coworkers: { ...st.coworkers, channels: [...st.coworkers.channels, ch] } }))
                                                   return ch.id
-                                                },
-                                                postToChannel: (channelId, from, text) => set(function(st) { return { coworkers: { ...st.coworkers, channels: st.coworkers.channels.map((ch) => ch.id === channelId ? { ...ch, messages: [...ch.messages, { id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), from, text, ts: Date.now() }] } : ch) } }; }),
-                                                // ===== Story (MuMuAINovel) =====
-                                                addStoryProject: (title, genre, synopsis) => set(function(st) { return { story: { ...st.story, projects: [...st.story.projects, createStoryProject(title, genre, synopsis)] } }; }),
-                                                addStoryOutline: (projectId) => set(function(st) { return { story: { ...st.story, outlines: [...st.story.outlines, createStoryOutline(projectId)] } }; }),
-                                                addStoryChapter: (projectId, order, title) => set(function(st) { return { story: { ...st.story, chapters: [...st.story.chapters, createStoryChapter(projectId, order, title)] } }; }),
-                                                updateStoryChapter: (chapterId, newContent) => set(function(st) { return { story: { ...st.story, chapters: st.story.chapters.map(c => c.id === chapterId ? updateChapterContent(c, newContent) : c) } }; }),
-                                                setActiveStory: (projectId) => set(function(st) { return { story: { ...st.story, activeProject: projectId } }; }),
+                                                }),
+                                                postToChannel: (channelId, from, text) => set((st) => ({
+                                                                                                    coworkers: {
+                                                                                                      ...st.coworkers,
+                                                                                                      channels: st.coworkers.channels.map((ch) =>
+                                                                                                        ch.id === channelId
+                                                                                                          ? { ...ch, messages: [...ch.messages, { id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), from, text, ts: Date.now() }] }
+                                                                                                          : ch,
+                                                                                                      ),
+                                                                                                    },
+                                                                                                  })),
+                                                                                                // ===== Story (MuMuAINovel) =====
+                                                addStoryProject: (title, genre, synopsis) => set((st) => ({
+                                                story: { ...st.story, projects: [...st.story.projects, createStoryProject(title, genre, synopsis)] },
+                                                })),
+                                                addStoryOutline: (projectId) => set((st) => ({
+                                                story: { ...st.story, outlines: [...st.story.outlines, createStoryOutline(projectId)] },
+                                                })),
+                                                addStoryChapter: (projectId, order, title) => set((st) => ({
+                                                story: { ...st.story, chapters: [...st.story.chapters, createStoryChapter(projectId, order, title)] },
+                                                })),
+                                                updateStoryChapter: (chapterId, newContent) => set((st) => ({
+                                                story: { ...st.story, chapters: st.story.chapters.map(c => c.id === chapterId ? updateChapterContent(c, newContent) : c) },
+                                                })),
+                                                setActiveStory: (projectId) => set((st) => ({ story: { ...st.story, activeProject: projectId } })),
 
                                                 // ===== Visual (RedInk) =====
-                                                addVisualPiece: (title, description) => set(function(st) { return { visual: { ...st.visual, pieces: [...st.visual.pieces, createVisualPiece(title, description)] } }; }),
-                                                addVisualPages: (pieceId, count = 5) => set(function(st) { return { visual: { ...st.visual, pieces: st.visual.pieces.map(p => p.id === pieceId ? { ...p, pages: createVisualPages(pieceId, count) } : p) } }; }),
-                                                setActiveVisual: (pieceId) => set(function(st) { return { visual: { ...st.visual, activePiece: pieceId } }; }),
+                                                addVisualPiece: (title, description) => set((st) => ({
+                                                visual: { ...st.visual, pieces: [...st.visual.pieces, createVisualPiece(title, description)] },
+                                                })),
+                                                addVisualPages: (pieceId, count = 5) => set((st) => ({
+                                                visual: { ...st.visual, pieces: st.visual.pieces.map(p => p.id === pieceId ? { ...p, pages: createVisualPages(pieceId, count) } : p) },
+                                                })),
+                                                setActiveVisual: (pieceId) => set((st) => ({ visual: { ...st.visual, activePiece: pieceId } })),
 
                                                 // ===== Avatar (PersonaLive) =====
-                                                setAvatarExpression: (expr) => set(function(st) { return { avatar: setExpression(st.avatar, expr) }; }),
-                                                toggleAvatarStreaming: () => set(function(st) { return { avatar: toggleStreaming(st.avatar) }; }),
-                                                grantAvatarConsent: () => set(function(st) { return { avatar: grantConsent(st.avatar) }; }),
-                                                revokeAvatarConsent: () => set(function(st) { return { avatar: revokeConsent(st.avatar) }; }),
+                                                setAvatarExpression: (expr) => set((st) => ({ avatar: setExpression(st.avatar, expr) })),
+                                                toggleAvatarStreaming: () => set((st) => ({ avatar: toggleStreaming(st.avatar) })),
+                                                grantAvatarConsent: () => set((st) => ({ avatar: grantConsent(st.avatar) })),
+                                                revokeAvatarConsent: () => set((st) => ({ avatar: revokeConsent(st.avatar) })),
 
                                                 // ===== AgentCanvas (OpenHands) =====
-                                                addCanvasAgent: (name, backend, capabilities) => set(function(st) { return { canvas: addCanvasAgent(st.canvas, name, backend, capabilities) }; }),
-                                                toggleCanvasAgentStatus: (agentId) => set(function(st) { return { canvas: toggleAgentStatus(st.canvas, agentId) }; }),
-                                                addCanvasAutomation: (name, schedule, agentId, task) => set(function(st) { return { canvas: addAutomation(st.canvas, name, schedule, agentId, task) }; }),
-                                                logCanvasAction: (agentId, action, status) => set(function(st) { return { canvas: logCanvasAction(st.canvas, agentId, action, status) }; }),
+                                                addCanvasAgent: (name, backend, capabilities) => set((st) => ({
+                                                canvas: addCanvasAgent(st.canvas, name, backend, capabilities),
+                                                })),
+                                                toggleCanvasAgentStatus: (agentId) => set((st) => ({
+                                                canvas: toggleAgentStatus(st.canvas, agentId),
+                                                })),
+                                                addCanvasAutomation: (name, schedule, agentId, task) => set((st) => ({
+                                                canvas: addAutomation(st.canvas, name, schedule, agentId, task),
+                                                })),
+                                                logCanvasAction: (agentId, action, status) => set((st) => ({
+                                                canvas: logCanvasAction(st.canvas, agentId, action, status),
+                                                })),
 
                                                 // ===== Video (Remotion) =====
-                                                addVideoComposition: (title, duration = 30, fps = 30) => set(function(st) { return { video: { ...st.video, compositions: [...st.video.compositions, createComposition(title, duration, fps)] } }; }),
-                                                addVideoClip: (compositionId, src, startFrame, duration, layer = 0) => set(function(st) { return { video: { ...st.video, compositions: st.video.compositions.map(c => c.id === compositionId ? addClip(c, src, startFrame, duration, layer) : c) } }; }),
-                                                toggleVideoPlayback: () => set(function(st) { return { video: togglePlayback(st.video) }; }),
-                                                seekVideo: (frame) => set(function(st) { return { video: seekFrame(st.video, frame) }; }),
+                                                addVideoComposition: (title, duration = 30, fps = 30) => set((st) => ({
+                                                video: { ...st.video, compositions: [...st.video.compositions, createComposition(title, duration, fps)] },
+                                                })),
+                                                addVideoClip: (compositionId, src, startFrame, duration, layer = 0) => set((st) => ({
+                                                video: { ...st.video, compositions: st.video.compositions.map(c => c.id === compositionId ? addClip(c, src, startFrame, duration, layer) : c) },
+                                                })),
+                                                toggleVideoPlayback: () => set((st) => ({ video: togglePlayback(st.video) })),
+                                                seekVideo: (frame) => set((st) => ({ video: seekFrame(st.video, frame) })),
 
                                                 // ===== Highlight (AutoClip) =====
-                                                addHighlightProject: (title, sourceVideo, duration) => set(function(st) { return { highlight: { ...st.highlight, projects: [...st.highlight.projects, createHighlightProject(title, sourceVideo, duration)] } }; }),
-                                                addHighlight: (projectId, startSec, endSec, score, reason) => set(function(st) { return { highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? addHighlight(p, startSec, endSec, score, reason) : p) } }; }),
-                                                exportHighlight: (projectId, highlightId) => set(function(st) { return { highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? exportHighlight(p, highlightId) : p) } }; }),
+                                                addHighlightProject: (title, sourceVideo, duration) => set((st) => ({
+                                                highlight: { ...st.highlight, projects: [...st.highlight.projects, createHighlightProject(title, sourceVideo, duration)] },
+                                                })),
+                                                addHighlight: (projectId, startSec, endSec, score, reason) => set((st) => ({
+                                                highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? addHighlight(p, startSec, endSec, score, reason) : p) },
+                                                })),
+                                                exportHighlight: (projectId, highlightId) => set((st) => ({
+                                                highlight: { ...st.highlight, projects: st.highlight.projects.map(p => p.id === projectId ? exportHighlight(p, highlightId) : p) },
+                                                })),
 
                                                 resetAll: () =>
                                                 set({
@@ -1687,19 +1724,20 @@ export const useAppStore = create<AppState>()(
                                                 talents: initialTalents,
                                                 plans: initialPlans,
                                                 pvsos: [],
+                                                znu: { perMember: 100, demurrageThreshold: 300, demurrageRate: 0.05, priceParity: 1 },
                                                 agents: [], goals: [], tasks: [], audit: [],
                                                 // Story (MuMuAINovel)
                                                 story: makeStoryState(),
                                                 // Visual (RedInk)
-                                                    visual: { pieces: [], activePiece: null, history: [] },
+                                                visual: { pieces: [], activePiece: null, history: [] },
                                                 // Avatar (PersonaLive)
-                                                        avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
+                                                avatar: { active: false, expression: 'neutral', drift: 'anchored', referenceImage: null, frame: 0, streaming: false, consent: false },
                                                 // AgentCanvas (OpenHands)
-                                                        canvas: { agents: [], automations: [], logs: [] },
+                                                canvas: { agents: [], automations: [], logs: [] },
                                                 // Video (Remotion)
-                                                    video: makeVideoState(),
+                                                video: makeVideoState(),
                                                 // Highlight (AutoClip)
-                                                    highlight: makeHighlightState(),
+                                                highlight: makeHighlightState(),
                                                 // ALRAC (Consorcio de Transducción Soberana)
                                                 alrac: makeALRACState(),
                                                 // Aura (Proof of Aura)
@@ -1758,7 +1796,7 @@ export const useAppStore = create<AppState>()(
                                                 vouches: [],
                                                 mesh: { online: true, peers: 0, lastSync: Date.now() },
                                                 sanctuary: [],
-                                                    },
+                                                },
                                                 // Colaberry (asimilado de Eliza / HR_AI_Agent-collaberry-HSCSG)
                                                 colaberry: {
                                                 persona: { name: 'Colaberry', bio: 'Colaborador soberano del nodo HSCSG. Acompaño la regeneración de la base material y la cohesión del colectivo.', valuesMJ: 'Ley I: no dañar base material ni personas · Ley II: ganarse la vida soberanizando · Ley III: lucidez, nunca engañar.', tone: 'cálido, directo, sin jerga financiera, postmonetario' },
@@ -1766,14 +1804,14 @@ export const useAppStore = create<AppState>()(
                                                 messages: [],
                                                 onboardings: [],
                                                 reminders: [],
-                                                    },
+                                                },
                                                 // Priorizar (asimilado de ZiadJ/prioritize)
                                                 prio: {
                                                 communityResources: [],
                                                 requests: [],
                                                 proposals: [],
                                                 feedbacks: [],
-                                                    },
+                                                },
                                                 // Vesting (asimilado de sepu85/collabberry-berry-vesting)
                                                 vesting: {
                                                 token: 'ZNU',
@@ -1782,13 +1820,13 @@ export const useAppStore = create<AppState>()(
                                                 claimed: 0,
                                                 beneficiarySetDeadline: 0,
                                                 ownerRenounced: false,
-                                                    },
+                                                },
                                                 // Trustlines (asimilado de trustlines-protocol/contracts)
                                                 trust: {
                                                 trustlines: [],
                                                 debts: {},
                                                 transfers: [],
-                                                    },
+                                                },
                                                 // Tekitl (asimilado de Baruch4413/tekitl)
                                                 tekitl: {
                                                 projects: [],
@@ -1797,7 +1835,7 @@ export const useAppStore = create<AppState>()(
                                                 coins: [],
                                                 timeline: [],
                                                 talents: [],
-                                                    },
+                                                },
                                                 // Soberanía (asimilado de overkillkulture/sovereignty-hub + tairea/sovereignty-hub-ui)
                                                 sovereignty: makeSovereigntyState(),
                                                 // Integral (asimilado de Integral Collective: 9 repos)
@@ -1832,163 +1870,76 @@ export const useAppStore = create<AppState>()(
                                                 // Gaia Union (organismo vivo regenerativo)
                                                 gaiaunion: makeGaiaUnionState(),
                                                 }),
-                                                getStorage: () => {
-                                                  if (typeof window === 'undefined') return null
-                                                  return {
-                                                    getItem: (name: string): string | null => {
-                                                      try { return localStorage.getItem(name) } catch { return null }
-                                                    },
-                                                    setItem: (name: string, value: string): void => {
-                                                      try { localStorage.setItem(name, value) } catch {}
-                                                    },
-                                                    removeItem: (name: string): void => {
-                                                      try { localStorage.removeItem(name) } catch {}
-                                                    },
-                                                  }
-                                                },
-                                                name: 'hscsg.v15.os.v1',
-                                                partialize: function(st) {
-                                                  return {
-                                                    screen: st.screen,
-                                                    collapsed: st.collapsed,
-                                                    nodeName: st.nodeName,
-                                                    base: st.base,
-                                                    cac: st.cac,
-                                                    sensors: st.sensors,
-                                                    members: st.members,
-                                                    flows: st.flows,
-                                                    talents: st.talents,
-                                                    plans: st.plans,
-                                                    pvsos: st.pvsos,
-                                                    agents: st.agents,
-                                                    goals: st.goals,
-                                                    tasks: st.tasks,
-audit: st.audit,
-                                                    caasTier: st.caasTier,
-                                                    caasMembers: st.caasMembers,
-                                                    caasStreams: st.caasStreams,
-                                                    caasPayouts: st.caasPayouts,
-                                                    caasAudit: st.caasAudit,
-                                                    soul: st.soul,
-                                                    botActions: st.botActions,
-                                                    botHeartbeats: st.botHeartbeats,
-                                                    botChildren: st.botChildren,
-                                                    botAudit: st.botAudit,
-                                                    solar: st.solar,
-                                                    colaberry: st.colaberry,
-                                                    prio: st.prio,
-                                                    vesting: st.vesting,
-                                                    trust: st.trust,
-                                                    tekitl: st.tekitl,
-                                                    sovereignty: st.sovereignty,
-                                                    integral: st.integral,
-                                                    mundus: st.mundus,
-                                                    life: st.life,
-                                                    civilizaciones: st.civilizaciones,
-                                                    celulas: st.celulas,
-                                                    colony: st.colony,
-                                                    kleros: st.kleros,
-                                                    agencia: st.agencia,
-                                                    nodeMode: st.nodeMode,
-                                                    priceParity: st.priceParity,
-                                                    gaia: st.gaia,
-                                                    symbiosky: st.symbiosky,
-                                                    democracia: st.democracia,
-                                                    aprender: st.aprender,
-                                                    oraculo: st.oraculo,
-                                                    gaiaunion: st.gaiaunion,
-                                                    stageSeeds: st.stageSeeds,
-                                                    lang: st.lang,
-                                                    lucidez: st.lucidez,
-                                                    ev: st.ev,
-                                                    alrac: st.alrac,
-                                                    aura: st.aura,
-                                                    tq: st.tq,
-                                                    cpp: st.cpp,
-                                                    znu: st.znu,
-                                                    samay: st.samay,
-                                                    feria: st.feria,
-                                                    clc: st.clc,
-                                                    ruddick: st.ruddick,
-                                                    agingControl: st.agingControl,
-                                                    rbe: st.rbe,
-                                                    offerDesigner: st.offerDesigner,
-                                                    zeitnusCooperative: st.zeitnusCooperative,
-                                                  };
-                                                }
-    },
+    }),
     {
-      name: 'hscsg.v15.os.v1',
-      partialize: function(st) {
-        return {
-          screen: st.screen,
-          collapsed: st.collapsed,
-          nodeName: st.nodeName,
-          base: st.base,
-          cac: st.cac,
-          sensors: st.sensors,
-          members: st.members,
-          flows: st.flows,
-          talents: st.talents,
-          plans: st.plans,
-          pvsos: st.pvsos,
-          agents: st.agents,
-          goals: st.goals,
-          tasks: st.tasks,
-          audit: st.audit,
-          caasTier: st.caasTier,
-          caasMembers: st.caasMembers,
-          caasStreams: st.caasStreams,
-          caasPayouts: st.caasPayouts,
-          caasAudit: st.caasAudit,
-          soul: st.soul,
-          botActions: st.botActions,
-          botHeartbeats: st.botHeartbeats,
-          botChildren: st.botChildren,
-          botAudit: st.botAudit,
-          solar: st.solar,
-          colaberry: st.colaberry,
-          prio: st.prio,
-          vesting: st.vesting,
-          trust: st.trust,
-          tekitl: st.tekitl,
-          sovereignty: st.sovereignty,
-          integral: st.integral,
-          mundus: st.mundus,
-          life: st.life,
-          civilizaciones: st.civilizaciones,
-          celulas: st.celulas,
-          colony: st.colony,
-          kleros: st.kleros,
-          agencia: st.agencia,
-          nodeMode: st.nodeMode,
-          priceParity: st.priceParity,
-          gaia: st.gaia,
-          symbiosky: st.symbiosky,
-          democracia: st.democracia,
-          aprender: st.aprender,
-          oraculo: st.oraculo,
-          gaiaunion: st.gaiaunion,
-          stageSeeds: st.stageSeeds,
-          lang: st.lang,
-          lucidez: st.lucidez,
-          ev: st.ev,
-          alrac: st.alrac,
-          aura: st.aura,
-          tq: st.tq,
-          cpp: st.cpp,
-          znu: st.znu,
-          samay: st.samay,
-          feria: st.feria,
-          clc: st.clc,
-          ruddick: st.ruddick,
-          agingControl: st.agingControl,
-          rbe: st.rbe,
-          offerDesigner: st.offerDesigner,
-          zeitnusCooperative: st.zeitnusCooperative,
-        };
-      },
+                                                name: 'hscsg.v15.os.v1',
+                                                partialize: (st) => ({
+                                                screen: st.screen,
+                                                collapsed: st.collapsed,
+                                                nodeName: st.nodeName,
+                                                base: st.base,
+                                                cac: st.cac,
+                                                sensors: st.sensors,
+                                                members: st.members,
+                                                flows: st.flows,
+                                                talents: st.talents,
+                                                plans: st.plans,
+                                                pvsos: st.pvsos,
+                                                znu: st.znu,
+                                                agents: st.agents,
+                                                goals: st.goals,
+                                                tasks: st.tasks,
+audit: st.audit,
+                                                caasTier: st.caasTier,
+                                                caasMembers: st.caasMembers,
+                                                caasStreams: st.caasStreams,
+                                                caasPayouts: st.caasPayouts,
+                                                caasAudit: st.caasAudit,
+                                                soul: st.soul,
+                                                botActions: st.botActions,
+                                                botHeartbeats: st.botHeartbeats,
+                                                botChildren: st.botChildren,
+                                                botAudit: st.botAudit,
+                                                solar: st.solar,
+                                                colaberry: st.colaberry,
+                                                prio: st.prio,
+                                                vesting: st.vesting,
+                                                trust: st.trust,
+                                                tekitl: st.tekitl,
+                                                sovereignty: st.sovereignty,
+                                                integral: st.integral,
+                                                mundus: st.mundus,
+                                                life: st.life,
+                                                civilizaciones: st.civilizaciones,
+                                                celulas: st.celulas,
+                                                colony: st.colony,
+                                                kleros: st.kleros,
+                                                agencia: st.agencia,
+                                                nodeMode: st.nodeMode,
+                                                priceParity: st.priceParity,
+                                                gaia: st.gaia,
+                                                symbiosky: st.symbiosky,
+                                                democracia: st.democracia,
+                                                aprender: st.aprender,
+                                                oraculo: st.oraculo,
+                                                gaiaunion: st.gaiaunion,
+                                                stageSeeds: st.stageSeeds,
+                                                lang: st.lang,
+                                                lucidez: st.lucidez,
+                                                ev: st.ev,
+                                                alrac: st.alrac,
+                                                aura: st.aura,
+                                                tq: st.tq,
+                                                cpp: st.cpp,
+                                                znu: st.znu,
+                                                samay: st.samay,
+                                                feria: st.feria,
+                                                clc: st.clc,
+                                                ruddick: st.ruddick,
+                                                agingControl: st.agingControl,
+                                                rbe: st.rbe,
+                                                offerDesigner: st.offerDesigner,
+                                                zeitnusCooperative: st.zeitnusCooperative,
+                                                }),
     }
   )
-)
-)
