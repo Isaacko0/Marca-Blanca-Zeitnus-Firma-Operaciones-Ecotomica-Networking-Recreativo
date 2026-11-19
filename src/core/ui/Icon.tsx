@@ -1,20 +1,110 @@
 import { createElement } from 'react';
-import * as LucideIcons from 'lucide-react';
+import {
+  AlertCircle,
+  AlertTriangle,
+  ArrowRight,
+  Award,
+  BarChart2,
+  BookOpen,
+  Bot,
+  Brain,
+  Building2,
+  Calculator,
+  Check,
+  CheckCircle,
+  ChevronDown,
+  Coins,
+  Copy,
+  Cpu,
+  Download,
+  Eye,
+  FileCheck,
+  FileJson,
+  FileText,
+  Film,
+  Flag,
+  Gavel,
+  GitBranch,
+  Heart,
+  Leaf,
+  Map,
+  MousePointer2,
+  PieChart,
+  Plus,
+  Recycle,
+  RefreshCw,
+  Scale,
+  ScrollText,
+  Search,
+  Shield,
+  Target,
+  TreePine,
+  TrendingUp,
+  Unlock,
+  UserCog,
+  Users,
+  Zap,
+} from 'lucide-react';
 
-type LucideIconName = keyof typeof LucideIcons;
+const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>> = {
+  AlertCircle,
+  AlertTriangle,
+  ArrowRight,
+  Award,
+  BarChart2,
+  BookOpen,
+  Bot,
+  Brain,
+  Building2,
+  Calculator,
+  Check,
+  CheckCircle,
+  ChevronDown,
+  Coins,
+  Copy,
+  Cpu,
+  Download,
+  Eye,
+  FileCheck,
+  FileJson,
+  FileText,
+  Film,
+  Flag,
+  Gavel,
+  GitBranch,
+  Heart,
+  Leaf,
+  Map,
+  MousePointer2,
+  PieChart,
+  Plus,
+  Recycle,
+  RefreshCw,
+  Scale,
+  ScrollText,
+  Search,
+  Shield,
+  Target,
+  TreePine,
+  TrendingUp,
+  Unlock,
+  UserCog,
+  Users,
+  Zap,
+};
 
 interface IconProps {
-  name: LucideIconName;
+  name: string;
   size?: number;
   className?: string;
   style?: React.CSSProperties;
 }
 
 export function Icon({ name, size = 24, className, style }: IconProps) {
-  const IconComponent = LucideIcons[name] as React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }> | undefined;
+  const IconComponent = iconMap[name];
   
   if (!IconComponent) {
-    console.warn(`Icon "${name}" not found in lucide-react`);
+    console.warn(`Icon "${name}" not found in icon map`);
     return null;
   }
   
