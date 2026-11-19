@@ -374,3 +374,72 @@ export type ConvergeMaps = (operators: string[]) => Convergence;
 export type VerifyCompatibility = (operators: string[]) => CompatibilityExistential[];
 export type LegitimateSeparation = (dataRoot: DataRoot, directions: string[]) => LegitimateSeparation;
 export type ZeroOrigin = () => ZeroOrigin;
+
+export function makeEVState(): EVState {
+  return {
+    // Core cycle
+    energy: [],
+    experience: [],
+    efficiency: [],
+
+    // Dual triad
+    life: [],
+    truth: [],
+    virtue: [],
+
+    // Presence & signals
+    presence: [],
+    bodySignals: [],
+    attention: [],
+
+    // Cycle signals
+    friction: [],
+    coherence: [],
+
+    // Margin & restrictions
+    dataRoot: [],
+    margin: [],
+
+    // Interference & errors
+    interference: [],
+    errors: [],
+    evasions: [],
+
+    // Integration & learning
+    integration: [],
+    learning: [],
+
+    // Truth & sovereignty
+    truthOwn: [],
+    truthOntological: [],
+    sovereignty: [],
+
+    // Laws
+    naturalLaw: [],
+    positiveLaw: [],
+
+    // Coupling
+    couplingInternal: [],
+    couplingExternal: [],
+
+    // Compatibility
+    compatibility: [],
+    separation: [],
+
+    // Origin
+    zeroOrigin: [],
+
+    // Records
+    huella: [],
+    rastro: [],
+    mapaVivo: [],
+    convergence: [],
+    // Note: compatibility and separation already defined above
+
+    // Method
+    records: [],
+
+    // Metadata
+    lastUpdated: Date.now(),
+  };
+}
