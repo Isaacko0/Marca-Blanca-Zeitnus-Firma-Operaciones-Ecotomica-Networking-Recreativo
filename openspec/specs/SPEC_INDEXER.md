@@ -3,13 +3,13 @@
 ## Overview
 This index catalogs all OpenSpec specifications for the ALRAC/TQ/Zeitnus regenerative economics stack. Each spec maps external sources (OASA, DisCO, Closer, ElizaOS, ValueFlows, Aragon, etc.) to TypeScript implementations in `src/core/lib/`.
 
-**Total Specs:** 55 (28 original + 12 external scraping + 4 Norberto assimilation + 3 Fase 3 + 1 IAL + 7 PSS assimilation)  
-**Implemented:** 27 (19 original + 4 Fase 1-2 + Pilot + 4 Norberto)  
+**Total Specs:** 56 (28 original + 12 external scraping + 4 Norberto assimilation + 3 Fase 3 + 1 IAL + 7 PSS assimilation + 1 URBION)  
+**Implemented:** 28 (19 original + 4 Fase 1-2 + Pilot + 4 Norberto + 1 URBION)  
 **Designed:** 12 (Fase 3+ pending implementation + IAL + 7 PSS)
 
 ---
 
-## Original ALRAC Specifications (25)
+## Original ALRAC Specifications (26)
 
 ### **Capa 0: Epistémica / Normativa** (Originales)
 | # | Archivo | Descripción | Estado |
