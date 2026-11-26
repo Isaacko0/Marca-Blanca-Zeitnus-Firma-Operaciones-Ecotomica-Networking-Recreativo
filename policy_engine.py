@@ -35,6 +35,7 @@ class Decision(str, Enum):
 
 
 class Law(str, Enum):
+    LAW_MINUS_1 = "-1"
     LAW_I = "I"
     LAW_0 = "0"
     LAW_II = "II"
@@ -44,7 +45,7 @@ class Law(str, Enum):
 
 
 # Primera denegación gana: orden de precedencia constitucional.
-LAW_PRECEDENCE = [Law.LAW_I, Law.LAW_0, Law.LAW_II, Law.LAW_III, Law.OVN, Law.OASA]
+LAW_PRECEDENCE = [Law.LAW_MINUS_1, Law.LAW_I, Law.LAW_0, Law.LAW_II, Law.LAW_III, Law.OVN, Law.OASA]
 
 
 @dataclass
@@ -131,6 +132,50 @@ def verify_constitution(data: dict, expected_hash_path: str = "constitution.sha2
             f"  actual:   {actual}"
         )
     return actual
+
+
+# ---------------------------------------------------------------------------
+# Reglas — Ley -1: Principio de Incapacidad (meta-reglas del Alráico)
+# ---------------------------------------------------------------------------
+
+@rule("PI-001", Law.LAW_MINUS_1)
+def pi_no_certainty_claim(action: dict, ctx: dict) -> Verdict | None:
+    if ctx.get("claims_certainty", False):
+        return Verdict(Decision.BLOCK, Law.LAW_MINUS_1, "PI-001",
+                       "Acción justificada con certeza absoluta: viola el PI",
+                       summary(action))
+    return None
+
+
+@rule("PI-002", Law.LAW_MINUS_1)
+def pi_requires_falsification_test(action: dict, ctx: dict) -> Verdict | None:
+    if action.get("type") in {"rule.add", "feature.deploy", "spec.new"}:
+        if not ctx.get("has_falsification_test", False):
+            return Verdict(Decision.BLOCK, Law.LAW_MINUS_1, "PI-002",
+                           "Regla o feature sin test de falsación",
+                           summary(action))
+    return None
+
+
+@rule("PI-003", Law.LAW_MINUS_1)
+def pi_requires_restatement(action: dict, ctx: dict) -> Verdict | None:
+    if action.get("type") in {"spec.new", "document.integrate"}:
+        if not ctx.get("restatable_in_other_words", False):
+            return Verdict(Decision.HOLD, Law.LAW_MINUS_1, "PI-003",
+                           "Documento no puede reformularse sin jerga: marcado como inerte",
+                           summary(action))
+    return None
+
+
+@rule("PI-004", Law.LAW_MINUS_1)
+def pi_irresoluble_hold(action: dict, ctx: dict) -> Verdict | None:
+    irresolubles = {"genio_malvado", "cinco_segundos", "simulacion",
+                    "solipsismo", "eterno_retorno"}
+    if ctx.get("depends_on_irresoluble") in irresolubles:
+        return Verdict(Decision.HOLD, Law.LAW_MINUS_1, "PI-004",
+                       f"Acción depende de teoría irresoluble: {ctx.get('depends_on_irresoluble')}",
+                       summary(action))
+    return None
 
 
 # ---------------------------------------------------------------------------

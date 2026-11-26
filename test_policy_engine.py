@@ -131,6 +131,46 @@ def test_oasa_guardian_veto(engine):
     assert v.rule_id == "OASA-002"
 
 
+# --- Ley -1: Principio de Incapacidad ---------------------------------------
+
+def test_law_minus_1_blocks_certainty_claim(engine):
+    v = engine.evaluate(
+        {"type": "wallet.transfer", "to": "0xALICE", "amount": 10, "currency": "USDC"},
+        {"claims_certainty": True}
+    )
+    assert v.decision == pe.Decision.BLOCK
+    assert v.law == pe.Law.LAW_MINUS_1
+    assert v.rule_id == "PI-001"
+
+
+def test_law_minus_1_requires_falsification_test_for_new_rule(engine):
+    v = engine.evaluate(
+        {"type": "rule.add",
+         "context": {"has_falsification_test": False}}
+    )
+    assert v.decision == pe.Decision.BLOCK
+    assert v.rule_id == "PI-002"
+
+
+def test_law_minus_1_holds_irrestatable_document(engine):
+    v = engine.evaluate(
+        {"type": "document.integrate",
+         "context": {"restatable_in_other_words": False}}
+    )
+    assert v.decision == pe.Decision.HOLD
+    assert v.rule_id == "PI-003"
+
+
+def test_law_minus_1_holds_irresoluble_dependency(engine):
+    v = engine.evaluate(
+        {"type": "wallet.transfer", "to": "0xALICE"},
+        {"depends_on_irresoluble": "simulacion",
+         "known_recipients": ["0xALICE"]},
+    )
+    assert v.decision == pe.Decision.HOLD
+    assert v.rule_id == "PI-004"
+
+
 # --- Auditoría --------------------------------------------------------------
 
 def test_audit_chain_integrity(engine):

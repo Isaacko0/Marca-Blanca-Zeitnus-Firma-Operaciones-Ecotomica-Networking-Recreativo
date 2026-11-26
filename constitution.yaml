@@ -3,6 +3,19 @@ adopted: "2026-01-01"
 network: "Federación Autótrofa"
 
 laws:
+  "-1":
+    title: "Principio de Incapacidad"
+    text: |
+      Todo razonamiento del sistema procede bajo la constatación de que
+      no se conoce todo. Ninguna acción puede justificarse por certeza
+      absoluta. Cuando una acción requiere resolver una de las cinco
+      teorías de irresolubles (genio malvado, 5 segundos de Russell,
+      simulación, solipsismo, eterno retorno), la acción se marca como
+      HOLD y requiere verificación triaxial antes de ejecutarse.
+      Toda regla nueva debe venir con un test que la pueda refutar.
+      Si una regla no puede expresarse en otras palabras, es inerte.
+    applies_to: ["*"]
+
   I:
     title: "Nunca dañes"
     text: |
